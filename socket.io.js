@@ -245,7 +245,6 @@ io.util = {
 			this._sendXhr.onreadystatechange = this._sendXhr.onload = empty;
 			this._sendXhr.abort();
 		} 
-		this._onClose();
 		this._onDisconnect();
 		return this;
 	}
@@ -270,6 +269,7 @@ io.util = {
 	XHR.request = request;
 	
 })();
+
 /**
  * Socket.IO client
  * 
@@ -506,10 +506,20 @@ io.util = {
 	XHRPolling.prototype._get = function(){
 		var self = this;
 		this._xhr = this._request(+ new Date, 'GET');
+		function handleGetResponse(status, responseText) {
+			if (status == 200) {
+				if (responseText.length) self._onData(responseText);
+				self.connect();
+			} else {
+				if (self.connected)
+					self.disconnect();
+				else 
+					self.fireEvent('disconnect');
+			}
+		} 
 		if ('onload' in this._xhr){
 			this._xhr.onload = function(){
-				if (this.responseText.length) self._onData(this.responseText);
-				self.connect();
+				handleGetResponse(this.status, this.responseText);
 			};
 		} else {
 			this._xhr.onreadystatechange = function(){
@@ -517,10 +527,7 @@ io.util = {
 				if (self._xhr.readyState == 4){
 					self._xhr.onreadystatechange = empty;
 					try { status = self._xhr.status; } catch(e){}
-					if (status == 200){
-						if (self._xhr.responseText.length) self._onData(self._xhr.responseText);
-						self.connect();
-					}
+					handleGetResponse(status, self._xhr.responseText);
 				}
 			};
 		}
@@ -609,7 +616,7 @@ io.util = {
 	
 	Socket.prototype.fire = function(name, args){
 		if (name in this._events){
-			for (var i in this._events[name])
+			for (var i=0; i < this._events[name].length; i++)
 				this._events[name][i].apply(this, args);
 		}
 		return this;
@@ -661,6 +668,7 @@ io.util = {
 	Socket.prototype.addListener = Socket.prototype.addEvent = Socket.prototype.addEventListener = Socket.prototype.on;
 	
 })();
+
 /*	SWFObject v2.2 <http://code.google.com/p/swfobject/> 
 	is released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
 */
