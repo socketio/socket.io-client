@@ -91,7 +91,7 @@ Options:
 			{ name:'xhr-polling', port: 80 }
 		]
 
-	A list of the transports to attempt to utilize (in order of preference), ports optional
+	A list of the transport + port combinations to attempt to utilize (in order of preference)
 	
 - *transportOptions*
 	
