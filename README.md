@@ -73,12 +73,6 @@ Another, once cloned
 
 Options:
 
-- *port*
-
-		Current port or 80
-	
-	The port `socket.io` server is attached to (defaults to the document.location port)
-
 - *resource*
 
 		socket.io
@@ -87,9 +81,17 @@ Options:
 
 - *transports*
 
-		['websocket', 'flashsocket', 'htmlfile', 'xhr-multipart', 'xhr-polling']
+		[
+			{ name:'websocket', port: 80 }, 
+			{ name:'websocket', port: 8080 }, 
+			{ name:'flashsocket', port: 80 }, 
+			{ name:'htmlfile', port: 80 }, 
+			{ name:'xhr-multipart', port: 80 }, 
+			{ name:'xhr-polling', port: 8080 },
+			{ name:'xhr-polling', port: 80 }
+		]
 
-	A list of the transports to attempt to utilize (in order of preference)
+	A list of the transports to attempt to utilize (in order of preference), ports optional
 	
 - *transportOptions*
 	
