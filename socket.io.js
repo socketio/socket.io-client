@@ -719,6 +719,11 @@ if ('jQuery' in this) jQuery.io = this.io;
 		return this;
 	};
 	
+	Socket.prototype.removeEvents = function(){
+		this._events = {};
+		return this;
+	};
+	
 	Socket.prototype._queue = function(message){
 		if (!('_queueStack' in this)) this._queueStack = [];
 		this._queueStack.push(message);
