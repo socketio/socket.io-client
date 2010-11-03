@@ -2094,6 +2094,7 @@ ASProxy.prototype =
     document.body.appendChild(container);
     // See this article for hasPriority:
     // http://help.adobe.com/en_US/as3/mobile/WS4bebcd66a74275c36cfb8137124318eebc6-7ffd.html
+    try{
     swfobject.embedSWF(
       WEB_SOCKET_SWF_LOCATION, "webSocketFlash",
       "1" /* width */, "1" /* height */, "9.0.0" /* SWF version */,
@@ -2102,6 +2103,7 @@ ASProxy.prototype =
         if (!e.success) console.error("[WebSocket] swfobject.embedSWF failed");
       }
     );
+    }catch(ex){}
     FABridge.addInitializationCallback("webSocket", function() {
       try {
         //console.log("[WebSocket] FABridge initializad");
