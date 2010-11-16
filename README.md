@@ -242,6 +242,13 @@ Events:
 * Fixing a few dangerous loops that otherwise loop into properties that have been added to the prototype elsewhere.
 * Support for initializing io.Socket after the page has been loaded
 
+2010 11 ?? - **0.7.0**
+
+* Fixed, improved and added missing Transport#disconnect methods
+* Implemented data.js (data and message encoding and decoding with buffering)
+* Implemented forced disconnect call from server
+* Added warning if JSON.parse is not available and a JSON message is received
+
 ### Credits
 
 Guillermo Rauch &lt;guillermo@learnboost.com&gt;
