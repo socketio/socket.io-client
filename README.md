@@ -246,6 +246,8 @@ Events:
 
 * Fixed, improved and added missing Transport#disconnect methods
 * Implemented data.js (data and message encoding and decoding with buffering)
+  - Fixes edge cases with multipart not sending the entirety of a message and
+    firing the data event
 * Implemented forced disconnect call from server
 * Added warning if JSON.parse is not available and a JSON message is received
 
