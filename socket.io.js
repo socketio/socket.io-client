@@ -1012,6 +1012,7 @@ JSONPPolling.xdomainCheck = function(){
 		io.util.merge(this.options, options);
 		this.connected = false;
 		this.connecting = false;
+		this.explicitlyDisconnected = false;   // tracks if disconnect was explicitly called
 		this._events = {};
 		this.transport = this.getTransport();
 		if (!this.transport && 'console' in window) console.error('No transport available');
@@ -1044,7 +1045,7 @@ JSONPPolling.xdomainCheck = function(){
 			if (this.options.connectTimeout){
 				var self = this;
 				setTimeout(function(){
-					if (!self.connected){
+					if (!self.connected && !self.explicitlyDisconnected){
 						self.disconnect();
 						if (self.options.tryTransportsOnConnectTimeout && !self._rememberedTransport){
 							var remainingTransports = [], transports = self.options.transports;
@@ -1087,6 +1088,7 @@ JSONPPolling.xdomainCheck = function(){
 
 	Socket.prototype.disconnect = function(){
 		this.transport.disconnect();
+		this.explicitlyDisconnected = true;
 		return this;
 	};
 	
@@ -1132,6 +1134,7 @@ JSONPPolling.xdomainCheck = function(){
 	Socket.prototype._onConnect = function(){
 		this.connected = true;
 		this.connecting = false;
+		this.explicitlyDisconnected = false;
 		this._doQueue();
 		if (this.options.rememberTransport) this.options.document.cookie = 'socketio=' + encodeURIComponent(this.transport.type);
 		this.emit('connect');
