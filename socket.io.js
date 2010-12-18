@@ -323,8 +323,10 @@ if (typeof window != 'undefined'){
 			this._xhr = null;
 		}
 		if (this._sendXhr){
-			this._sendXhr.onreadystatechange = this._sendXhr.onload = empty;
-			this._sendXhr.abort();
+		    try{
+    			this._sendXhr.onreadystatechange = this._sendXhr.onload = empty;
+    			this._sendXhr.abort();
+    		}catch(e){}
 			this._sendXhr = null;
 		}
 		this._sendBuffer = [];
@@ -565,7 +567,7 @@ if (typeof window != 'undefined'){
 		this._xhr.onreadystatechange = function(){
 			if (self._xhr.readyState == 3) self._onData(self._xhr.responseText);
 		};
-		this._xhr.send();
+		this._xhr.send(null);
 	};
 	
 	XHRMultipart.check = function(){
@@ -633,7 +635,7 @@ if (typeof window != 'undefined'){
 				}
 			};
 		}
-		this._xhr.send();
+		this._xhr.send(null);
 	};
 
 	XHRPolling.check = function(){
