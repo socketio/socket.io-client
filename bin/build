@@ -13,7 +13,8 @@
  * You can later use Google Closure Compiler on it.
  */
 
-var fs = require('fs'),
+var noFlash = process.argv[2] == 'noflash',
+    fs = require('fs'),
 	sys = require('sys'),
 	socket = require('../lib/io'),
 	files = [
@@ -33,6 +34,17 @@ var fs = require('fs'),
 		'vendor/web-socket-js/web_socket.js'
 	],
 	content = "/** Socket.IO "+ socket.io.version +" - Built with build.js */\n";
+	
+if (noFlash){
+    function removeFile(file){
+        var i = files.indexOf(file)
+        files.splice(i, 1)
+    }
+    removeFile('transports/flashsocket.js')
+    removeFile('vendor/web-socket-js/swfobject.js')
+    removeFile('vendor/web-socket-js/FABridge.js')
+    removeFile('vendor/web-socket-js/web_socket.js')
+}
 
 sys.log('Reading files…');
 
