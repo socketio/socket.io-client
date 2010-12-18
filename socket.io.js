@@ -40,7 +40,7 @@ if (typeof window != 'undefined'){
 		ios: false,
 
 		load: function(fn){
-			if (document.readyState == 'complete' || _pageLoaded) return fn();
+			if (/loaded|complete/.test(document.readyState) || _pageLoaded) return fn();
 			if ('attachEvent' in window){
 				window.attachEvent('onload', fn);
 			} else {
