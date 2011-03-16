@@ -245,8 +245,11 @@ if (typeof window != 'undefined'){
 	XMLHttpRequestCORS = (function(){
 		if (!('XMLHttpRequest' in window)) return false;
 		// CORS feature detection
-		var a = new XMLHttpRequest();
-		return a.withCredentials != undefined;
+		var a;
+		try {
+			a = new XMLHttpRequest();
+		} catch(e){}
+		return a && a.withCredentials != undefined;
 	})(),
 	
 	request = function(xdomain){
