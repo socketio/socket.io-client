@@ -949,7 +949,16 @@ if (typeof window != 'undefined'){
 		}
 	};
 	
-	Socket.prototype._onReconnect = function(){
+	Socket.prototype.reconnect = function(){
+		this.abortReconnect();
+		this._onReconnect(true);
+	};
+	
+	Socket.prototype.abortReconnect = function(){
+		if(this.reconnecting && this._reconnectReset) this._reconnectReset();
+	};
+	
+	Socket.prototype._onReconnect = function(immediately){
 		this.reconnecting = true;
 		this.reconnectionAttempts = 0;
 		this.reconnectionDelay = this.options.reconnectionDelay;
@@ -958,7 +967,8 @@ if (typeof window != 'undefined'){
 			, tryTransportsOnConnectTimeout = this.options.tryTransportsOnConnectTimeout
 			, rememberTransport = this.options.rememberTransport;
 		
-		function reset(){
+		var reset = this._reconnectReset = function(){
+			clearTimeout(self.reconnectionTimer);
 			if(self.connected) self.emit('reconnect',[self.transport.type,self.reconnectionAttempts]);
 			self.removeEvent('connect_failed', maybeReconnect).removeEvent('connect', maybeReconnect);
 			delete self.reconnecting;
@@ -966,10 +976,9 @@ if (typeof window != 'undefined'){
 			delete self.reconnectionDelay;
 			delete self.reconnectionTimer;
 			delete self.redoTransports;
+			delete self._reconnectReset;
 			self.options.tryTransportsOnConnectTimeout = tryTransportsOnConnectTimeout;
 			self.options.rememberTransport = rememberTransport;
-			
-			return;
 		};
 		
 		function maybeReconnect(){
@@ -999,7 +1008,7 @@ if (typeof window != 'undefined'){
 			}
 		};
 		this.options.tryTransportsOnConnectTimeout = false;
-		this.reconnectionTimer = setTimeout(maybeReconnect, this.reconnectionDelay);
+		this.reconnectionTimer = setTimeout(maybeReconnect, immediately ? 0 : this.reconnectionDelay);
 		
 		this.on('connect', maybeReconnect);
 	};
