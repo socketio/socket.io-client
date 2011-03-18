@@ -854,6 +854,7 @@ if (typeof window != 'undefined'){
 				this.connectTimeoutTimer = setTimeout(function(){
 					if (!self.connected){
 						self.disconnect(true);
+						self.emit('connect_timeout',[self.transport.type]);
 						if (self.options.tryTransportsOnConnectTimeout && !self._rememberedTransport){
 							if(!self._remainingTransports) self._remainingTransports = self.options.transports.slice(0);
 							var transports = self._remainingTransports;
