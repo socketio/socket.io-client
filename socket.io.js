@@ -946,7 +946,6 @@ if (typeof window != 'undefined'){
 		var wasConnected = this.connected;
 		this.connected = false;
 		this.connecting = false;
-		this._queueStack = [];
 		if (wasConnected){
 			this.emit('disconnect');
 			if (this.options.reconnect && !this.reconnecting) this._onReconnect();
