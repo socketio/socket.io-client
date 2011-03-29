@@ -225,10 +225,11 @@ if (typeof window != 'undefined'){
 			+ ':' + this.base.options.port
 			+ '/' + this.base.options.resource
 			+ '/' + this.type
-			+ (this.sessionid ? ('/' + this.sessionid) : '/');
+			+ (this.sessionid ? ('/' + this.sessionid) : '');
 	};
 
 })();
+
 /**
  * Socket.IO client
  * 
