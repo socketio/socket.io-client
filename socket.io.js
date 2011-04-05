@@ -404,6 +404,11 @@ if (typeof window != 'undefined'){
 		return this;
 	};
 	
+	WS.prototype._onDisconnect = function(){
+		this.disconnect();
+		io.Transport.prototype._onDisconnect.call(this);
+	};
+	
 	WS.prototype._onClose = function(){
 		this._onDisconnect();
 		return this;
@@ -544,6 +549,12 @@ if (typeof window != 'undefined'){
 		this._destroy();
 		return io.Transport.XHR.prototype.disconnect.call(this);
 	};
+	
+	HTMLFile.prototype._onDisconnect = function(){
+		this.destroy();
+		io.Transport.XHR._onDisconnect.call(this);
+	};
+		
 	
 	HTMLFile.check = function(){
 		if ('ActiveXObject' in window){
