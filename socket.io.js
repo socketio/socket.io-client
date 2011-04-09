@@ -70,9 +70,14 @@ if (typeof window != 'undefined'){
 		},
 		
     merge: function(target, additional){
-      for (var i in additional)
-        if (additional.hasOwnProperty(i))
-          target[i] = additional[i];
+      for (var i in additional) {
+        if (additional.hasOwnProperty(i)) {
+          if (typeof target[i] !== 'object')
+            target[i] = additional[i];
+          else
+            this.merge(target[i], additional[i]);
+        }
+      }
     }
 
 	};
@@ -117,6 +122,9 @@ if (typeof window != 'undefined'){
 	Transport = io.Transport = function(base, options){
 		this.base = base;
 		this.options = {
+      host: base.host,
+      port: base.options.port,
+      resource: base.options.resource,
 			timeout: 15000 // based on heartbeat interval default
 		};
 		io.util.merge(this.options, options);
@@ -221,9 +229,9 @@ if (typeof window != 'undefined'){
 
 	Transport.prototype._prepareUrl = function(){
 		return (this.base.options.secure ? 'https' : 'http') 
-			+ '://' + this.base.host 
-			+ ':' + this.base.options.port
-			+ '/' + this.base.options.resource
+			+ '://' + this.options.host 
+			+ ':' + this.options.port
+			+ '/' + this.options.resource
 			+ '/' + this.type
 			+ (this.sessionid ? ('/' + this.sessionid) : '/');
 	};
@@ -415,9 +423,9 @@ if (typeof window != 'undefined'){
 	
 	WS.prototype._prepareUrl = function(){
 		return (this.base.options.secure ? 'wss' : 'ws') 
-		+ '://' + this.base.host 
-		+ ':' + this.base.options.port
-		+ '/' + this.base.options.resource
+		+ '://' + this.options.host 
+		+ ':' + this.options.port
+		+ '/' + this.options.resource
 		+ '/' + this.type
 		+ (this.sessionid ? ('/' + this.sessionid) : '');
 	};
