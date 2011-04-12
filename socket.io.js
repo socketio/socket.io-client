@@ -621,16 +621,12 @@ if (typeof window != 'undefined'){
 	XHRPolling.prototype.type = 'xhr-polling';
 
 	XHRPolling.prototype.connect = function(){
-		if (io.util.ios || io.util.android){
-			var self = this;
-			io.util.load(function(){
-				setTimeout(function(){
-					io.Transport.XHR.prototype.connect.call(self);
-				}, 10);
-			});
-		} else {
-			io.Transport.XHR.prototype.connect.call(this);
-		}
+		var self = this;
+		io.util.load(function(){
+			setTimeout(function(){
+				io.Transport.XHR.prototype.connect.call(self);
+			}, 10);
+		});
 	};
 
 	XHRPolling.prototype._get = function(){
