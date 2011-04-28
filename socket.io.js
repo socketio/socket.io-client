@@ -552,7 +552,7 @@ if (typeof window != 'undefined'){
 	
 	HTMLFile.prototype._onDisconnect = function(){
 		this._destroy();
-		io.Transport.XHR._onDisconnect.call(this);
+		io.Transport.XHR.prototype._onDisconnect.call(this);
 	};
 		
 	
