@@ -23,6 +23,28 @@ if (typeof window != 'undefined'){
   // WEB_SOCKET_SWF_LOCATION = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//cdn.socket.io/' + this.io.version + '/WebSocketMain.swf';
   if (typeof WEB_SOCKET_SWF_LOCATION === 'undefined')
     WEB_SOCKET_SWF_LOCATION = '/socket.io/lib/vendor/web-socket-js/WebSocketMain.swf';
+} else {
+  if(typeof Titanium != 'undefined' && typeof window == 'undefined' && typeof document == 'undefined' && typeof navigator == 'undefined'){
+    this.window = {
+      location: {
+        port: 80
+      }
+    };
+    this.navigator = {
+      userAgent: Titanium.userAgent,
+      platform: Titanium.Platform.name
+    };
+    this.document = {
+      domain: null,
+      location: window.location,
+      cookie: ''
+    };
+    this.console = {
+      error: function(message){
+        return Titanium.API.error(message);
+      }
+    };
+  }
 }
 
 /**
@@ -73,13 +95,42 @@ if (typeof window != 'undefined'){
       for (var i in additional)
         if (additional.hasOwnProperty(i))
           target[i] = additional[i];
+    },
+
+    isString: function(obj){
+      return obj && typeof obj.substring != 'undefined';
     }
 
 	};
 
-	io.util.ios = /iphone|ipad/i.test(navigator.userAgent);
-	io.util.android = /android/i.test(navigator.userAgent);
-	io.util.opera = /opera/i.test(navigator.userAgent);
+  io.util.logger = {
+    error: function (message){}
+  };
+
+  if(typeof Titanium == 'undefined'){
+	  io.util.ios = /iphone|ipad/i.test(navigator.userAgent);
+	  io.util.android = /android/i.test(navigator.userAgent);
+  	io.util.opera = /opera/i.test(navigator.userAgent);
+
+    io.util.jsonSupport = 'JSON' in window;
+
+  } else {
+    io.util.load = function (fn){
+      return fn();
+    };
+
+    io.util.ios = /iphone/i.test(Titanium.Platform.osname);
+    io.util.android = /android/i.test(Titanium.Platform.osname);
+    io.util.opera = false;
+
+    io.util.jsonSupport = true;
+  }
+
+  if('console' in window && console.error){
+    io.util.logger.error = function (message){
+      return console.error(message);
+    };
+  }
 
 	io.util.load(function(){
 		_pageLoaded = true;
@@ -103,15 +154,14 @@ if (typeof window != 'undefined'){
 	var frame = '~m~',
 	
 	stringify = function(message){
-		if (Object.prototype.toString.call(message) == '[object Object]'){
-			if (!('JSON' in window)){
-				if ('console' in window && console.error) console.error('Trying to encode as JSON, but JSON.stringify is missing.');
-				return '{ "$error": "Invalid message" }';
-			}
-			return '~j~' + JSON.stringify(message);
-		} else {
-			return String(message);
-		}
+    if(io.util.isString(message)){
+      return String(message);
+    }
+    if (!(io.util.jsonSupport)){
+      io.util.logger.error('Trying to encode as JSON, but JSON.stringify is missing.');
+      return '{ "$error": "Invalid message" }';
+    }
+    return '~j~' + JSON.stringify(message);
 	};
 	
 	Transport = io.Transport = function(base, options){
@@ -138,7 +188,7 @@ if (typeof window != 'undefined'){
 		var ret = '', message,
 				messages = io.util.isArray(messages) ? messages : [messages];
 		for (var i = 0, l = messages.length; i < l; i++){
-			message = messages[i] === null || messages[i] === undefined ? '' : stringify(messages[i]);
+			message = messages[i] === null || messages[i] === undefined ? '' : this._stringify(messages[i]);
 			ret += frame + message.length + frame + message;
 		}
 		return ret;
@@ -228,7 +278,10 @@ if (typeof window != 'undefined'){
 			+ (this.sessionid ? ('/' + this.sessionid) : '/');
 	};
 
+  Transport.prototype._stringify = stringify;
+
 })();
+
 /**
  * Socket.IO client
  * 
@@ -342,7 +395,7 @@ if (typeof window != 'undefined'){
 	};
 	
 	XHR.prototype._request = function(url, method, multipart){
-		var req = request(this.base._isXDomain());
+		var req = io.Transport.XHR.request(this.base._isXDomain());
 		if (multipart) req.multipart = true;
 		req.open(method || 'GET', this._prepareUrl() + (url ? '/' + url : ''));
 		if (method == 'POST' && 'setRequestHeader' in req){
@@ -353,7 +406,7 @@ if (typeof window != 'undefined'){
 	
 	XHR.check = function(xdomain){
 		try {
-			if (request(xdomain)) return true;
+			if (io.Transport.XHR.request(xdomain)) return true;
 		} catch(e){}
 		return false;
 	};
@@ -363,6 +416,18 @@ if (typeof window != 'undefined'){
 	};
 	
 	XHR.request = request;
+
+  if(typeof Titanium != 'undefined'){
+    XHR.check = function (){
+      return true;
+    };
+    XHR.xdomainCheck = function (){
+      return true;
+    };
+    XHR.request = function (){
+      return Titanium.Network.createHTTPClient();
+    };
+  }
 	
 })();
 
@@ -792,7 +857,7 @@ if (typeof window != 'undefined'){
 
 (function(){
 	var io = this.io;
-	
+
 	var Socket = io.Socket = function(host, options){
 		this.host = host || document.domain;
 		this.options = {
@@ -821,7 +886,7 @@ if (typeof window != 'undefined'){
 		this.connecting = false;
 		this._events = {};
 		this.transport = this.getTransport();
-		if (!this.transport && 'console' in window) console.error('No transport available');
+		if (!this.transport) io.util.logger.error('No transport available');
 	};
 	
 	Socket.prototype.getTransport = function(override){
@@ -1009,6 +1074,7 @@ if (typeof window != 'undefined'){
 	Socket.prototype.removeListener = Socket.prototype.removeEventListener = Socket.prototype.removeEvent;
 	
 })();
+
 /*	SWFObject v2.2 <http://code.google.com/p/swfobject/> 
 	is released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
 */
