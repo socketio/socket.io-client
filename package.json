@@ -15,4 +15,5 @@
 , "engines": { "node": "*" }
 , "scripts" :
   { "install" : "bin/build" }
+, "ender" : "lib/ender.js"
 }
