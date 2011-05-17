@@ -56,9 +56,17 @@ The `socket.io` client is basically a simple HTTP Socket interface implementatio
 	
 For an example, check out the chat [source](https://github.com/LearnBoost/Socket.IO-node/blob/master/test/chat.html).
 
+**Ender install**
+
+If using ender.js, there is a package called `socket.io-browser` that can be installed. Instead of using a separate io.Socket script, you can just do this:
+
+	socket = $.io('localhost');
+
+This is the same as `new io.Socket()` and takes the same parameters, but it is bundled with ender, reducing your dependencies.
+
 ### Notes
 
-If you are serving you .swf from a other domain than socket.io.js you will need to change the WEB_SOCKET_SWF_LOCATION to the insecure version.
+If you are serving your .swf from a other domain than socket.io.js you will need to change the WEB_SOCKET_SWF_LOCATION to the insecure version.
 
 	<script>WEB_SOCKET_SWF_LOCATION = '/path/to/WebSocketMainInsecure.swf';</script>
 
