@@ -435,7 +435,7 @@ if (typeof window != 'undefined'){
    * @api private
    */
   Transport.prototype.onMessage = function(message){
-    if (!this.sessionid){
+    if (message.substr(0, 1) != '~' && !this.sessionid){
       this.sessionid = message;
       this.onConnect();
     } else if (message.substr(0, 3) == '~h~'){
