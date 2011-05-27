@@ -5,15 +5,17 @@ socket.io
 
 The `socket.io` client is basically a simple HTTP Socket interface implementation. It allows you to establish a realtime connection with a server (see `socket.io` server [here](http://github.com/LearnBoost/Socket.IO-node)), hiding the complexity of the different transports (WebSocket, Flash, forever iframe, XHR long polling, XHR multipart encoded, etc), while retaining a WebSocket-like API:
 
-	socket = new io.Socket('localhost');
-	socket.connect();
-	socket.on('connect', function(){
-		// connected
-	});
-	socket.on('message', function(data){
-		// data here
-	});
-	socket.send('some data');
+```js
+socket = new io.Socket('localhost');
+socket.connect();
+socket.on('connect', function(){
+	// connected
+});
+socket.on('message', function(data){
+	// data here
+});
+socket.send('some data');
+```
 
 ### Features
 
@@ -47,22 +49,45 @@ The `socket.io` client is basically a simple HTTP Socket interface implementatio
 
 ### How to use
 
-	socket = new io.Socket('localhost');
-	socket.connect();
-	socket.send('some data');
-	socket.on('message', function(data){
-		alert('got some data' + data);
-	});
+```js
+socket = new io.Socket('localhost');
+socket.connect();
+socket.send('some data');
+socket.on('message', function(data){
+	alert('got some data' + data);
+});
+```
 	
 For an example, check out the chat [source](https://github.com/LearnBoost/Socket.IO-node/blob/master/test/chat.html).
 
 ### Notes
 
+#### Cross domain & cross port flashsocket
 If you are serving you .swf from a other domain than socket.io.js you will need to change the WEB_SOCKET_SWF_LOCATION to the insecure version.
 
-	<script>WEB_SOCKET_SWF_LOCATION = '/path/to/WebSocketMainInsecure.swf';</script>
+```html
+<script>WEB_SOCKET_SWF_LOCATION = '/path/to/WebSocketMainInsecure.swf';</script>
+```
 
 The insecure version can be found [here](http://github.com/gimite/web-socket-js/blob/master/WebSocketMainInsecure.zip).
+
+#### Reconnection
+Reconnection support is enabled by default. When your connection is dropped and a reconnection is made successfully the `connect` event will fire again. For some users this can cause duplicate events as they assign the `message` or `disconnect` handler during the connection event.
+
+A easy fix for this would be changing from `on('connect', fn)` to using the `once` listener which is only executed once:
+
+```js
+socket = new io.Socket('localhost');
+socket.connect();
+socket.once('connect', function(){
+  socket.on('message', function(data){
+    alert('got some data' + data);
+  });
+  socket.on('disconnect', function(){
+    alert('disconnected');
+  });
+});
+```
 
 ### Documentation 
 
