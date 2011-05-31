@@ -1749,7 +1749,8 @@ if (typeof window != 'undefined'){
    * @api private
    */
   Socket.prototype.isXDomain = function(){
-    var locPort = window.location.port || 80;
+    var defaultPort = window.location.protocol === 'https:' ? 443 : 80;
+    var locPort = window.location.port || defaultPort;
     return this.host !== document.domain || this.options.port != locPort;
   };
   
