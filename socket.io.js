@@ -238,7 +238,8 @@ if (typeof window != 'undefined'){
    * @api private
    */
   stringify = function(message){
-    if (Object.prototype.toString.call(message) == '[object Object]'){
+    var kind = Object.prototype.toString.call(message)
+    if (kind === '[object Object]' || kind === '[object Array]'){
       if (!('JSON' in window)){
         var error = 'Socket.IO Error: Trying to encode as JSON, but JSON.stringify is missing.';
         if ('console' in window && console.error){
@@ -501,6 +502,7 @@ if (typeof window != 'undefined'){
   };
 
 })();
+
 /**
  * socket.io-node-client
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
