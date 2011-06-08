@@ -1031,7 +1031,7 @@
       case 'event':
         var params = packet.args && packet.args.length
           ? JSON.stringify(packet.args) : '';
-        data = packet.name + (params !== '' ? ('\ufffd' + params) : '');
+        data = packet.name + (params !== '' ? ('\ufffc' + params) : '');
         break;
 
       case 'json':
@@ -1131,7 +1131,7 @@
         break;
 
       case 'event':
-        var pieces = data.match(/([^\ufffd]+)(\ufffd)?(.*)/);
+        var pieces = data.match(/([^\ufffc]+)(\ufffc)?(.*)/);
         packet.name = pieces[1] || '';
         packet.args = [];
 
