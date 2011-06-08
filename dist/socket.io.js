@@ -2342,6 +2342,18 @@
    */
 
   SocketNamespace.prototype.onPacket = function (packet) {
+
+    var self = this;
+    var dataAck = packet.ack === 'data';
+
+    function ack () {
+      self.packet({
+          type: 'ack'
+        , args: Array.prototype.slice.call(arguments)
+        , ackId: packet.id
+      });
+    };
+
     switch (packet.type) {
       case 'connect':
       case 'disconnect':
@@ -2350,11 +2362,15 @@
 
       case 'message':
       case 'json':
-        this.$emit('message', packet.data);
+        var params = ['message', packet.data];
+        if (dataAck) params.push(ack);
+        this.$emit.apply(this, params);
         break;
 
       case 'event':
-        this.$emit.apply(this, [packet.name].concat(packet.args));
+        var params = [packet.name].concat(packet.args);
+        if (dataAck) params.push(ack);
+        this.$emit.apply(this, params);
         break;
 
       case 'ack':
