@@ -15,6 +15,6 @@ build:
 	./bin/build
 
 builder:
-	node ./bin/builder.js
+	node ./bin/builder.js $(TRANSPORTS)
 
 .PHONY: test builder
