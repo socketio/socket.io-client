@@ -1251,8 +1251,10 @@
   Transport.prototype.onData = function(data){
     this.clearCloseTimeout();
 
+console.log('DVV:Transport#onData1', data);
     if (data !== '') {
       var msgs = io.parser.decodePayload(data);
+console.log('DVV:Transport#onData2', msgs);
       if (msgs && msgs.length){
         for (var i = 0, l = msgs.length; i < l; i++){
           this.onPacket(msgs[i]);
@@ -2633,7 +2635,7 @@
       }
 
       if (fn && typeof fn == 'function') self.once('connect',fn);
-      self.onConnect();
+      //self.onConnect();
     });
 
     return this;
