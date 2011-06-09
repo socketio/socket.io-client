@@ -121,7 +121,7 @@
     },
 
     'decoding an event packet with data': function () {
-      parser.decodePacket('5:::edwald\ufffd[{"a": "b"},2,"3"]').should().eql({
+      parser.decodePacket('5:::edwald\ufffc[{"a": "b"},2,"3"]').should().eql({
           type: 'event'
         , name: 'edwald'
         , endpoint: ''
@@ -275,7 +275,7 @@
         , name: 'edwald'
         , endpoint: ''
         , args: [{a: 'b'}, 2, '3']
-      }).should().eql('5:::edwald\ufffd[{"a":"b"},2,"3"]');
+      }).should().eql('5:::edwald\ufffc[{"a":"b"},2,"3"]');
     },
 
     'encoding a message packet': function () {
