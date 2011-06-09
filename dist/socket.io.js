@@ -2635,7 +2635,6 @@ console.log('DVV:Transport#onData2', msgs);
       }
 
       if (fn && typeof fn == 'function') self.once('connect',fn);
-      //self.onConnect();
     });
 
     return this;
