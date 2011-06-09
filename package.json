@@ -1,6 +1,6 @@
 { "name": "socket.io-browser"
 , "description": "Browser-side code for Socket.IO"
-, "version": "0.6.2"
+, "version": "0.6.3"
 , "main" : "./socket.io.js"
 ,  "homepage": "http://socket.io"
 , "repository":
