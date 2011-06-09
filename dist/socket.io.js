@@ -1245,9 +1245,8 @@
    * @api public
    */
 
-  function Transport (socket, sessid) {
+  function Transport (socket) {
     this.socket = socket;
-    this.sessid = sessid;
   };
 
   /**
@@ -1415,7 +1414,7 @@
 
   Transport.prototype.prepareUrl = function () {
     return this.socket.options.resource + '/' + io.protocol
-      + '/' + this.name + '/' + this.sessid;
+      + '/' + this.name + '/' + this.socket.id;
   };
 
 })(
@@ -2050,7 +2049,7 @@
     return this.scheme() + '://'
       + this.socket.options.host + ':' + this.socket.options.port + '/'
       + this.socket.options.resource + '/' + io.protocol
-      + '/' + this.name + '/' + this.sessid;
+      + '/' + this.name + '/' + this.socket.id;
   };
 
   /**
@@ -2581,7 +2580,7 @@
       if (io.Transport[transport]
         && io.Transport[transport].check()
         && (!this.isXDomain() || io.Transport[transport].xdomainCheck())) {
-        return new io.Transport[transport](this, this.sessionid);
+        return new io.Transport[transport](this, this.id);
       }
     }
 
@@ -2604,7 +2603,7 @@
     var self = this;
 
     this.handshake(function (sid, close, heartbeat, transports) {
-      self.sessionid = sid;
+      self.id = sid;
       self.closeTimeout = close * 1000; // in ms
       self.heartbeatTimeout = heartbeat * 1000; // in ms
       self.transports = io.util.intersect(transports.split(','), self.options.transports);
@@ -2683,7 +2682,7 @@
 
       // ensure disconnection
       var xhr = io.util.request();
-      xhr.open('GET', this.resource + '/' + io.protocol + '/' + this.sessionid);
+      xhr.open('GET', this.resource + '/' + io.protocol + '/' + this.id);
 
       if (sync) {
         xhr.sync = true;
