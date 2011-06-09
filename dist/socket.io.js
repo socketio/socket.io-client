@@ -224,7 +224,6 @@
    */
   
   util.uniqueUri = function (uri) {
-console.log('URI', uri);
     var protocol = uri.protocol
       , host = uri.host
       , port = uri.port;
@@ -237,8 +236,6 @@ console.log('URI', uri);
       port = 80;
     }
 
-    //return (protocol || 'http') + '://' + host + ':' + (port || protocol && protocol === 'https' ? 443 : 80);
-console.log('URI!', protocol, host, port);
     return (protocol || 'http') + '://' + host + ':' + (port || (protocol === 'https' ? 443 : 80));
   };
 
