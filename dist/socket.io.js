@@ -72,8 +72,24 @@
      *
      * @api private
      */
-    
+
     io.util = require('./util').util;
+
+    /**
+     * Expose JSON.
+     *
+     * @api private
+     */
+
+    io.JSON = require('./json').JSON;
+
+    /**
+     * Expose parser.
+     *
+     * @api private
+     */
+
+    io.parser = require('./parser').parser;
 
     /**
      * Expose EventEmitter
@@ -104,8 +120,16 @@
      *
      * @api public
      */
-    
+
     io.Socket = require('./socket').Socket;
+
+    /**
+     * Location of `dist/` directory.
+     *
+     * @api private
+     */
+
+    io.dist = __dirname + '/../dist';
 
   }
   // end node
@@ -1251,10 +1275,8 @@
   Transport.prototype.onData = function(data){
     this.clearCloseTimeout();
 
-console.log('DVV:Transport#onData1', data);
     if (data !== '') {
       var msgs = io.parser.decodePayload(data);
-console.log('DVV:Transport#onData2', msgs);
       if (msgs && msgs.length){
         for (var i = 0, l = msgs.length; i < l; i++){
           this.onPacket(msgs[i]);
@@ -2590,8 +2612,8 @@ console.log('DVV:Transport#onData2', msgs);
 
     this.handshake(function (sid, close, heartbeat, transports) {
       self.sessionid = sid;
-      self.closeTimeout = close;
-      self.heartbeatTimeout = heartbeat;
+      self.closeTimeout = close * 1000; // in ms
+      self.heartbeatTimeout = heartbeat * 1000; // in ms
       self.transports = io.util.intersect(transports.split(','), self.options.transports);
       self.transport = self.getTransport();
 
