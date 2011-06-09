@@ -2,7 +2,7 @@
 ALL_TESTS = $(shell find test/ -name '*.test.js')
 
 run-tests:
-	@~/node_modules/.bin/expresso \
+	expresso \
 		-I lib \
 		-I support \
 		--serial \
@@ -14,4 +14,7 @@ test:
 build:
 	./bin/build
 
-.PHONY: test
+builder:
+	node ./bin/builder.js
+
+.PHONY: test builder

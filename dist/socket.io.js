@@ -236,7 +236,11 @@
     }
 
     return (protocol || 'http') + '://' + host + ':' +
+<<<<<<< HEAD
       (port || (protocol === 'https' ? 443 : 80));
+=======
+      (port || protocol && protocol === 'https' ? 443 : 80);
+>>>>>>> 605e92b8e1043c77bfb56ca6efe5ccde39f4c7a8
   };
 
   /**
