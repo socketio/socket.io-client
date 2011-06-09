@@ -28,11 +28,11 @@
       , noprotocol = io.util.parseUri('google.com')
       , https = io.util.parseUri('https://google.com')
       , path = io.util.parseUri('https://google.com/google.com/com/?foo=bar')
-      
-    equal(io.util.uniqueUri(protocol),'http://google.com:80', 'add default port number');
-    equal(io.util.uniqueUri(noprotocol),'http://google.com:80', 'add default protocol');
-    equal(io.util.uniqueUri(https), 'https://google.com:443', 'https protocols should get a different port number');
-    equal(io.util.uniqueUri(path), 'https://google.com:443', 'paths and query strings should not create other uniques');
+      , port = document.location.port;
+    equal(io.util.uniqueUri(protocol),'http://google.com:' + (port || 80), 'add default port number');
+    equal(io.util.uniqueUri(noprotocol),'http://google.com:' + (port || 80), 'add default protocol');
+    equal(io.util.uniqueUri(https), 'https://google.com:' + (port || 443), 'https protocols should get a different port number');
+    equal(io.util.uniqueUri(path), 'https://google.com:' + (port || 443), 'paths and query strings should not create other uniques');
   });
   
   test('request', function(){
