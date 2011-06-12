@@ -45,7 +45,6 @@ var base = [
   , 'util.js'
   , 'events.js'
   , 'json.js'
-  , 'es5-shim.js'
   , 'parser.js'
   , 'transport.js'
   , 'socket.js'
