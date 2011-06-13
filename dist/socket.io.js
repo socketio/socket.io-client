@@ -1474,13 +1474,13 @@
 
       xhr.open('GET', url);
       xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-          xhr.onreadystatechange = empty;
+        if (this.readyState == 4) {
+          this.onreadystatechange = empty;
 
-          if (xhr.status == 200) {
-            complete(xhr.responseText);
+          if (this.status == 200) {
+            complete(this.responseText);
           } else {
-            self.onError(xhr.responseText);
+            self.onError(this.responseText);
           }
         }
       };
@@ -2243,11 +2243,11 @@
     this.posting = true;
 
     function stateChange () {
-      if (self.sendXHR.readyState == 4) {
-        self.sendXHR.onreadystatechange = self.sendXHR.onload = empty;
+      if (this.readyState == 4) {
+        this.onreadystatechange = this.onload = empty;
         self.posting = false;
 
-        if (self.sendXHR.status == 200){
+        if (this.status == 200){
           self.checkSend();
         } else {
           self.onClose();
@@ -2600,11 +2600,11 @@
     var self = this;
 
     function stateChange () {
-      if (self.xhr.readyState == 4) {
-        self.xhr.onreadystatechange = self.xhr.onload = empty;
+      if (this.readyState == 4) {
+        this.onreadystatechange = this.onload = empty;
 
-        if (self.xhr.status == 200) {
-          self.onData(self.xhr.responseText);
+        if (this.status == 200) {
+          self.onData(this.responseText);
           self.get();
         } else {
           self.onClose();
