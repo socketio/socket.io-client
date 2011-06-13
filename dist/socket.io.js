@@ -355,6 +355,21 @@
   };
 
   /**
+   * Converts enumerables to array.
+   *
+   * @api public
+   */
+
+  util.toArray = function (enu) {
+    var arr = [];
+
+    for (var i = 0, l = enu.length; i < l; i++)
+      arr.push(enu[i]);
+
+    return arr;
+  };
+
+  /**
    * UA / engines detection namespace.
    *
    * @namespace
@@ -1893,7 +1908,7 @@
     function ack () {
       self.packet({
           type: 'ack'
-        , args: Array.prototype.slice.call(arguments)
+        , args: io.util.toArray(arguments)
         , ackId: packet.id
       });
     };
