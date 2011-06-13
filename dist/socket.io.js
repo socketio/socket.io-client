@@ -64,25 +64,29 @@
    * @api public
    */
 
-  io.connect = function (host, forceNew) {
+  io.connect = function (host, options) {
     var uri = io.util.parseUri(host);
-
     if ('undefined' != typeof document) {
+      uri.protocol = uri.protocol || document.location.protocol + '//';
       uri.host = uri.host || document.domain;
       uri.port = uri.port || document.location.port;
     }
 
+    var secure = uri.protocol === 'https://';
+    options = io.util.merge({
+        host: uri.host
+      , port: uri.port || (secure ? 443 : 80)
+      , secure: secure
+    }, options || {});
+
     var uuri = io.util.uniqueUri(uri);
 
-    if (forceNew || !io.sockets[uuri]) {
-      var socket = new io.Socket({
-          host: uri.host
-        , secure: uri.protocol == 'https://'
-        , port: uri.port || 80
-      });
+    var socket;
+    if (options.forceNew || !(socket = io.sockets[uuri])) {
+      var socket = new io.Socket(options);
     }
 
-    if (!forceNew) {
+    if (!options.forceNew) {
       this.sockets[uuri] = socket;
     }
 
@@ -2093,11 +2097,12 @@
    * @api private
    */
 
+  var _prepareUrl = WS.prototype.prepareUrl;
   WS.prototype.prepareUrl = function () {
     return this.scheme() + '://'
-      + this.socket.options.host + ':' + this.socket.options.port + '/'
-      + this.socket.options.resource + '/' + io.protocol
-      + '/' + this.name + '/' + this.socket.id;
+      + this.socket.options.host + ':' + this.socket.options.port
+      + '/' + _prepareUrl.call(this);
+    //return _prepareUrl.call(this).replace(/^https?/, this.scheme());
   };
 
   /**
