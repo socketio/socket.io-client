@@ -273,12 +273,12 @@
       , prop;
     
     for (prop in additional){
-      if (additional.hasOwnProperty(prop) && this.indexOf(seen, prop) < 0){
+      if (additional.hasOwnProperty(prop) && util.indexOf(seen, prop) < 0){
         if (typeof target[prop] !== 'object' || !depth){
           target[prop] = additional[prop];
           seen.push(additional[prop]);
         } else {
-          this.merge(target[prop], additional[prop], depth - 1, seen);
+          util.merge(target[prop], additional[prop], depth - 1, seen);
         }
       }
     }
@@ -957,7 +957,7 @@
    */
 
   parser.encodePacket = function (packet) {
-    var type = packets.indexOf(packet.type)
+    var type = indexOf(packets, packet.type)
       , id = packet.id || ''
       , endpoint = packet.endpoint || ''
       , ack = packet.ack
@@ -965,8 +965,8 @@
 
     switch (packet.type) {
       case 'error':
-        var reason = packet.reason ? reasons.indexOf(packet.reason) : ''
-          , adv = packet.advice ? advice.indexOf(packet.advice) : ''
+        var reason = packet.reason ? indexOf(packets, packet.reason) : ''
+          , adv = packet.advice ? indexOf(advice, packet.advice) : ''
 
         if (reason !== '' || adv !== '')
           data = reason + (adv !== '' ? ('+' + adv) : '')
