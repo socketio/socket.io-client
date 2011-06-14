@@ -892,7 +892,7 @@
       throw new SyntaxError('JSON.parse');
   };
 
-}('undefined' != typeof io ? io : module.exports, JSON));
+}('undefined' != typeof io ? io : module.exports, typeof JSON !== 'undefined' ? JSON : undefined));
 
 /**
  * socket.io
