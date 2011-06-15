@@ -2530,10 +2530,10 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
    * Expose constructor.
    */
 
-  exports['flashsocket'] = Flashsocket;
+  exports['flashsocket'] = FlashSocket;
 
   /**
-   * The Flashsocket transport. This is a API wrapper for the HTML5 WebSocket specification.
+   * The FlashSocket transport. This is a API wrapper for the HTML5 WebSocket specification.
    * It uses a .swf file to communicate with the server. If you want to serve the .swf file
    * from a other server than where the Socket.IO script is coming from you need to use the
    * insecure version of the .swf. More information about this can be found on the github page.
@@ -2543,27 +2543,27 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
    * @api public
    */
 
-  function Flashsocket () {
+  function FlashSocket () {
     io.Transport.websocket.apply(this, arguments);
     // The transport type, you use this to identify which transport was chosen.
-    this.name = 'websocket';
+    this.name = 'flashsocket';
   };
 
   /**
    * Inherits from XHR transport.
    */
 
-  io.util.inherit(Flashsocket, io.Transport.websocket);
+  io.util.inherit(FlashSocket, io.Transport.websocket);
   
   /**
-   * Disconnect the established `Flashsocket` connection. This is done by adding a new
-   * task to the Flashsocket. The rest will be handled off by the `WebSocket` transport.
+   * Disconnect the established `FlashSocket` connection. This is done by adding a new
+   * task to the FlashSocket. The rest will be handled off by the `WebSocket` transport.
    *
    * @returns {Transport}
    * @api public
    */
 
-  Flashsocket.prototype.connect = function(){
+  FlashSocket.prototype.connect = function(){
     var self = this, args = arguments;
     WebSocket.__addTask(function(){
       io.Transport.websocket.prototype.connect.apply(self, args);
@@ -2573,13 +2573,13 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   
   /**
    * Sends a message to the Socket.IO server. This is done by adding a new
-   * task to the Flashsocket. The rest will be handled off by the `WebSocket` transport.
+   * task to the FlashSocket. The rest will be handled off by the `WebSocket` transport.
    *
    * @returns {Transport}
    * @api public
    */
 
-  Flashsocket.prototype.send = function(){
+  FlashSocket.prototype.send = function(){
     var self = this, args = arguments;
     WebSocket.__addTask(function(){
       io.Transport.websocket.prototype.send.apply(self, args);
@@ -2588,7 +2588,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   };
   
   /**
-   * Check if the Flashsocket transport is supported as it requires that the Adobe Flash Player
+   * Check if the FlashSocket transport is supported as it requires that the Adobe Flash Player
    * plugin version `10.0.0` or greater is installed. And also check if the polyfill is correctly
    * loaded.
    *
@@ -2596,20 +2596,20 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
    * @api public
    */
 
-  Flashsocket.check = function(){
+  FlashSocket.check = function(){
     if (typeof WebSocket == 'undefined' || !('__addTask' in WebSocket) || !swfobject) return false;
     return swfobject.hasFlashPlayerVersion("10.0.0");
   };
   
   /**
-   * Check if the Flashsocket transport can be used as cross domain / cross origin transport.
+   * Check if the FlashSocket transport can be used as cross domain / cross origin transport.
    * Because we can't see which type (secure or insecure) of .swf is used we will just return true.
    *
    * @returns {Boolean}
    * @api public
    */
 
-  Flashsocket.xdomainCheck = function(){
+  FlashSocket.xdomainCheck = function(){
     return true;
   };
   
