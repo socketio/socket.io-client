@@ -71,7 +71,7 @@ var base = [
     , 'transports/flashsocket.js'
     ]
   , 'htmlfile': ['transports/xhr.js', 'transports/htmlfile.js']
-  , 'xhr-multipart': ['transports/xhr.js', 'transports/xhr-multipart.js']
+  //, 'xhr-multipart': ['transports/xhr.js', 'transports/xhr-multipart.js']
   , 'xhr-polling': ['transports/xhr.js', 'transports/xhr-polling.js']
   , 'jsonp-polling': ['transports/xhr.js', 'transports/jsonp-polling.js']
   };
