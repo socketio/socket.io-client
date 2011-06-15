@@ -1,4 +1,4 @@
-/*! Socket.IO.js build:0.7.0, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/** Socket.IO 0.7.0 - Built with build.js */
 
 /**
  * socket.io
@@ -55,6 +55,89 @@
    */
   io.sockets = {};
 
+  // if node
+
+  /**
+   * Expose constructors if in Node
+   */
+
+  if ('object' === typeof module && 'function' === typeof require) {
+
+    /**
+     * Expose utils
+     *
+     * @api private
+     */
+
+    io.util = require('./util').util;
+
+    /**
+     * Expose JSON.
+     *
+     * @api private
+     */
+
+    io.JSON = require('./json').JSON;
+
+    /**
+     * Expose parser.
+     *
+     * @api private
+     */
+
+    io.parser = require('./parser').parser;
+
+    /**
+     * Expose EventEmitter
+     *
+     * @api private
+     */
+
+    io.EventEmitter = process.EventEmitter;
+
+    /**
+     * Expose Transport
+     *
+     * @api public
+     */
+
+    io.Transport = require('./transport').Transport;
+
+    /**
+     * Expose all transports
+     */
+    
+    io.transports.forEach(function (t) {
+      //io.Transport[t] = require('./transports/node/' + t);
+    });
+
+    /**
+     * Expose Socket
+     *
+     * @api public
+     */
+
+    io.Socket = require('./socket').Socket;
+
+    /**
+     * Location of `dist/` directory.
+     *
+     * @api private
+     */
+
+    io.dist = __dirname + '/../dist';
+
+    /**
+     * Expose our build system which can generate
+     * socket.io files on the fly with different transports
+     *
+     * @api private
+     */
+
+    io.builder = require('../bin/builder');
+
+  }
+  // end node
 
   /**
    * Manages connections to hosts.
@@ -95,6 +178,7 @@
   };
 
 })('object' === typeof module ? module.exports : (window.io = {}));
+
 
 /**
  * socket.io
@@ -392,6 +476,7 @@
 
 })('undefined' != typeof window ? io : module.exports);
 
+
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -575,6 +660,7 @@
   , 'undefined' != typeof io ? io : module.parent.exports
 );
 
+
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -587,7 +673,7 @@
 
 (function (exports, nativeJSON) {
   "use strict";
-  
+
   // use native JSON if it's available
   if (nativeJSON && nativeJSON.parse){
     return exports.JSON = {
@@ -892,7 +978,11 @@
       throw new SyntaxError('JSON.parse');
   };
 
-}('undefined' != typeof io ? io : module.exports, typeof JSON !== 'undefined' ? JSON : undefined));
+})(
+    'undefined' != typeof io ? io : module.exports
+  , typeof JSON !== 'undefined' ? JSON : undefined
+);
+
 
 /**
  * socket.io
@@ -1158,6 +1248,7 @@
   , 'undefined' != typeof io ? io : module.parent.exports
 );
 
+
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -1358,788 +1449,6 @@
   , 'undefined' != typeof io ? io : module.parent.exports
 );
 
-/**
- * socket.io
- * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
- * MIT Licensed
- */
-
-(function (exports, io) {
-
-  /**
-   * Expose constructor.
-   */
-
-  exports.Socket = Socket;
-
-  /**
-   * Create a new `Socket.IO client` which can establish a persisent
-   * connection with a Socket.IO enabled server.
-   *
-   * @api public
-   */
-
-  function Socket (options) {
-    this.options = {
-        port: 80
-      , secure: false
-      , document: document
-      , resource: 'socket.io'
-      , transports: io.transports
-      , 'connect timeout': 10000
-      , 'try multiple transports': true
-      , 'reconnect': true
-      , 'reconnection delay': 500
-      , 'reopen delay': 3000
-      , 'max reconnection attempts': 10
-      , 'sync disconnect on unload': true
-      , 'auto connect': true
-    };
-
-    io.util.merge(this.options, options);
-
-    this.connected = false;
-    this.open = false;
-    this.connecting = false;
-    this.reconnecting = false;
-
-    if (this.options['sync disconnect on unload']) {
-      var self = this;
-
-      io.util.on(window, 'beforeunload', function () {
-        self.disconnect(true);
-      }, false);
-    }
-
-    if (this.options['auto connect']) {
-      this.connect();
-    }
-  };
-
-  /**
-   * Apply EventEmitter mixin.
-   */
-
-  io.util.mixin(Socket, io.EventEmitter);
-
-  /**
-   * Returns a namespace listener/emitter for this socket
-   *
-   * @api public
-   */
-
-  Socket.prototype.of = function (name) {
-    if (!this.namespaces) this.namespaces = {};
-    if (!this.namespaces[name]) {
-      this.namespaces[name] = new io.SocketNamespace(this, name);
-    }
-
-    return this.namespaces[name];
-  };
-
-  /**
-   * Performs the handshake
-   *
-   * @api private
-   */
-
-  function empty () { };
-
-  Socket.prototype.handshake = function (fn) {
-    var self = this;
-
-    function complete (data) {
-      if (data instanceof Error) {
-        self.onError(data.message);
-      } else {
-        fn.apply(null, data.split(':'));
-      }
-    };
-
-    var url = this.options.resource + '/' + io.protocol + '/?t=' + (+ new Date);
-
-    if (this.isXDomain()) {
-      var insertAt = document.getElementsByTagName('script')[0]
-        , script = document.createElement('SCRIPT');
-
-      script.src = url + '&jsonp=' + io.j.length;
-      insertAt.parentNode.insertBefore(script, insertAt);
-
-      io.j.push(function (data) {
-        complete(data);
-        script.parentNode.removeChild(script);
-      });
-    } else {
-      var xhr = io.util.request();
-
-      xhr.open('GET', url);
-      xhr.onreadystatechange = function () {
-        if (this.readyState == 4) {
-          this.onreadystatechange = empty;
-
-          if (this.status == 200) {
-            complete(this.responseText);
-          } else {
-            self.onError(this.responseText);
-          }
-        }
-      };
-      xhr.send(null);
-    }
-  };
-
-  /**
-   * Find an available transport based on the options supplied in the constructor.
-   *
-   * @api private
-   */
-
-  Socket.prototype.getTransport = function (override) {
-    var transports = override || this.transports, match;
-
-    for (var i = 0, transport; transport = transports[i]; i++) {
-      if (io.Transport[transport]
-        && io.Transport[transport].check()
-        && (!this.isXDomain() || io.Transport[transport].xdomainCheck())) {
-        return new io.Transport[transport](this, this.id);
-      }
-    }
-
-    return null;
-  };
-
-  /**
-   * Connects to the server.
-   *
-   * @param {Function} [fn] Callback.
-   * @returns {io.Socket}
-   * @api public
-   */
-
-  Socket.prototype.connect = function (fn) {
-    if (this.connecting) {
-      return this;
-    }
-
-    var self = this;
-
-    this.handshake(function (sid, close, heartbeat, transports) {
-      self.id = sid;
-      self.closeTimeout = close * 1000; // in ms
-      self.heartbeatTimeout = heartbeat * 1000; // in ms
-      self.transports = io.util.intersect(transports.split(','), self.options.transports);
-      self.transport = self.getTransport();
-
-      if (!self.transport) {
-        return;
-      }
-
-      self.connecting = true;
-      self.emit('connecting', self.transport.name);
-
-      self.transport.open();
-
-      if (self.options.connectTimeout) {
-        self.connectTimeoutTimer = setTimeout(function () {
-          if (!self.connected) {
-            if (self.options['try multiple transports']){
-              if (!self.remainingTransports) {
-                self.remainingTransports = self.transports.slice(0);
-              }
-
-              var transports = self.remainingTransports;
-
-              while (transports.length > 0 && transports.splice(0,1)[0] !=
-                self.transport.name) {}
-
-              if (transports.length) {
-                self.transport = self.getTransport(transports);
-                self.connect();
-              }
-            }
-
-            if (!self.remainingTransports || self.remainingTransports.length == 0) {
-              self.emit('connect_failed');
-            }
-          }
-
-          if(self.remainingTransports && self.remainingTransports.length == 0) {
-            delete self.remainingTransports;
-          }
-        }, self.options['connect timeout']);
-      }
-
-      if (fn && typeof fn == 'function') {
-        self.once('connect', fn);
-      }
-    });
-
-    return this;
-  };
-
-  /**
-   * Sends a message.
-   *
-   * @param {Mixed} data The data that needs to be send to the Socket.IO server.
-   * @returns {io.Socket}
-   * @api public
-   */
-
-  Socket.prototype.packet = function (data) {
-    this.transport.packet(data);
-    return this;
-  };
-
-  /**
-   * Disconnect the established connect.
-   *
-   * @returns {io.Socket}
-   * @api public
-   */
-
-  Socket.prototype.disconnect = function (sync) {
-    if (this.connected) {
-      if (this.open) {
-        this.of('').packet({ type: 'disconnect' });
-      }
-
-      // ensure disconnection
-      var xhr = io.util.request();
-      xhr.open('GET', this.resource + '/' + io.protocol + '/' + this.id);
-
-      if (sync) {
-        xhr.sync = true;
-      }
-
-      // handle disconnection immediately
-      this.onDisconnect();
-    }
-
-    return this;
-  };
-
-  /**
-   * Check if we need to use cross domain enabled transports. Cross domain would
-   * be a different port or different domain name.
-   *
-   * @returns {Boolean}
-   * @api private
-   */
-
-  Socket.prototype.isXDomain = function () {
-    var locPort = window.location.port || 80;
-    return this.options.host !== document.domain || this.options.port != locPort;
-  };
-
-  /**
-   * Called upon handshake.
-   *
-   * @api private
-   */
-
-  Socket.prototype.onConnect = function(){
-    this.connected = true;
-    this.connecting = false;
-    this.emit('connect');
-
-    for (var i in this.namespaces) {
-      this.of(i).$emit('connect');
-    }
-  };
-
-  /**
-   * Called when the transport opens
-   *
-   * @api private
-   */
-
-  Socket.prototype.onOpen = function () {
-    this.open = true;
-  };
-
-  /**
-   * Called when the transport closes.
-   *
-   * @api private
-   */
-
-  Socket.prototype.onClose = function () {
-    this.open = false;
-  };
-
-  /**
-   * Called when the transport first opens a connection
-   *
-   * @param text
-   */
-
-  Socket.prototype.onPacket = function (packet) {
-    this.of(packet.endpoint).onPacket(packet);
-  };
-
-  /**
-   * Handles an error.
-   *
-   * @api private
-   */
-
-  Socket.prototype.onError = function (err) {
-    this.emit('error', err);
-
-    for (var i in this.namespaces) {
-      this.of(i).$emit('error', err);
-    }
-  };
-
-  /**
-   * Called when the transport disconnects.
-   *
-   * @api private
-   */
-
-  Socket.prototype.onDisconnect = function (reason) {
-    var wasConnected = this.connected;
-
-    this.connected = false;
-    this.connecting = false;
-    this.open = false;
-
-    if (wasConnected) {
-      this.emit('disconnect');
-
-      this.transport.clearTimeouts();
-
-      for (var i in this.namespaces) {
-        this.of(i).$emit('disconnect', reason);
-      }
-
-      if (this.options.reconnect && !this.reconnecting) {
-        this.reconnect();
-      }
-    }
-  };
-
-  /**
-   * Called upon reconnection.
-   *
-   * @api private
-   */
-
-  Socket.prototype.reconnect = function () {
-    this.reconnecting = true;
-    this.reconnectionAttempts = 0;
-    this.reconnectionDelay = this.options['reconnection delay'];
-
-    var self = this
-      , maxAttempts = this.options['max reconnection attempts']
-      , tryMultiple = this.options['try multiple transports']
-
-    function reset () {
-      if (self.connected) {
-        self.emit('reconnect', self.transport.name, self.reconnectionAttempts);
-      }
-
-      self.removeListener('connect_failed', maybeReconnect);
-      self.removeListener('connect', maybeReconnect);
-
-      self.reconnecting = false;
-
-      delete self.reconnectionAttempts;
-      delete self.reconnectionDelay;
-      delete self.reconnectionTimer;
-      delete self.redoTransports;
-
-      self.options['try multiple transports'] = tryMultiple;
-    };
-
-    function maybeReconnect () {
-      if (!self.reconnecting) {
-        return;
-      }
-
-      if (self.connected) {
-        return reset();
-      };
-
-      if (self.connecting && self.reconnecting) {
-        return self.reconnectionTimer = setTimeout(maybeReconnect, 1000);
-      }
-
-      if (self.reconnectionAttempts++ >= maxAttempts) {
-        if (!self.redoTransports) {
-          self.on('connect_failed', maybeReconnect);
-          self.options['try multiple transports'] = true;
-          self.transport = self.getTransport();
-          self.redoTransports = true;
-          self.connect();
-        } else {
-          self.emit('reconnect_failed');
-          reset();
-        }
-      } else {
-        self.reconnectionDelay *= 2; // exponential back off
-        self.connect();
-        self.emit('reconnecting', self.reconnectionDelay, self.reconnectionAttempts);
-        self.reconnectionTimer = setTimeout(maybeReconnect, self.reconnectionDelay);
-      }
-    };
-
-    this.options['try multiple transports'] = false;
-    this.reconnectionTimer = setTimeout(maybeReconnect, this.reconnectionDelay);
-
-    this.on('connect', maybeReconnect);
-  };
-
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
-
-/**
- * socket.io
- * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
- * MIT Licensed
- */
-
-(function (exports, io) {
-
-  /**
-   * Expose constructor.
-   */
-
-  exports.SocketNamespace = SocketNamespace;
-
-  /**
-   * Socket namespace constructor.
-   *
-   * @constructor
-   * @api public
-   */
-
-  function SocketNamespace (socket, name) {
-    this.socket = socket;
-    this.name = name || '';
-    this.flags = {};
-    this.json = new Flag(this, 'json');
-    this.ackPackets = 0;
-    this.acks = {};
-  };
-
-  /**
-   * Apply EventEmitter mixin.
-   */
-
-  io.util.mixin(SocketNamespace, io.EventEmitter);
-
-  /**
-   * Copies emit since we override it
-   *
-   * @api private
-   */
-
-  SocketNamespace.prototype.$emit = io.EventEmitter.prototype.emit;
-
-  /**
-   * Sends a packet.
-   *
-   * @api private
-   */
-
-  SocketNamespace.prototype.packet = function (packet) {
-    packet.endpoint = this.name;
-    this.socket.packet(packet);
-    this.flags = {};
-    return this;
-  };
-
-  /**
-   * Sends a message
-   *
-   * @api public
-   */
-
-  SocketNamespace.prototype.send = function (data, fn) {
-    var packet = {
-        type: this.flags.json ? 'json' : 'message'
-      , data: data
-    };
-
-    if ('function' == typeof fn) {
-      packet.id = ++this.ackPackets;
-      packet.ack = fn.length ? 'data' : true;
-      this.acks[packet.id] = fn;
-    }
-
-    return this.packet(packet);
-  };
-
-  /**
-   * Emits an event
-   *
-   * @api public
-   */
-  
-  SocketNamespace.prototype.emit = function (name) {
-    var args = Array.prototype.slice.call(arguments, 1)
-      , lastArg = args[args.length - 1]
-      , packet = {
-            type: 'event'
-          , name: name
-        };
-
-    if ('function' == typeof lastArg) {
-      packet.id = ++this.ackPackets;
-      packet.ack = lastArg.length ? 'data' : true;
-      this.acks[packet.id] = lastArg;
-      args = args.slice(0, args.length - 1);
-    }
-
-    packet.args = args;
-
-    return this.packet(packet);
-  };
-
-  /**
-   * Handles a packet
-   *
-   * @api private
-   */
-
-  SocketNamespace.prototype.onPacket = function (packet) {
-    var dataAck = packet.ack == 'data'
-      , self = this;
-
-    function ack () {
-      self.packet({
-          type: 'ack'
-        , args: io.util.toArray(arguments)
-        , ackId: packet.id
-      });
-    };
-
-    switch (packet.type) {
-      case 'connect':
-      case 'disconnect':
-        this.$emit(packet.type);
-        break;
-
-      case 'message':
-      case 'json':
-        var params = ['message', packet.data];
-
-        if (dataAck)
-          params.push(ack);
-
-        this.emit.apply(socket, params);
-        break;
-
-      case 'event':
-        var params = [packet.name].concat(packet.args);
-
-        if (dataAck)
-          params.push(ack);
-
-        this.$emit.apply(this, params);
-        break;
-
-      case 'ack':
-        if (this.acks[packet.ackId]) {
-          this.acks[packet.ackId].apply(this, packet.args);
-        }
-    }
-  };
-
-  /**
-   * Flag interface.
-   *
-   * @api private
-   */
-
-  function Flag (nsp, name) {
-    this.namespace = nsp;
-    this.name = name;
-  };
-
-  /**
-   * Send a message
-   *
-   * @api public
-   */
-
-  Flag.prototype.send = function () {
-    this.namespace.flags[this.name] = true;
-    this.namespace.send.apply(this, arguments);
-  };
-
-  /**
-   * Emit an event
-   *
-   * @api public
-   */
-
-  Flag.prototype.emit = function () {
-    this.namespace.flags[this.name] = true;
-    this.namespace.emit.apply(this, arguments);
-  };
-
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
-
-/**
- * socket.io
- * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
- * MIT Licensed
- */
-
-(function (exports, io) {
-
-  /**
-   * Expose constructor.
-   */
-
-  exports.websocket = WS;
-
-  /**
-   * The WebSocket transport uses the HTML5 WebSocket API to establish an persistent
-   * connection with the Socket.IO server. This transport will also be inherited by the
-   * FlashSocket fallback as it provides a API compatible polyfill for the WebSockets.
-   *
-   * @constructor
-   * @extends {io.Transport}
-   * @api public
-   */
-
-  function WS (socket) {
-    io.Transport.apply(this, arguments);
-    // The transport type, you use this to identify which transport was chosen.
-    this.name = 'websocket';
-  };
-
-  /**
-   * Inherits from Transport.
-   */
-
-  io.util.inherit(WS, io.Transport);
-
-  /**
-   * Initializes a new `WebSocket` connection with the Socket.IO server. We attach
-   * all the appropriate listeners to handle the responses from the server.
-   *
-   * @returns {Transport}
-   * @api public
-   */
-
-  WS.prototype.open = function(){
-    this.websocket = new WebSocket(this.prepareUrl());
-
-    var self = this;
-    this.websocket.onopen = function () { self.onOpen(); };
-    this.websocket.onmessage = function (ev) { self.onData(ev.data); };
-    this.websocket.onclose = function () { self.onClose(); };
-    this.websocket.onerror = function (e) { self.onError(e); };
-
-    return this;
-  };
-  
-  /**
-   * Send a message to the Socket.IO server. The message will automatically be encoded
-   * in the correct message format.
-   *
-   * @returns {Transport}
-   * @api public
-   */
-
-  WS.prototype.send = function (data) {
-    this.websocket.send(data);
-    return this;
-  };
-
-  /**
-   * Disconnect the established `WebSocket` connection.
-   *
-   * @returns {Transport}
-   * @api public
-   */
-
-  WS.prototype.close = function(){
-    this.websocket.close();
-    return this;
-  };
-
-  /**
-   * Handle the errors that `WebSocket` might be giving when we
-   * are attempting to connect or send messages.
-   *
-   * @param {Error} e The error.
-   * @api private
-   */
-
-  WS.prototype.onError = function(e){
-    this.socket.onError(e);
-  };
-
-  /**
-   * Returns the appropriate scheme for the URI generation.
-   *
-   * @api private
-   */
-  WS.prototype.scheme = function(){
-    return (this.socket.options.secure ? 'wss' : 'ws');
-  };
-
-  /**
-   * Generates a connection url based on the Socket.IO URL Protocol.
-   * See <https://github.com/learnboost/socket.io-node/> for more details.
-   *
-   * @returns {String} Connection url
-   * @api private
-   */
-
-  var _prepareUrl = WS.prototype.prepareUrl;
-  WS.prototype.prepareUrl = function () {
-    return this.scheme() + '://'
-      + this.socket.options.host + ':' + this.socket.options.port
-      + '/' + _prepareUrl.call(this);
-    //return _prepareUrl.call(this).replace(/^https?/, this.scheme());
-  };
-
-  /**
-   * Checks if the browser has support for native `WebSockets` and that
-   * it's not the polyfill created for the FlashSocket transport.
-   *
-   * @return {Boolean}
-   * @api public
-   */
-
-  WS.check = function(){
-    return !! window.WebSocket;
-  };
-
-  /**
-   * Check if the `WebSocket` transport support cross domain communications.
-   *
-   * @returns {Boolean}
-   * @api public
-   */
-
-  WS.xdomainCheck = function(){
-    return true;
-  };
-
-  /**
-   * Add the transport to your public io.transports array.
-   *
-   * @api private
-   */
-
-  io.transports.push('websocket');
-
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
 
 /**
  * socket.io
@@ -2186,6 +1495,7 @@
 
   XHR.prototype.open = function () {
     this.get();
+    this.onOpen();
 
     // we need to make sure the request succeeds since we have no indication
     // whether the request opened or not until it succeeded.
@@ -2236,7 +1546,7 @@
    * @api private
    */
 
-  function empty () { console.error('OOPS, i got called for XHR!', this.readyState, this.status, this.responseText) };
+  function empty () { };
 
   XHR.prototype.post = function (data) {
     var self = this;
@@ -2363,178 +1673,6 @@
   , 'undefined' != typeof io ? io : module.parent.exports
 );
 
-/**
- * socket.io
- * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
- * MIT Licensed
- */
-
-(function (exports, io) {
-
-  /**
-   * Expose constructor.
-   */
-
-  exports.htmlfile = HTMLFile;
-
-  /**
-   * The HTMLFile transport creates a `forever iframe` based transport
-   * for Internet Explorer. Regular forever iframe implementations will 
-   * continuously trigger the browsers buzy indicators. If the forever iframe
-   * is created inside a `htmlfile` these indicators will not be trigged.
-   *
-   * @constructor
-   * @extends {io.Transport.XHR}
-   * @api public
-   */
-
-  function HTMLFile (socket) {
-    io.Transport.XHR.apply(this, arguments);
-    // The transport type, you use this to identify which transport was chosen.
-    this.name = 'htmlfile';
-  };
-
-  /**
-   * Inherits from XHR transport.
-   */
-
-  io.util.inherit(HTMLFile, io.Transport.XHR);
-
-  /**
-   * Starts the HTMLFile data stream for incoming messages. And registers a
-   * onunload event listener so the HTMLFile will be destroyed.
-   *
-   * @api private
-   */
-
-  HTMLFile.prototype.get = function () {
-    var self = this;
-
-    this.open();
-
-    window.attachEvent('onunload', function () {
-      self.destroy();
-    });
-  };
-
-  /**
-   * Creates a new ActiveX `htmlfile` with a forever loading iframe
-   * that can be used to listen to messages. Inside the generated
-   * `htmlfile` a reference will be made to the HTMLFile transport.
-   *
-   * @api private
-   */
-
-  HTMLFile.prototype.open = function () {
-    this.doc = new ActiveXObject('htmlfile');
-    this.doc.open();
-    this.doc.write('<html></html>');
-    this.doc.parentWindow.s = this;
-    this.doc.close();
-
-    var iframeC = this.doc.createElement('div');
-    iframeC.className = 'socketio';
-
-    this.doc.body.appendChild(iframeC);
-    this.iframe = this.doc.createElement('iframe');
-
-    iframeC.appendChild(this.iframe);
-
-    this.iframe.src = this.prepareUrl() + '/?t=' + (+ new Date);
-    this.onOpen();
-  };
-
-  /**
-   * The Socket.IO server will write script tags inside the forever
-   * iframe, this function will be used as callback for the incoming
-   * information.
-   *
-   * @param {String} data The message
-   * @param {document} doc Reference to the context
-   * @api private
-   */
-
-  HTMLFile.prototype._ = function (data, doc) {
-    this.onData(data);
-    var script = doc.getElementsByTagName('script')[0];
-    script.parentNode.removeChild(script);
-  };
-
-  /**
-   * Destroy the established connection, iframe and `htmlfile`.
-   * And calls the `CollectGarbage` function of Internet Explorer
-   * to release the memory.
-   *
-   * @api private
-   */
-
-  HTMLFile.prototype.destroy = function () {
-    if (this.iframe){
-      try {
-        this.iframe.src = 'about:blank';
-      } catch(e){}
-
-      this.doc = null;
-
-      CollectGarbage();
-    }
-  };
-
-  /**
-   * Disconnects the established connection.
-   *
-   * @returns {Transport} Chaining.
-   * @api public
-   */
-
-  HTMLFile.prototype.close = function () {
-    this.destroy();
-    return io.Transport.XHR.prototype.close.call(this);
-  };
-
-  /**
-   * Checks if the browser supports this transport. The browser
-   * must have an `ActiveXObject` implementation.
-   *
-   * @return {Boolean}
-   * @api public
-   */
-
-  HTMLFile.check = function () {
-    if ('ActiveXObject' in window){
-      try {
-        var a = new ActiveXObject('htmlfile');
-        return a && io.Transport.XHR.check();
-      } catch(e){}
-    }
-    return false;
-  };
-
-  /**
-   * Check if cross domain requests are supported.
-   *
-   * @returns {Boolean}
-   * @api public
-   */
-
-  HTMLFile.xdomainCheck = function () {
-    // we can probably do handling for sub-domains, we should
-    // test that it's cross domain but a subdomain here
-    return false;
-  };
-
-  /**
-   * Add the transport to your public io.transports array.
-   *
-   * @api private
-   */
-
-  io.transports.push('htmlfile');
-
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
 
 /**
  * socket.io
@@ -2594,22 +1732,19 @@
    * @api private
    */
 
-  function empty () { console.error('OOPS, i got called for XHRPolling!', this.readyState, this.status, this.responseText) };
+  function empty () {};
 
   XHRPolling.prototype.get = function () {
     var self = this;
 
     function stateChange () {
-console.log('STATECHANGE', this);
       if (this.readyState == 4) {
         this.onreadystatechange = this.onload = empty;
 
         if (this.status == 200) {
-console.error('200 --- ', this.responseText);
           self.onData(this.responseText);
           self.get();
         } else {
-console.error('!=200', this);
           self.onClose();
         }
       }
@@ -2639,6 +1774,7 @@ console.error('!=200', this);
     'undefined' != typeof io ? io.Transport : module.exports
   , 'undefined' != typeof io ? io : module.parent.exports
 );
+
 
 /**
  * socket.io
@@ -2840,3 +1976,983 @@ console.error('!=200', this);
     'undefined' != typeof io ? io.Transport : module.exports
   , 'undefined' != typeof io ? io : module.parent.exports
 );
+
+
+/**
+ * socket.io
+ * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
+ * MIT Licensed
+ */
+
+(function (exports, io) {
+
+  /**
+   * Expose constructor.
+   */
+
+  exports.websocket = WS;
+
+  /**
+   * The WebSocket transport uses the HTML5 WebSocket API to establish an persistent
+   * connection with the Socket.IO server. This transport will also be inherited by the
+   * FlashSocket fallback as it provides a API compatible polyfill for the WebSockets.
+   *
+   * @constructor
+   * @extends {io.Transport}
+   * @api public
+   */
+
+  function WS (socket) {
+    io.Transport.apply(this, arguments);
+    // The transport type, you use this to identify which transport was chosen.
+    this.name = 'websocket';
+  };
+
+  /**
+   * Inherits from Transport.
+   */
+
+  io.util.inherit(WS, io.Transport);
+
+  /**
+   * Initializes a new `WebSocket` connection with the Socket.IO server. We attach
+   * all the appropriate listeners to handle the responses from the server.
+   *
+   * @returns {Transport}
+   * @api public
+   */
+
+  WS.prototype.open = function(){
+    this.websocket = new WebSocket(this.prepareUrl());
+
+    var self = this;
+    this.websocket.onopen = function () { self.onOpen(); };
+    this.websocket.onmessage = function (ev) { self.onData(ev.data); };
+    this.websocket.onclose = function () { self.onClose(); };
+    this.websocket.onerror = function (e) { self.onError(e); };
+
+    return this;
+  };
+  
+  /**
+   * Send a message to the Socket.IO server. The message will automatically be encoded
+   * in the correct message format.
+   *
+   * @returns {Transport}
+   * @api public
+   */
+
+  WS.prototype.send = function (data) {
+    this.websocket.send(data);
+    return this;
+  };
+
+  /**
+   * Disconnect the established `WebSocket` connection.
+   *
+   * @returns {Transport}
+   * @api public
+   */
+
+  WS.prototype.close = function(){
+    this.websocket.close();
+    return this;
+  };
+
+  /**
+   * Handle the errors that `WebSocket` might be giving when we
+   * are attempting to connect or send messages.
+   *
+   * @param {Error} e The error.
+   * @api private
+   */
+
+  WS.prototype.onError = function(e){
+    this.socket.onError(e);
+  };
+
+  /**
+   * Returns the appropriate scheme for the URI generation.
+   *
+   * @api private
+   */
+  WS.prototype.scheme = function(){
+    return (this.socket.options.secure ? 'wss' : 'ws');
+  };
+
+  /**
+   * Generates a connection url based on the Socket.IO URL Protocol.
+   * See <https://github.com/learnboost/socket.io-node/> for more details.
+   *
+   * @returns {String} Connection url
+   * @api private
+   */
+
+  var _prepareUrl = WS.prototype.prepareUrl;
+  WS.prototype.prepareUrl = function () {
+    return this.scheme() + '://'
+      + this.socket.options.host + ':' + this.socket.options.port
+      + '/' + _prepareUrl.call(this);
+    //return _prepareUrl.call(this).replace(/^https?/, this.scheme());
+  };
+
+  /**
+   * Checks if the browser has support for native `WebSockets` and that
+   * it's not the polyfill created for the FlashSocket transport.
+   *
+   * @return {Boolean}
+   * @api public
+   */
+
+  WS.check = function(){
+    return !! window.WebSocket;
+  };
+
+  /**
+   * Check if the `WebSocket` transport support cross domain communications.
+   *
+   * @returns {Boolean}
+   * @api public
+   */
+
+  WS.xdomainCheck = function(){
+    return true;
+  };
+
+  /**
+   * Add the transport to your public io.transports array.
+   *
+   * @api private
+   */
+
+  io.transports.push('websocket');
+
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
+
+
+/**
+ * socket.io
+ * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
+ * MIT Licensed
+ */
+
+(function (exports, io) {
+
+  /**
+   * Expose constructor.
+   */
+
+  exports.htmlfile = HTMLFile;
+
+  /**
+   * The HTMLFile transport creates a `forever iframe` based transport
+   * for Internet Explorer. Regular forever iframe implementations will 
+   * continuously trigger the browsers buzy indicators. If the forever iframe
+   * is created inside a `htmlfile` these indicators will not be trigged.
+   *
+   * @constructor
+   * @extends {io.Transport.XHR}
+   * @api public
+   */
+
+  function HTMLFile (socket) {
+    io.Transport.XHR.apply(this, arguments);
+    // The transport type, you use this to identify which transport was chosen.
+    this.name = 'htmlfile';
+  };
+
+  /**
+   * Inherits from XHR transport.
+   */
+
+  io.util.inherit(HTMLFile, io.Transport.XHR);
+
+  /**
+   * Starts the HTMLFile data stream for incoming messages. And registers a
+   * onunload event listener so the HTMLFile will be destroyed.
+   *
+   * @api private
+   */
+
+  HTMLFile.prototype.get = function () {
+    var self = this;
+
+    this.open();
+
+    window.attachEvent('onunload', function () {
+      self.destroy();
+    });
+  };
+
+  /**
+   * Creates a new ActiveX `htmlfile` with a forever loading iframe
+   * that can be used to listen to messages. Inside the generated
+   * `htmlfile` a reference will be made to the HTMLFile transport.
+   *
+   * @api private
+   */
+
+  HTMLFile.prototype.open = function () {
+    this.doc = new ActiveXObject('htmlfile');
+    this.doc.open();
+    this.doc.write('<html></html>');
+    this.doc.parentWindow.s = this;
+console.log('PARENTWINDOW', this.doc.parentWindow);
+    this.doc.close();
+
+    var iframeC = this.doc.createElement('div');
+    iframeC.className = 'socketio';
+
+    this.doc.body.appendChild(iframeC);
+    this.iframe = this.doc.createElement('iframe');
+
+    iframeC.appendChild(this.iframe);
+
+    this.iframe.src = this.prepareUrl() + '/?t=' + (+ new Date);
+    this.onOpen();
+  };
+
+  /**
+   * The Socket.IO server will write script tags inside the forever
+   * iframe, this function will be used as callback for the incoming
+   * information.
+   *
+   * @param {String} data The message
+   * @param {document} doc Reference to the context
+   * @api private
+   */
+
+  HTMLFile.prototype._ = function (data, doc) {
+    this.onData(data);
+    var script = doc.getElementsByTagName('script')[0];
+    script.parentNode.removeChild(script);
+  };
+
+  /**
+   * Destroy the established connection, iframe and `htmlfile`.
+   * And calls the `CollectGarbage` function of Internet Explorer
+   * to release the memory.
+   *
+   * @api private
+   */
+
+  HTMLFile.prototype.destroy = function () {
+    if (this.iframe){
+      try {
+        this.iframe.src = 'about:blank';
+      } catch(e){}
+
+      this.doc = null;
+
+      CollectGarbage();
+    }
+  };
+
+  /**
+   * Disconnects the established connection.
+   *
+   * @returns {Transport} Chaining.
+   * @api public
+   */
+
+  HTMLFile.prototype.close = function () {
+    this.destroy();
+    return io.Transport.XHR.prototype.close.call(this);
+  };
+
+  /**
+   * Checks if the browser supports this transport. The browser
+   * must have an `ActiveXObject` implementation.
+   *
+   * @return {Boolean}
+   * @api public
+   */
+
+  HTMLFile.check = function () {
+    if ('ActiveXObject' in window){
+      try {
+        var a = new ActiveXObject('htmlfile');
+        return a && io.Transport.XHR.check();
+      } catch(e){}
+    }
+    return false;
+  };
+
+  /**
+   * Check if cross domain requests are supported.
+   *
+   * @returns {Boolean}
+   * @api public
+   */
+
+  HTMLFile.xdomainCheck = function () {
+    // we can probably do handling for sub-domains, we should
+    // test that it's cross domain but a subdomain here
+    return false;
+  };
+
+  /**
+   * Add the transport to your public io.transports array.
+   *
+   * @api private
+   */
+
+  io.transports.push('htmlfile');
+
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
+
+
+/**
+ * socket.io
+ * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
+ * MIT Licensed
+ */
+
+(function (exports, io) {
+
+  /**
+   * Expose constructor.
+   */
+
+  exports.SocketNamespace = SocketNamespace;
+
+  /**
+   * Socket namespace constructor.
+   *
+   * @constructor
+   * @api public
+   */
+
+  function SocketNamespace (socket, name) {
+    this.socket = socket;
+    this.name = name || '';
+    this.flags = {};
+    this.json = new Flag(this, 'json');
+    this.ackPackets = 0;
+    this.acks = {};
+  };
+
+  /**
+   * Apply EventEmitter mixin.
+   */
+
+  io.util.mixin(SocketNamespace, io.EventEmitter);
+
+  /**
+   * Copies emit since we override it
+   *
+   * @api private
+   */
+
+  SocketNamespace.prototype.$emit = io.EventEmitter.prototype.emit;
+
+  /**
+   * Sends a packet.
+   *
+   * @api private
+   */
+
+  SocketNamespace.prototype.packet = function (packet) {
+    packet.endpoint = this.name;
+    this.socket.packet(packet);
+    this.flags = {};
+    return this;
+  };
+
+  /**
+   * Sends a message
+   *
+   * @api public
+   */
+
+  SocketNamespace.prototype.send = function (data, fn) {
+    var packet = {
+        type: this.flags.json ? 'json' : 'message'
+      , data: data
+    };
+
+    if ('function' == typeof fn) {
+      packet.id = ++this.ackPackets;
+      packet.ack = fn.length ? 'data' : true;
+      this.acks[packet.id] = fn;
+    }
+
+    return this.packet(packet);
+  };
+
+  /**
+   * Emits an event
+   *
+   * @api public
+   */
+  
+  SocketNamespace.prototype.emit = function (name) {
+    var args = Array.prototype.slice.call(arguments, 1)
+      , lastArg = args[args.length - 1]
+      , packet = {
+            type: 'event'
+          , name: name
+        };
+
+    if ('function' == typeof lastArg) {
+      packet.id = ++this.ackPackets;
+      packet.ack = lastArg.length ? 'data' : true;
+      this.acks[packet.id] = lastArg;
+      args = args.slice(0, args.length - 1);
+    }
+
+    packet.args = args;
+
+    return this.packet(packet);
+  };
+
+  /**
+   * Handles a packet
+   *
+   * @api private
+   */
+
+  SocketNamespace.prototype.onPacket = function (packet) {
+    var dataAck = packet.ack == 'data'
+      , self = this;
+
+    function ack () {
+      self.packet({
+          type: 'ack'
+        , args: io.util.toArray(arguments)
+        , ackId: packet.id
+      });
+    };
+
+    switch (packet.type) {
+      case 'connect':
+      case 'disconnect':
+        this.$emit(packet.type);
+        break;
+
+      case 'message':
+      case 'json':
+        var params = ['message', packet.data];
+
+        if (dataAck)
+          params.push(ack);
+
+        this.emit.apply(socket, params);
+        break;
+
+      case 'event':
+        var params = [packet.name].concat(packet.args);
+
+        if (dataAck)
+          params.push(ack);
+
+        this.$emit.apply(this, params);
+        break;
+
+      case 'ack':
+        if (this.acks[packet.ackId]) {
+          this.acks[packet.ackId].apply(this, packet.args);
+        }
+    }
+  };
+
+  /**
+   * Flag interface.
+   *
+   * @api private
+   */
+
+  function Flag (nsp, name) {
+    this.namespace = nsp;
+    this.name = name;
+  };
+
+  /**
+   * Send a message
+   *
+   * @api public
+   */
+
+  Flag.prototype.send = function () {
+    this.namespace.flags[this.name] = true;
+    this.namespace.send.apply(this, arguments);
+  };
+
+  /**
+   * Emit an event
+   *
+   * @api public
+   */
+
+  Flag.prototype.emit = function () {
+    this.namespace.flags[this.name] = true;
+    this.namespace.emit.apply(this, arguments);
+  };
+
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
+
+
+/**
+ * socket.io
+ * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
+ * MIT Licensed
+ */
+
+(function (exports, io) {
+
+  /**
+   * Expose constructor.
+   */
+
+  exports.Socket = Socket;
+
+  /**
+   * Create a new `Socket.IO client` which can establish a persisent
+   * connection with a Socket.IO enabled server.
+   *
+   * @api public
+   */
+
+  function Socket (options) {
+    this.options = {
+        port: 80
+      , secure: false
+      , document: document
+      , resource: 'socket.io'
+      , transports: io.transports
+      , 'connect timeout': 10000
+      , 'try multiple transports': true
+      , 'reconnect': true
+      , 'reconnection delay': 500
+      , 'reopen delay': 3000
+      , 'max reconnection attempts': 10
+      , 'sync disconnect on unload': true
+      , 'auto connect': true
+    };
+
+    io.util.merge(this.options, options);
+
+    this.connected = false;
+    this.open = false;
+    this.connecting = false;
+    this.reconnecting = false;
+    this.namespaces = {};
+    this.buffer = [];
+
+    if (this.options['sync disconnect on unload']) {
+      var self = this;
+
+      io.util.on(window, 'beforeunload', function () {
+        self.disconnect(true);
+      }, false);
+    }
+
+    if (this.options['auto connect']) {
+      this.connect();
+    }
+  };
+
+  /**
+   * Apply EventEmitter mixin.
+   */
+
+  io.util.mixin(Socket, io.EventEmitter);
+
+  /**
+   * Returns a namespace listener/emitter for this socket
+   *
+   * @api public
+   */
+
+  Socket.prototype.of = function (name) {
+    if (!this.namespaces[name]) {
+      this.namespaces[name] = new io.SocketNamespace(this, name);
+
+      if (name !== '') {
+        this.namespaces[name].packet({ type: 'connect' });
+      }
+    }
+
+    return this.namespaces[name];
+  };
+
+  /**
+   * Performs the handshake
+   *
+   * @api private
+   */
+
+  function empty () { };
+
+  Socket.prototype.handshake = function (fn) {
+    var self = this;
+
+    function complete (data) {
+      if (data instanceof Error) {
+        self.onError(data.message);
+      } else {
+        fn.apply(null, data.split(':'));
+      }
+    };
+
+    var url = this.options.resource + '/' + io.protocol + '/?t=' + (+ new Date);
+
+    if (this.isXDomain()) {
+      var insertAt = document.getElementsByTagName('script')[0]
+        , script = document.createElement('SCRIPT');
+
+      script.src = url + '&jsonp=' + io.j.length;
+      insertAt.parentNode.insertBefore(script, insertAt);
+
+      io.j.push(function (data) {
+        complete(data);
+        script.parentNode.removeChild(script);
+      });
+    } else {
+      var xhr = io.util.request();
+
+      xhr.open('GET', url);
+      xhr.onreadystatechange = function () {
+        if (this.readyState == 4) {
+          this.onreadystatechange = empty;
+
+          if (this.status == 200) {
+            complete(this.responseText);
+          } else {
+            self.onError(this.responseText);
+          }
+        }
+      };
+      xhr.send(null);
+    }
+  };
+
+  /**
+   * Find an available transport based on the options supplied in the constructor.
+   *
+   * @api private
+   */
+
+  Socket.prototype.getTransport = function (override) {
+    var transports = override || this.transports, match;
+
+    for (var i = 0, transport; transport = transports[i]; i++) {
+      if (io.Transport[transport]
+        && io.Transport[transport].check()
+        && (!this.isXDomain() || io.Transport[transport].xdomainCheck())) {
+        return new io.Transport[transport](this, this.id);
+      }
+    }
+
+    return null;
+  };
+
+  /**
+   * Connects to the server.
+   *
+   * @param {Function} [fn] Callback.
+   * @returns {io.Socket}
+   * @api public
+   */
+
+  Socket.prototype.connect = function (fn) {
+    if (this.connecting) {
+      return this;
+    }
+
+    var self = this;
+
+    this.handshake(function (sid, close, heartbeat, transports) {
+      self.id = sid;
+      self.closeTimeout = close * 1000; // in ms
+      self.heartbeatTimeout = heartbeat * 1000; // in ms
+      self.transports = io.util.intersect(transports.split(','), self.options.transports);
+      self.transport = self.getTransport();
+
+      if (!self.transport) {
+        return;
+      }
+
+      self.connecting = true;
+      self.emit('connecting', self.transport.name);
+
+      self.transport.open();
+
+      if (self.options.connectTimeout) {
+        self.connectTimeoutTimer = setTimeout(function () {
+          if (!self.connected) {
+            if (self.options['try multiple transports']){
+              if (!self.remainingTransports) {
+                self.remainingTransports = self.transports.slice(0);
+              }
+
+              var transports = self.remainingTransports;
+
+              while (transports.length > 0 && transports.splice(0,1)[0] !=
+                self.transport.name) {}
+
+              if (transports.length) {
+                self.transport = self.getTransport(transports);
+                self.connect();
+              }
+            }
+
+            if (!self.remainingTransports || self.remainingTransports.length == 0) {
+              self.emit('connect_failed');
+            }
+          }
+
+          if(self.remainingTransports && self.remainingTransports.length == 0) {
+            delete self.remainingTransports;
+          }
+        }, self.options['connect timeout']);
+      }
+
+      if (fn && typeof fn == 'function') {
+        self.once('connect', fn);
+      }
+    });
+
+    return this;
+  };
+
+  /**
+   * Sends a message.
+   *
+   * @param {Mixed} data The data that needs to be send to the Socket.IO server.
+   * @returns {io.Socket}
+   * @api public
+   */
+
+  Socket.prototype.packet = function (data) {
+    if (this.open) {
+      this.transport.packet(data);
+    } else {
+      this.buffer.push(data);
+    }
+
+    return this;
+  };
+
+  /**
+   * Disconnect the established connect.
+   *
+   * @returns {io.Socket}
+   * @api public
+   */
+
+  Socket.prototype.disconnect = function (sync) {
+    if (this.connected) {
+      if (this.open) {
+        this.of('').packet({ type: 'disconnect' });
+      }
+
+      // ensure disconnection
+      var xhr = io.util.request();
+      xhr.open('GET', this.resource + '/' + io.protocol + '/' + this.id);
+
+      if (sync) {
+        xhr.sync = true;
+      }
+
+      // handle disconnection immediately
+      this.onDisconnect();
+    }
+
+    return this;
+  };
+
+  /**
+   * Check if we need to use cross domain enabled transports. Cross domain would
+   * be a different port or different domain name.
+   *
+   * @returns {Boolean}
+   * @api private
+   */
+
+  Socket.prototype.isXDomain = function () {
+    var locPort = window.location.port || 80;
+    return this.options.host !== document.domain || this.options.port != locPort;
+  };
+
+  /**
+   * Called upon handshake.
+   *
+   * @api private
+   */
+
+  Socket.prototype.onConnect = function(){
+    this.connected = true;
+    this.connecting = false;
+    this.emit('connect');
+
+    for (var i in this.namespaces) {
+      this.of(i).$emit('connect');
+    }
+  };
+
+  /**
+   * Called when the transport opens
+   *
+   * @api private
+   */
+
+  Socket.prototype.onOpen = function () {
+    this.open = true;
+
+    if (this.buffer.length) {
+      for (var i = 0, l = this.buffer.length; i < l; i++) {
+        this.packet(this.buffer[i]);
+      }
+
+      this.buffer = [];
+    }
+  };
+
+  /**
+   * Called when the transport closes.
+   *
+   * @api private
+   */
+
+  Socket.prototype.onClose = function () {
+    this.open = false;
+  };
+
+  /**
+   * Called when the transport first opens a connection
+   *
+   * @param text
+   */
+
+  Socket.prototype.onPacket = function (packet) {
+    this.of(packet.endpoint).onPacket(packet);
+  };
+
+  /**
+   * Handles an error.
+   *
+   * @api private
+   */
+
+  Socket.prototype.onError = function (err) {
+    this.emit('error', err);
+
+    for (var i in this.namespaces) {
+      this.of(i).$emit('error', err);
+    }
+  };
+
+  /**
+   * Called when the transport disconnects.
+   *
+   * @api private
+   */
+
+  Socket.prototype.onDisconnect = function (reason) {
+    var wasConnected = this.connected;
+
+    this.connected = false;
+    this.connecting = false;
+    this.open = false;
+
+    if (wasConnected) {
+      this.emit('disconnect');
+
+      this.transport.clearTimeouts();
+
+      for (var i in this.namespaces) {
+        this.of(i).$emit('disconnect', reason);
+      }
+
+      if (this.options.reconnect && !this.reconnecting) {
+        this.reconnect();
+      }
+    }
+  };
+
+  /**
+   * Called upon reconnection.
+   *
+   * @api private
+   */
+
+  Socket.prototype.reconnect = function () {
+    this.reconnecting = true;
+    this.reconnectionAttempts = 0;
+    this.reconnectionDelay = this.options['reconnection delay'];
+
+    var self = this
+      , maxAttempts = this.options['max reconnection attempts']
+      , tryMultiple = this.options['try multiple transports']
+
+    function reset () {
+      if (self.connected) {
+        self.emit('reconnect', self.transport.name, self.reconnectionAttempts);
+      }
+
+      self.removeListener('connect_failed', maybeReconnect);
+      self.removeListener('connect', maybeReconnect);
+
+      self.reconnecting = false;
+
+      delete self.reconnectionAttempts;
+      delete self.reconnectionDelay;
+      delete self.reconnectionTimer;
+      delete self.redoTransports;
+
+      self.options['try multiple transports'] = tryMultiple;
+    };
+
+    function maybeReconnect () {
+      if (!self.reconnecting) {
+        return;
+      }
+
+      if (self.connected) {
+        return reset();
+      };
+
+      if (self.connecting && self.reconnecting) {
+        return self.reconnectionTimer = setTimeout(maybeReconnect, 1000);
+      }
+
+      if (self.reconnectionAttempts++ >= maxAttempts) {
+        if (!self.redoTransports) {
+          self.on('connect_failed', maybeReconnect);
+          self.options['try multiple transports'] = true;
+          self.transport = self.getTransport();
+          self.redoTransports = true;
+          self.connect();
+        } else {
+          self.emit('reconnect_failed');
+          reset();
+        }
+      } else {
+        self.reconnectionDelay *= 2; // exponential back off
+        self.connect();
+        self.emit('reconnecting', self.reconnectionDelay, self.reconnectionAttempts);
+        self.reconnectionTimer = setTimeout(maybeReconnect, self.reconnectionDelay);
+      }
+    };
+
+    this.options['try multiple transports'] = false;
+    this.reconnectionTimer = setTimeout(maybeReconnect, this.reconnectionDelay);
+
+    this.on('connect', maybeReconnect);
+  };
+
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
+
