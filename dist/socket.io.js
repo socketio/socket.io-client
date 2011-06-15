@@ -2178,13 +2178,7 @@
    */
 
   HTMLFile.prototype.get = function () {
-    var self = this;
-
     this.open();
-
-    window.attachEvent('onunload', function () {
-      self.destroy();
-    });
   };
 
   /**
@@ -2196,6 +2190,10 @@
    */
 
   HTMLFile.prototype.open = function () {
+    var self = this;
+    window.onunload = function () {
+      self.destroy();
+    };
     this.doc = new ActiveXObject('htmlfile');
     this.doc.open();
     this.doc.write('<html></html>');
@@ -2240,10 +2238,12 @@
 
   HTMLFile.prototype.destroy = function () {
     if (this.iframe){
+      this.iframe.parentNode.removeChild(this.iframe);
       try {
         this.iframe.src = 'about:blank';
       } catch(e){}
 
+      this.iframe = null;
       this.doc = null;
 
       CollectGarbage();
@@ -2259,7 +2259,9 @@
 
   HTMLFile.prototype.close = function () {
     this.destroy();
-    return io.Transport.XHR.prototype.close.call(this);
+    //DVV: there's no XHR#close
+    //return io.Transport.XHR.prototype.close.call(this);
+    return this;
   };
 
   /**
