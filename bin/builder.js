@@ -64,16 +64,14 @@ var base = [
  
  var baseTransports = {
     'websocket': ['transports/websocket.js']
-   /* FIXME: re-enable me once we have flashsocket
   , 'flashsocket': [
       'transports/websocket.js'
     , 'vendor/web-socket-js/swfobject.js'
     , 'vendor/web-socket-js/web_socket.js'
     , 'transports/flashsocket.js'
-    ] */
+    ]
   , 'htmlfile': ['transports/xhr.js', 'transports/htmlfile.js']
-  /* FIXME: re-enable me once we have multi-part support
-  , 'xhr-multipart': ['transports/xhr.js', 'transports/xhr-multipart.js'] */
+  , 'xhr-multipart': ['transports/xhr.js', 'transports/xhr-multipart.js']
   , 'xhr-polling': ['transports/xhr.js', 'transports/xhr-polling.js']
   , 'jsonp-polling': ['transports/xhr.js', 'transports/jsonp-polling.js']
   };

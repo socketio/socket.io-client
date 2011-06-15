@@ -30,6 +30,7 @@ var fs = require('fs'),
     'transports/xhr-multipart.js',
     'transports/jsonp-polling.js',
     'transports/websocket.js',
+    'transports/flashsocket.js',
     'transports/htmlfile.js',
     'namespace.js',
 		'socket.js'
