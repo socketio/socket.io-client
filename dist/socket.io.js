@@ -2236,7 +2236,7 @@
    * @api private
    */
 
-  function empty () { };
+  function empty () { console.error('OOPS, i got called for XHR!', this.readyState, this.status, this.responseText) };
 
   XHR.prototype.post = function (data) {
     var self = this;
@@ -2594,19 +2594,22 @@
    * @api private
    */
 
-  function empty () {};
+  function empty () { console.error('OOPS, i got called for XHRPolling!', this.readyState, this.status, this.responseText) };
 
   XHRPolling.prototype.get = function () {
     var self = this;
 
     function stateChange () {
+console.log('STATECHANGE', this);
       if (this.readyState == 4) {
         this.onreadystatechange = this.onload = empty;
 
         if (this.status == 200) {
+console.error('200 --- ', this.responseText);
           self.onData(this.responseText);
           self.get();
         } else {
+console.error('!=200', this);
           self.onClose();
         }
       }
