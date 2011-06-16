@@ -1993,7 +1993,7 @@
 
   Flag.prototype.send = function () {
     this.namespace.flags[this.name] = true;
-    this.namespace.send.apply(this, arguments);
+    this.namespace.send.apply(this.namespace, arguments);
   };
 
   /**
@@ -2004,7 +2004,7 @@
 
   Flag.prototype.emit = function () {
     this.namespace.flags[this.name] = true;
-    this.namespace.emit.apply(this, arguments);
+    this.namespace.emit.apply(this.namespace, arguments);
   };
 
 })(
