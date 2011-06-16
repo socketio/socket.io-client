@@ -2,8 +2,7 @@
 ALL_TESTS = $(shell find test/ -name '*.test.js')
 
 run-tests:
-	@npm link > /dev/null
-	@./node_modules/.bin/expresso \
+	expresso \
 		-I lib \
 		-I support \
 		--serial \
@@ -15,4 +14,7 @@ test:
 build:
 	./bin/build
 
-.PHONY: test
+builder:
+	node ./bin/builder.js $(TRANSPORTS)
+
+.PHONY: test builder

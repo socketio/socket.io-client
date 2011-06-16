@@ -30,12 +30,14 @@
       var protocol = io.util.parseUri('http://google.com')
         , noprotocol = io.util.parseUri('google.com')
         , https = io.util.parseUri('https://google.com')
-        , path = io.util.parseUri('https://google.com/google.com/com/?foo=bar');
+        , path = io.util.parseUri('https://google.com/google.com/com/?foo=bar')
+        // DVV: N.B. we run tests from :3000, hence default port won't be :80
+        , port = typeof document !== 'undefined' ? document.location.port : null;
 
-      io.util.uniqueUri(protocol).should().eql('http://google.com:80');
-      io.util.uniqueUri(noprotocol).should().eql('http://google.com:80');
-      io.util.uniqueUri(https).should().eql('https://google.com:443');
-      io.util.uniqueUri(path).should().eql('https://google.com:443');
+      io.util.uniqueUri(protocol).should().eql('http://google.com:' + (port||80));
+      io.util.uniqueUri(noprotocol).should().eql('http://google.com:' + (port||80));
+      io.util.uniqueUri(https).should().eql('https://google.com:' + (port||443));
+      io.util.uniqueUri(path).should().eql('https://google.com:' + (port||443));
     },
 
     'request': function () {
