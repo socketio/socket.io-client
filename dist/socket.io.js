@@ -3215,7 +3215,8 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       form.action = this.prepareUrl() + '?t=' + (+new Date) + '&i=' + this.index;
       area.name = 'data';
       form.appendChild(area);
-      this.insertAt.parentNode.insertBefore(form, this.insertAt);
+      // FIXME: why two insertions?
+      ///this.insertAt.parentNode.insertBefore(form, this.insertAt);
       document.body.appendChild(form);
 
       this.form = form;
