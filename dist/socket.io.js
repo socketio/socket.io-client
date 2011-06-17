@@ -203,7 +203,12 @@
 
   var hasCORS = 'undefined' != typeof window && window.XMLHttpRequest &&
   (function () {
-    var a = new XMLHttpRequest();
+    try {
+      var a = new XMLHttpRequest();
+    } catch (e) {
+      return false;
+    }
+
     return a.withCredentials != undefined;
   })();
 
@@ -1415,6 +1420,7 @@
         self.disconnect(true);
       }, false);
     }
+
     if (this.options['auto connect']) {
       this.connect();
     }
@@ -1969,6 +1975,7 @@
       case 'ack':
         if (this.acks[packet.ackId]) {
           this.acks[packet.ackId].apply(this, packet.args);
+          delete this.acks[packet.ackId];
         }
     }
   };
@@ -2137,8 +2144,10 @@
    * @api public
    */
 
+  var nativeCode = /native code/;
+
   WS.check = function(){
-    return !! window.WebSocket;
+    return nativeCode.exec(window.WebSocket.toString());
   };
 
   /**
@@ -2680,8 +2689,8 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   };
 
   /**
-   * Check if we need to send data to the Socket.IO server, if we have data in our buffer
-   * we encode it and forward it to the `post` method.
+   * Check if we need to send data to the Socket.IO server, if we have data in our
+   * buffer we encode it and forward it to the `post` method.
    *
    * @api private
    */
@@ -2746,14 +2755,6 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       this.sendXHR.onload = stateChange;
     } else {
       this.sendXHR.onreadystatechange = stateChange;
-    }
-
-    if (this.xhr){
-      this.xhr.onreadystatechange = this.xhr.onload = empty;
-      try {
-        this.xhr.abort();
-      } catch(e){}
-      this.xhr = null;
     }
 
     this.sendXHR.send(data);
@@ -3103,8 +3104,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
           self.onData(this.responseText);
           self.get();
         } else {
-          self.get();
-//          self.onClose();
+          self.onClose();
         }
       }
     }
