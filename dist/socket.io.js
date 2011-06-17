@@ -2144,10 +2144,8 @@
    * @api public
    */
 
-  var nativeCode = /native code/;
-
   WS.check = function(){
-    return nativeCode.exec(window.WebSocket.toString());
+    return !! window.WebSocket;
   };
 
   /**
@@ -2738,7 +2736,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
     function stateChange () {
       if (this.readyState == 4) {
-        this.onreadystatechange = this.onload = empty;
+        this.onreadystatechange = empty;
         self.posting = false;
 
         if (this.status == 200){
@@ -2749,10 +2747,16 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       }
     }
 
+    function onload() {
+      this.onload = null;
+      self.posting = false;
+      self.checkSend();
+    }
+
     this.sendXHR = this.request('POST');
 
-    if (window.XDomainRequest && this.xhr instanceof XDomainRequest) {
-      this.sendXHR.onload = stateChange;
+    if (window.XDomainRequest && this.sendXHR instanceof XDomainRequest) {
+      this.sendXHR.onload = this.sendXHR.onerror = onload;
     } else {
       this.sendXHR.onreadystatechange = stateChange;
     }
@@ -2807,7 +2811,8 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
         req.setRequestHeader('Content-type', 'text/plain');
       } else {
         // XDomainRequest
-        req.contentType = 'text/plain';
+        // N.B. IE8 has only readable contentType
+        try { req.contentType = 'text/plain'; } catch(e) {}
       }
     }
 
@@ -3109,11 +3114,16 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       }
     }
 
+    function onload() {
+      this.onload = null;
+      this.responseText && self.onData(this.responseText);
+      self.get();
+    }
+
     this.xhr = this.request();
 
     if (window.XDomainRequest && this.xhr instanceof XDomainRequest) {
-      this.xhr.onload = stateChange;
-      this.xhr.onerror = function (e) { self.onError(e); };
+      this.xhr.onload = this.xhr.onerror = onload;
     } else {
       this.xhr.onreadystatechange = stateChange;
     }
