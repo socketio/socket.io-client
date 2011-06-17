@@ -1415,7 +1415,6 @@
         self.disconnect(true);
       }, false);
     }
-
     if (this.options['auto connect']) {
       this.connect();
     }
@@ -2749,6 +2748,14 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       this.sendXHR.onreadystatechange = stateChange;
     }
 
+    if (this.xhr){
+      this.xhr.onreadystatechange = this.xhr.onload = empty;
+      try {
+        this.xhr.abort();
+      } catch(e){}
+      this.xhr = null;
+    }
+
     this.sendXHR.send(data);
   };
 
@@ -3096,7 +3103,8 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
           self.onData(this.responseText);
           self.get();
         } else {
-          self.onClose();
+          self.get();
+//          self.onClose();
         }
       }
     }
