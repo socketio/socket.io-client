@@ -2728,15 +2728,13 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
    * @api private
    */
 
-  function empty () { };
-
   XHR.prototype.post = function (data) {
     var self = this;
     this.posting = true;
 
     function stateChange () {
       if (this.readyState == 4) {
-        this.onreadystatechange = empty;
+        this.onreadystatechange = null;
         self.posting = false;
 
         if (this.status == 200){
@@ -2772,7 +2770,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   XHR.prototype.onClose = function(){
     if (this.xhr){
-      this.xhr.onreadystatechange = this.xhr.onload = empty;
+      this.xhr.onreadystatechange = this.xhr.onload = null;
       try {
         this.xhr.abort();
       } catch(e){}
@@ -2780,7 +2778,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
     }
 
     if (this.sendXHR){
-      this.sendXHR.onreadystatechange = this.sendXHR.onload = empty;
+      this.sendXHR.onreadystatechange = this.sendXHR.onload = null;
       try {
         this.sendXHR.abort();
       } catch(e){}
@@ -3096,14 +3094,12 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
    * @api private
    */
 
-  function empty () {};
-
   XHRPolling.prototype.get = function () {
     var self = this;
 
     function stateChange () {
       if (this.readyState == 4) {
-        this.onreadystatechange = this.onload = empty;
+        this.onreadystatechange = null;
 
         if (this.status == 200) {
           self.onData(this.responseText);
