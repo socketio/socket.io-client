@@ -149,10 +149,6 @@ true
 
 ##### Methods:
   
-- *connect(λ)*
-
-  Establishes a connection. If λ is supplied as argument, it will be called once the connection is established.
-  
 - *send(message)*
   
   A string of data to send.
@@ -175,7 +171,7 @@ true
   
 ##### Events:
 
-- *connect*
+- *connection*
 
   Fired when the connection is established and the handshake successful.
   
@@ -183,6 +179,10 @@ true
 
     Fired when a connection is attempted, passing the transport name.
   
+- *connect*
+
+  Fired when we connected with the namespace end point
+
 - *connect_failed*
 
     Fired when the connection timeout occurs after the last connection attempt.
