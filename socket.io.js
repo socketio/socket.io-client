@@ -1200,7 +1200,7 @@ if (typeof window != 'undefined'){
     this.xhr = this.request(+ new Date, 'GET');
     this.xhr.onreadystatechange = function(){
       var status;
-      if (self.xhr.readyState == 4){
+      if (self.xhr && self.xhr.readyState == 4){
         self.xhr.onreadystatechange = empty;
         try { status = self.xhr.status; } catch(e){}
         if (status == 200){
