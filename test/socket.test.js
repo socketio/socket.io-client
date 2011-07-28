@@ -320,6 +320,52 @@
         socket.disconnect();
         next();
       });
+    },
+
+    'test reconnecting by simulating a 2 sec server death': function (next) {
+      var socket = create()
+        , connects = 0
+        , events = 0
+        , reconnect = 0
+        , reconnecting = 0;
+
+      function alive() {
+        if (++events === 4) {
+          socket.disconnect();
+          next();
+        }
+      }
+
+      socket
+      .on('connect', function () {
+        connects++;
+      })
+      .on('alive', alive)
+      .on('reconnect', function (transport, attempts) {
+        reconnect++;
+      })
+      .on('reconnecting', function (delay, attempts) {
+        reconnecting++;
+      })
+      .on('reconnect_failed', function () {
+        throw new Error('reconnect failed');
+      });
+
+      socket.of('/namespace')
+      .on('connect', function () {
+        connects++;
+      })
+      .on('also alive', alive)
+      .on('reconnect', function (transport, attempts) {
+        reconnect++;
+      })
+      .on('reconnecting', function (delay, attempts) {
+        reconnecting++;
+      })
+      .on('reconnect_failed', function () {
+        throw new Error('reconnect failed');
+      });
+
     }
 
   };

@@ -180,7 +180,7 @@ function test (testcase, fn) {
     if (testcase.length > 0) {
       var timer = setTimeout(function () {
         complete(new Error('Timeout'));
-      }, 2000);
+      }, 8000);
 
       testcase(complete);
     } else {

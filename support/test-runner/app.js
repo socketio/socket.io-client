@@ -131,6 +131,26 @@ function server (name, fn) {
 };
 
 /**
+ * Kills the current running server to test reconnect support on the client
+ */
+
+function reconnect (io, timeout, fn) {
+  var address = io.server.address();
+
+  io.server.close();
+
+  // restart the a server again on the same port
+  setTimeout(function () {
+    var io = sio.listen(address.port);
+    io.configure(function () {
+      io.set('transports', [transport]);
+    });
+
+    fn(io);
+  }, timeout);
+};
+
+/**
  * Socket.IO servers.
  */
 
@@ -261,4 +281,29 @@ suite('socket.test.js', function () {
     });
   });
 
+  server('test reconnecting by simulating a 2 sec server death', function (io) {
+    var connections = 2;
+
+    function arewedeadyet () {
+      if (--connections === 0) {
+        reconnect(io, 2000, setup);
+      }
+    }
+
+    function setup (io) {
+      io.set('heartbeat interval', .25);
+
+      io.sockets.on('connection', function (socket) {
+        socket.emit('alive');
+        arewedeadyet();
+      });
+
+      io.of('/namespace').on('connection', function (socket) {
+        socket.emit('also alive');
+        arewedeadyet();
+      });
+    }
+
+    setup(io);
+  })
 });
