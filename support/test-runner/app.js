@@ -292,6 +292,7 @@ suite('socket.test.js', function () {
 
     function setup (io) {
       io.set('heartbeat interval', .25);
+      io.set('close timeout', .1);
 
       io.sockets.on('connection', function (socket) {
         socket.emit('alive');
