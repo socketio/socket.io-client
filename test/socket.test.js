@@ -322,23 +322,76 @@
       });
     },
 
-    'test reconnecting by simulating a 2 sec server death': function (next) {
+  'test default reconnect': function (next) {
       var socket = create()
-        , connects = 0
+        , events = 0
+        , regular = 0
+        , reconnect = 0
+        , reconnecting = 0
+        , disconnect = 0;
+
+      socket
+      .on('connect', function () {
+        regular++;
+      })
+      .on('alive', function (msg) {
+        if (++events === 2) {
+          reconnect.should().eql(1);
+          disconnect.should().eql(1);
+          regular.should().eql(2);
+          socket.disconnect();
+          next();
+        }
+      })
+      .on('reconnect', function (transport, attempts) {
+        reconnect++;
+      })
+      .on('reconnecting', function (delay, attempt) {
+        attempt.should().eql(1);
+        delay.should()
+
+        reconnecting++;
+      })
+      .on('disconnect', function (reason) {
+        if (!disconnect) {
+          reason.should().eql('connection lost');
+        }
+
+        disconnect++;
+      })
+      .on('reconnect_failed', function () {
+        throw new Error('reconnect failed');
+      })
+      .on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+    }
+
+    /*'test reconnecting by simulating a 2 sec server death': function (next) {
+      var socket = create()
+        , regular = 0
         , events = 0
         , reconnect = 0
-        , reconnecting = 0;
+        , reconnecting = 0
+        , namespaces = 0;
 
       function alive() {
         if (++events === 4) {
           socket.disconnect();
+
+          console.log('regular:' + regular, 'namespaces:' + namespaces, 'reconnects:' + reconnect, reconnecting)
+          regular.should().eql(1);
+          namespaces.should().eql(1);
+          reconnects.should().eql(2);
+
           next();
         }
       }
 
       socket
       .on('connect', function () {
-        connects++;
+        regular++;
       })
       .on('alive', alive)
       .on('reconnect', function (transport, attempts) {
@@ -353,7 +406,7 @@
 
       socket.of('/namespace')
       .on('connect', function () {
-        connects++;
+        namespaces++;
       })
       .on('also alive', alive)
       .on('reconnect', function (transport, attempts) {
@@ -365,8 +418,7 @@
       .on('reconnect_failed', function () {
         throw new Error('reconnect failed');
       });
-
-    }
+    }*/
 
   };
 

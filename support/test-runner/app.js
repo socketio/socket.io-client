@@ -281,7 +281,29 @@ suite('socket.test.js', function () {
     });
   });
 
-  server('test reconnecting by simulating a 2 sec server death', function (io) {
+  server('test default reconnect', function (io) {
+    var connections = 1;
+
+    function arewedeadyet () {
+      if (--connections === 0) {
+        reconnect(io, 2000, setup);
+      }
+    }
+
+    function setup (io) {
+      io.set('heartbeat interval', .25);
+      io.set('close timeout', .25);
+
+      io.sockets.on('connection', function (socket) {
+        socket.emit('alive');
+        arewedeadyet();
+      });
+    }
+
+    setup(io);
+  });
+
+  /*server('test reconnecting by simulating a 2 sec server death', function (io) {
     var connections = 2;
 
     function arewedeadyet () {
@@ -292,7 +314,7 @@ suite('socket.test.js', function () {
 
     function setup (io) {
       io.set('heartbeat interval', .25);
-      io.set('close timeout', .1);
+      io.set('close timeout', .25);
 
       io.sockets.on('connection', function (socket) {
         socket.emit('alive');
@@ -306,5 +328,5 @@ suite('socket.test.js', function () {
     }
 
     setup(io);
-  })
+  })*/
 });
