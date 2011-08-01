@@ -26,7 +26,7 @@ var port = 3000;
  */
 
 var args = process.argv.slice(2)
-  , transport = args.length ? args[0] : 'xhr-polling';
+  , transport = args.length ? args : ['xhr-polling'];
 
 /**
  * A map of tests to socket.io ports we're listening on.
@@ -98,9 +98,9 @@ var io = sio.listen(app);
 
 io.configure(function () {
   io.set('browser client handler', handler);
-  io.set('transports', [
+  io.set('transports',
       transport
-  ]);
+  );
 });
 
 /**
@@ -123,7 +123,7 @@ function server (name, fn) {
 
   var io = sio.listen(port);
   io.configure(function () {
-    io.set('transports', [transport]);
+    io.set('transports', transport);
   });
 
   fn(io);
@@ -143,7 +143,7 @@ function reconnect (io, timeout, fn) {
   setTimeout(function () {
     var io = sio.listen(address.port);
     io.configure(function () {
-      io.set('transports', [transport]);
+      io.set('transports', transport);
     });
 
     fn(io);
@@ -297,7 +297,9 @@ suite('socket.test.js', function () {
       });
     });
   });
+});
 
+suite('reconnect.test.js', function () {
   server('test default reconnect', function (io) {
     var connections = 1;
 
@@ -319,6 +321,29 @@ suite('socket.test.js', function () {
 
     setup(io);
   });
+
+  server('test reconnect attempts different transports before it fails', function (io) {
+    var connections = 1;
+
+    function arewedeadyet () {
+      if (--connections === 0) {
+        reconnect(io, 3000, setup);
+      }
+    }
+
+    function setup (io) {
+      io.set('heartbeat interval', .25);
+      io.set('close timeout', .25);
+
+      io.sockets.on('connection', function (socket) {
+        socket.emit('alive');
+        arewedeadyet();
+      });
+    }
+
+    setup(io);
+
+  })
 
   /*server('test reconnecting by simulating a 2 sec server death', function (io) {
     var connections = 2;
@@ -346,4 +371,4 @@ suite('socket.test.js', function () {
 
     setup(io);
   })*/
-});
+})
