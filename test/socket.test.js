@@ -290,7 +290,7 @@
       })
     },
 
-    'test emmiting multiple events at once to the server': function (next) {
+    'test emitting multiple events at once to the server': function (next) {
       var socket = create();
 
       socket.on('connect', function () {
@@ -331,6 +331,43 @@
 
       socket.emit('tobi', 1, 2, function (a) {
         a.should().eql({ hello: 'world' });
+        socket.disconnect();
+        next();
+      });
+    },
+
+    'test encoding a payload': function (next) {
+      var socket = create('/woot');
+
+      socket.on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+      socket.on('connect', function () {
+        socket.socket.setBuffer(true);
+        socket.send('ñ');
+        socket.send('ñ');
+        socket.send('ñ');
+        socket.send('ñ');
+        socket.socket.setBuffer(false);
+      });
+
+      socket.on('done', function () {
+        socket.disconnect();
+        next();
+      });
+    },
+
+    'test sending query strings to the server': function (next) {
+      var socket = create('?foo=bar');
+
+      socket.on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+      socket.on('message', function (data) {
+        data.query.foo.should().eql('bar');
+
         socket.disconnect();
         next();
       });
