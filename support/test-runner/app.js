@@ -297,6 +297,26 @@ suite('socket.test.js', function () {
       });
     });
   });
+
+  server('test encoding a payload', function (io) {
+    io.of('/woot').on('connection', function (socket) {
+      var count = 0;
+
+      socket.on('message', function (a) {
+        if (a == 'ñ') {
+          if (++count == 4) {
+            socket.emit('done');
+          }
+        }
+      });
+    });
+  });
+
+  server('test sending query strings to the server', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.json.send(socket.handshake);
+    })
+  });
 });
 
 suite('reconnect.test.js', function () {
@@ -342,33 +362,5 @@ suite('reconnect.test.js', function () {
     }
 
     setup(io);
-
-  })
-
-  /*server('test reconnecting by simulating a 2 sec server death', function (io) {
-    var connections = 2;
-
-    function arewedeadyet () {
-      if (--connections === 0) {
-        reconnect(io, 2000, setup);
-      }
-    }
-
-    function setup (io) {
-      io.set('heartbeat interval', .25);
-      io.set('close timeout', .25);
-
-      io.sockets.on('connection', function (socket) {
-        socket.emit('alive');
-        arewedeadyet();
-      });
-
-      io.of('/namespace').on('connection', function (socket) {
-        socket.emit('also alive');
-        arewedeadyet();
-      });
-    }
-
-    setup(io);
-  })*/
-})
+  });
+});
