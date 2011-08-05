@@ -180,7 +180,7 @@ function test (testcase, fn) {
     if (testcase.length > 0) {
       var timer = setTimeout(function () {
         complete(new Error('Timeout'));
-      }, 2000);
+      }, 8000);
 
       testcase(complete);
     } else {
@@ -194,7 +194,7 @@ function test (testcase, fn) {
 
 // exposes a function to easily create a server for the current test
 
-function create (nsp) {
+function create (nsp, options) {
   if (!testsPorts[currentSuite]) {
     throw new Error('No socket server defined for suite "' + currentSuite + '"');
   }
@@ -207,5 +207,6 @@ function create (nsp) {
   return io.connect(
       document.location.protocol + '//' + document.location.hostname
     + ':' + testsPorts[currentSuite][currentCase] + (nsp || '')
+    , options || {}
   );
 };
