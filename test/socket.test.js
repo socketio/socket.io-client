@@ -357,6 +357,23 @@
         next();
       });
     },
+    
+    'test encoding some more or less exotic unicode': function (next) {
+      var socket = create('/woot');
+
+      socket.on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+      socket.on('connect', function () {
+        socket.emit('message', {"UH LA LA": "\ud83d\udc4d"});
+      });
+
+      socket.on('done', function () {
+        socket.disconnect();
+        next();
+      });
+    },
 
     'test sending query strings to the server': function (next) {
       var socket = create('?foo=bar');

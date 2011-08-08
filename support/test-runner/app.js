@@ -291,6 +291,16 @@ suite('socket.test.js', function () {
       });
     });
   });
+  
+  server('test encoding some more or less exotic unicode', function (io) {
+    io.of('/woot').on('connection', function (socket) {
+
+      socket.on('message', function (a) {
+        console.dir(a)
+        socket.emit('done');
+      });
+    });
+  });
 
   server('test sending query strings to the server', function (io) {
     io.sockets.on('connection', function (socket) {
