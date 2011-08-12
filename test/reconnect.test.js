@@ -12,88 +12,29 @@
   }
 
   module.exports = {
-
-  'test default reconnect': function (next) {
+    'test reconnect without close timeout': function (next) {
       var socket = create()
-        , events = 0
-        , regular = 0
-        , reconnect = 0
-        , reconnecting = 0
-        , disconnect = 0;
+        , reconnect;
 
-      socket
-      .on('connect', function () {
-        regular++;
-      })
-      .on('alive', function (msg) {
-        if (++events === 2) {
-          reconnect.should().eql(1);
-          disconnect.should().eql(1);
-          regular.should().eql(2);
+      // set reopen delay to 0, so we it goes it our reconnect fn
+      socket.socket.options['reopen delay'] = 0;
+
+      socket.on('connect', function () {
+        console.log('connecting')
+        if (reconnect && reconnect > 0) {
+          var difference = (+ new Date) - reconnect;
+
+          difference.should().be.below(socket.socket.closeTimeout);
           socket.disconnect();
           next();
+        } else {
+          socket.emit('simulate', {timeout: 2000});
         }
-      })
-      .on('reconnect', function (transport, attempts) {
-        reconnect++;
-      })
-      .on('reconnecting', function (delay, attempt) {
-        attempt.should().eql(1);
-        delay.should()
-
-        reconnecting++;
-      })
-      .on('disconnect', function (reason) {
-        if (!disconnect) {
-          reason.should().eql('connection lost');
-        }
-
-        disconnect++;
-      })
-      .on('reconnect_failed', function () {
-        throw new Error('reconnect failed');
-      })
-      .on('error', function (msg) {
-        throw new Error(msg || 'Received an error');
       });
-    },
 
-    'test reconnect attempts different transports before it fails': function (next) {
-      var socket = create(null, {'max reconnection attempts': 1 })
-        , events = 0
-        , recording = false
-        , transport;
-
-      socket
-        .on('alive', function (msg) {
-        if (++events === 2) {
-          socket.disconnect();
-          recording.should().be_true;
-          next();
-        }
-      })
-      .on('reconnecting', function (delay, attempt) {
-        if (attempt == 1) {
-          recording = true;
-        } 
-      })
-      .on('connecting', function (name) {
-        console.log('called', arguments)
-        if (recording) {
-          if (!transport) {
-            transport = name;
-            return;
-          }
-
-          name.should().not.eql(transport);
-          transport = name;
-        }
-      })
-      .on('reconnect_failed', function () {
-        throw new Error('reconnect failed');
-      })
-      .on('error', function (msg) {
-        throw new Error(msg || 'Received an error');
+      socket.on('reconnecting', function () {
+        console.log('pewpew')
+        if (!reconnect) reconnect = +new Date;
       });
     }
   };

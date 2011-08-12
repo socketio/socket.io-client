@@ -320,44 +320,15 @@ suite('socket.test.js', function () {
 });
 
 suite('reconnect.test.js', function () {
-  server('test default reconnect', function (io) {
-    var connections = 1;
-
-    function arewedeadyet () {
-      if (--connections === 0) {
-        reconnect(io, 2000, setup);
-      }
-    }
-
+  server('test reconnect without close timeout', function (io) {
     function setup (io) {
-      io.set('heartbeat interval', .25);
-      io.set('close timeout', .25);
-
       io.sockets.on('connection', function (socket) {
         socket.emit('alive');
-        arewedeadyet();
-      });
-    }
 
-    setup(io);
-  });
-
-  server('test reconnect attempts different transports before it fails', function (io) {
-    var connections = 1;
-
-    function arewedeadyet () {
-      if (--connections === 0) {
-        reconnect(io, 3000, setup);
-      }
-    }
-
-    function setup (io) {
-      io.set('heartbeat interval', .25);
-      io.set('close timeout', .25);
-
-      io.sockets.on('connection', function (socket) {
-        socket.emit('alive');
-        arewedeadyet();
+        socket.on('simulate', function (data) {
+          console.log(data, 'emulate')
+          reconnect(io, data.timeout || 2000, setup);
+        });
       });
     }
 
