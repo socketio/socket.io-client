@@ -1,4 +1,12 @@
 
+0.7.9 / 2011-08-12
+==================
+
+  * Added check on `Socket#onConnect` to prevent double `connect` events on the main manager.
+  * Fixed socket namespace connect test. Remove broken alternative namespace connect test.
+  * Removed test handler for removed test.
+  * Bumped version to match `socket.io` server.
+
 0.7.5 / 2011-08-08
 ==================
 
@@ -14,7 +22,7 @@
   * Fixed jsonp-polling over-buffering [3rd-Eden]
   * Fixed ascii preservation in minified socket.io client [3rd-Eden]
   * Fixed socket.io in situations where the page is not served through utf8.
-   Fixed namespaces not reconnecting after disconnect [3rd-Eden]
+  * Fixed namespaces not reconnecting after disconnect [3rd-Eden]
   * Fixed default port for secure connections.
 
 0.7.4 / 2011-07-12

@@ -1,4 +1,4 @@
-/*! Socket.IO.js build:0.7.5, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.7.9, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**
  * socket.io
@@ -22,7 +22,7 @@
    * @api public
    */
 
-  io.version = '0.7.5';
+  io.version = '0.7.9';
 
   /**
    * Protocol implemented.
@@ -1814,13 +1814,15 @@
    */
 
   Socket.prototype.onConnect = function () {
-    this.connected = true;
-    this.connecting = false;
-    if (!this.doBuffer) {
-      // make sure to flush the buffer
-      this.setBuffer(false);
+    if (!this.connected) {
+      this.connected = true;
+      this.connecting = false;
+      if (!this.doBuffer) {
+        // make sure to flush the buffer
+        this.setBuffer(false);
+      }
+      this.emit('connect');
     }
-    this.emit('connect');
   };
 
   /**
@@ -3082,7 +3084,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   XHR.prototype.request = function (method) {
     var req = io.util.request(this.socket.isXDomain())
-      , query = io.util.query(this.socket.options.query, + 't=' + +new Date);
+      , query = io.util.query(this.socket.options.query, 't=' + +new Date);
 
     req.open(method || 'GET', this.prepareUrl() + query, true);
 

@@ -410,23 +410,33 @@
    */
 
   Socket.prototype.onConnect = function () {
-    if (!this.connected) {
-      this.connected = true;
-      this.connecting = false;
+<<<<<<< HEAD
+    this.connected = true;
+    this.connecting = false;
 
-      if (!this.doBuffer) {
-        // make sure to flush the buffer
-        this.setBuffer(false);
-      }
-
-      this.emit('connect');
+    if (!this.doBuffer) {
+      // make sure to flush the buffer
+      this.setBuffer(false);
     }
+
+    this.emit('connect');
 
     this.each(function (namespace, name) {
       if ('' !== name) {
         namespace.connect();
       }
     });
+=======
+    if (!this.connected) {
+      this.connected = true;
+      this.connecting = false;
+      if (!this.doBuffer) {
+        // make sure to flush the buffer
+        this.setBuffer(false);
+      }
+      this.emit('connect');
+    }
+>>>>>>> bef84f2082f8b6247791ffac86b05fb247118a02
   };
 
   /**
