@@ -29,6 +29,30 @@ var args = process.argv.slice(2)
   , transport = args.length ? args : ['xhr-polling'];
 
 /**
+ * Test reconnect
+ */
+
+var reconnectTests = +process.env.RECONNECT == 1;
+
+/**
+ * Tests that should run
+ */
+
+var tests;
+if (reconnectTests) {
+  tests = ['reconnect.test.js'];
+} else {
+  tests = [
+      'io.test.js'
+    , 'parser.test.js'
+    , 'util.test.js'
+    , 'events.test.js'
+    , 'socket.test.js'
+    , 'reconnect.test.js'
+  ];
+}
+
+/**
  * A map of tests to socket.io ports we're listening on.
  */
 
@@ -53,6 +77,7 @@ app.get('/', function (req, res) {
   res.render('index', {
       layout: false
     , testsPorts: testsPorts
+    , tests: JSON.stringify(tests)
   });
 });
 
@@ -153,7 +178,7 @@ function reconnect (io, timeout, fn) {
 /**
  * Socket.IO servers.
  */
-
+if (!reconnectTests)
 suite('socket.test.js', function () {
 
   server('test connecting the socket and disconnecting', function (io) {
@@ -307,14 +332,16 @@ suite('socket.test.js', function () {
   });
 });
 
+if (reconnectTests)
 suite('reconnect.test.js', function () {
-  server('test reconnect without close timeout', function (io) {
+  server('test exponential backoff', function (io) {
     function setup (io) {
+      io.set('close timeout', .25);
+
       io.sockets.on('connection', function (socket) {
         socket.emit('alive');
 
         socket.on('simulate', function (data) {
-          console.log(data, 'emulate')
           reconnect(io, data.timeout || 2000, setup);
         });
       });
@@ -322,4 +349,41 @@ suite('reconnect.test.js', function () {
 
     setup(io);
   });
+
+  server('test connect event after reconnect', function (io) {
+    function setup (io) {
+      io.set('close timeout', .25);
+
+      io.sockets.on('connection', function (socket) {
+        socket.emit('alive');
+
+        socket.on('simulate', function (data) {
+          reconnect(io, data.timeout || 2000, setup);
+        });
+      });
+
+      io.of('/namespace').on('connection', function (socket) {
+        socket.emit('alive');
+      });
+    }
+
+    setup(io);
+  });
+
+  server('test reopen instead of reconnect', function (io) {
+    function setup (io) {
+      io.sockets.on('connection', function (socket) {
+        var pong = 0;
+        socket.emit('alive');
+
+        socket.on('ping', function () {
+          ++pong;
+          socket.send(pong);
+        });
+      });
+    }
+
+    setup(io);
+  });
+
 });
