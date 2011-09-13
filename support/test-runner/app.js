@@ -386,4 +386,24 @@ suite('reconnect.test.js', function () {
     setup(io);
   });
 
+  server('test sending newline', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.on('message', function (msg) {
+        if (msg == '\n') {
+          socket.emit('done');
+        }
+      });
+    });
+  });
+
+  server('test sending unicode', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.on('message', function (msg) {
+        if (msg.test == "\u2028") {
+          socket.emit('done');
+        }
+      });
+    });
+  });
+
 });

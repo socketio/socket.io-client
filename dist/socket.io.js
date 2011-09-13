@@ -1,4 +1,4 @@
-/*! Socket.IO.js build:0.7.9, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.8.2, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**
  * socket.io
@@ -22,7 +22,7 @@
    * @api public
    */
 
-  io.version = '0.7.9';
+  io.version = '0.8.2';
 
   /**
    * Protocol implemented.
@@ -1122,7 +1122,7 @@
    * @api private
    */
 
-  var regexp = /^([^:]+):([0-9]+)?(\+)?:([^:]+)?:?(.*)?$/;
+  var regexp = /([^:]+):([0-9]+)?(\+)?:([^:]+)?:?([\s\S]*)?/;
 
   parser.decodePacket = function (data) {
     var pieces = data.match(regexp);
@@ -1503,6 +1503,7 @@
       , 'max reconnection attempts': 10
       , 'sync disconnect on unload': true
       , 'auto connect': true
+      , 'flash policy port': 10843
     };
 
     io.util.merge(this.options, options);
@@ -1602,7 +1603,7 @@
 
     if (this.isXDomain()) {
       var insertAt = document.getElementsByTagName('script')[0]
-        , script = document.createElement('SCRIPT');
+        , script = document.createElement('script');
 
       script.src = url + '&jsonp=' + io.j.length;
       insertAt.parentNode.insertBefore(script, insertAt);
@@ -1675,6 +1676,8 @@
       );
 
       function connect (transports){
+        if (self.transport) self.transport.clearTimeouts();
+
         self.transport = self.getTransport(transports);
         if (!self.transport) return self.publish('connect_failed');
 
@@ -2276,12 +2279,17 @@
    */
 
   WS.prototype.open = function () {
-    var self = this
-      , query = io.util.query(this.socket.options.query);
+    var query = io.util.query(this.socket.options.query)
+      , self = this
+      , Socket
 
-    this.websocket = new WebSocket(this.prepareUrl() + query);
 
-    var self = this;
+    if (!Socket) {
+      Socket = window.MozWebSocket || window.WebSocket;
+    }
+
+    this.websocket = new Socket(this.prepareUrl() + query);
+
     this.websocket.onopen = function () {
       self.onOpen();
       self.socket.setBuffer(false);
@@ -2368,7 +2376,8 @@
    */
 
   WS.check = function () {
-    return 'WebSocket' in window && !('__addTask' in WebSocket);
+    return ('WebSocket' in window && !('__addTask' in WebSocket))
+          || 'MozWebSocket' in window;
   };
 
   /**
@@ -2389,7 +2398,6 @@
    */
 
   io.transports.push('websocket');
-
 
 })(
     'undefined' != typeof io ? io.Transport : module.exports
@@ -2441,7 +2449,7 @@
   Flashsocket.prototype.name = 'flashsocket';
 
   /**
-   *Disconnect the established `FlashSocket` connection. This is done by adding a 
+   * Disconnect the established `FlashSocket` connection. This is done by adding a 
    * new task to the FlashSocket. The rest will be handled off by the `WebSocket` 
    * transport.
    *
@@ -2502,6 +2510,7 @@
   Flashsocket.prototype.ready = function (socket, fn) {
     function init () {
       var options = socket.options
+        , port = options['flash policy port']
         , path = [
               'http' + (options.secure ? 's' : '') + ':/'
             , options.host + ':' + options.port
@@ -2516,6 +2525,10 @@
         if (typeof WEB_SOCKET_SWF_LOCATION === 'undefined') {
           // Set the correct file based on the XDomain settings
           WEB_SOCKET_SWF_LOCATION = path.join('/');
+        }
+
+        if (port !== 843) {
+          WebSocket.loadFlashPolicyFile('xmlsocket://' + options.host + ':' + port);
         }
 
         WebSocket.__initialize();
@@ -3543,8 +3556,8 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
         );
 
     if (!this.form) {
-      var form = document.createElement('FORM')
-        , area = document.createElement('TEXTAREA')
+      var form = document.createElement('form')
+        , area = document.createElement('textarea')
         , id = this.iframeId = 'socketio_iframe_' + this.index
         , iframe;
 
@@ -3619,7 +3632,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   JSONPPolling.prototype.get = function () {
     var self = this
-      , script = document.createElement('SCRIPT')
+      , script = document.createElement('script')
       , query = io.util.query(
              this.socket.options.query
           , 't='+ (+new Date) + '&i=' + this.index

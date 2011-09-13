@@ -1,4 +1,39 @@
 
+0.8.3 / 2011-09-03
+==================
+
+  * Fixed `\n` parsing for non-JSON packets.
+  * Fixed; make Socket.IO XHTML doctype compatible (fixes #460 from server)
+  * Fixed support for Node.JS running `socket.io-client`.
+  * Updated repository name in `package.json`.
+  * Added support for different policy file ports without having to port
+    forward 843 on the server side [3rd-Eden]
+
+0.8.2 / 2011-08-29
+==================
+
+  * Fixed flashsocket detection.
+
+0.8.1 / 2011-08-29
+==================
+
+  * Bump version.
+
+0.8.0 / 2011-08-28
+==================
+
+  * Added MozWebSocket support (hybi-10 doesn't require API changes) [einaros].
+
+0.7.11 / 2011-08-27
+===================
+
+  * Corrected previous release (missing build).
+
+0.7.10 / 2011-08-27
+===================
+
+  * Fix for failing fallback in websockets
+
 0.7.9 / 2011-08-12
 ==================
 
