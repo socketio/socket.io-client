@@ -168,7 +168,7 @@ var builder = module.exports = function () {
       if (error) return callback(error);
 
       // concatinate the file contents in order
-      var code = development
+      var code = ""
         , ignore = 0;
 
       files.forEach(function (file) {
@@ -205,6 +205,12 @@ var builder = module.exports = function () {
 
           return ret == 0;
         }).join('\n');
+
+        code = "\n(function() {\n" +
+          "var io = {};\n" +
+          "'object' === typeof module ? module.exports = io : window.io = io;\n" +
+          code +
+          "\n})();";
       }
 
       // check if we need to process it any further
@@ -221,6 +227,8 @@ var builder = module.exports = function () {
 
         // restore the code
         code = code.replace(new RegExp('('+ separator + ')', 'g'), '\\ufffd');
+      } else {
+        code = development + code
       }
 
       callback(error, code);

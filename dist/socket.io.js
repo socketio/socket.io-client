@@ -1,5 +1,9 @@
 /*! Socket.IO.js build:0.8.4, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
+(function() {
+var io = {};
+'object' === typeof module ? module.exports = io : window.io = io;
+
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -100,7 +104,7 @@
     return socket.of(uri.path.length > 1 ? uri.path : '');
   };
 
-})('object' === typeof module ? module.exports : (window.io = {}));
+})('object' === typeof module ? module.exports : io);
 
 /**
  * socket.io
@@ -3705,3 +3709,5 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
     'undefined' != typeof io ? io.Transport : module.exports
   , 'undefined' != typeof io ? io : module.parent.exports
 );
+
+})();
