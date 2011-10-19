@@ -206,7 +206,8 @@ var builder = module.exports = function () {
           return ret == 0;
         }).join('\n');
 
-        code = "\n(function() {\n" +
+        code = development + 
+          "\n(function() {\n" +
           "var io = {};\n" +
           "'object' === typeof module ? module.exports = io : window.io = io;\n" +
           code +
