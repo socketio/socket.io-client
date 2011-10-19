@@ -65,6 +65,7 @@ var testsPorts = {};
 app.configure(function () {
   app.use(stylus.middleware({ src: __dirname + '/public' }))
   app.use(express.static(__dirname + '/public'));
+  app.use('/test', express.static(__dirname + '/../../test'));
   app.set('views', __dirname);
   app.set('view engine', 'jade');
 });
@@ -79,14 +80,6 @@ app.get('/', function (req, res) {
     , testsPorts: testsPorts
     , tests: JSON.stringify(tests)
   });
-});
-
-/**
- * Sends test files.
- */
-
-app.get('/test/:file', function (req, res) {
-  res.sendfile(path.normalize(__dirname + '/../../test/' + req.params.file));
 });
 
 /**
@@ -400,6 +393,16 @@ suite('reconnect.test.js', function () {
     io.sockets.on('connection', function (socket) {
       socket.on('message', function (msg) {
         if (msg.test == "\u2028") {
+          socket.emit('done');
+        }
+      });
+    });
+  });
+
+  server('test webworker connection', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.on('message', function (msg) {
+        if (msg == 'woot') {
           socket.emit('done');
         }
       });

@@ -204,9 +204,10 @@ function create (nsp, options) {
       + '" and case "' + currentCase + '"');
   }
 
-  return io.connect(
-      document.location.protocol + '//' + document.location.hostname
-    + ':' + testsPorts[currentSuite][currentCase] + (nsp || '')
-    , options || {}
-  );
+  return io.connect(uri() + (nsp || ''));
 };
+
+function uri () {
+  return document.location.protocol + '//' + document.location.hostname
+      + ':' + testsPorts[currentSuite][currentCase];
+}
