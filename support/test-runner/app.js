@@ -48,7 +48,6 @@ if (reconnectTests) {
     , 'util.test.js'
     , 'events.test.js'
     , 'socket.test.js'
-    , 'reconnect.test.js'
   ];
 }
 
