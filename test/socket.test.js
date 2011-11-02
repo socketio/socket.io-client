@@ -349,12 +349,25 @@
         throw new Error(msg || 'Received an error');
       });
 
-      socket.json.send({ test: "\u2028" });
+      socket.json.send({ test: "☃" });
 
       socket.on('done', function () {
         socket.disconnect();
         next();
       });
+    },
+
+    'test webworker connection': function (next) {
+      if (!window.Worker) {
+        return next();
+      }
+
+      var worker = new Worker('/test/worker.js');
+      worker.postMessage(uri());
+      worker.onmessage = function (ev) {
+        if ('done!' == ev.data) return next();
+        throw new Error('Unexpected message: ' + ev.data);
+      }
     }
 
   };
