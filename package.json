@@ -3,7 +3,7 @@
   , "description": "Socket.IO client for the browser and node.js"
   , "version": "0.8.6"
   , "main" : "./lib/io.js"
-  , "browserify": "./dist/socket.io.js"
+  , "browserify": "./dist/browserify.js"
   , "homepage": "http://socket.io"
   , "keywords": ["websocket", "socket", "realtime", "socket.io", "comet", "ajax"]
   , "author": "Guillermo Rauch <guillermo@learnboost.com>"
