@@ -40,13 +40,13 @@
       });
 
       socket.on('message', function (i) {
-        String(++messages).should().equal(i);
+        String(++messages).should.equal(i);
       });
 
       socket.on('disconnect', function (reason) {
-        connected.should().be_true;
-        messages.should().equal(3);
-        reason.should().eql('booted');
+        connected.should.be_true;
+        messages.should.equal(3);
+        reason.should.eql('booted');
         next();
       });
     },
@@ -62,7 +62,7 @@
         socket.send('echo');
 
         socket.on('message', function (msg) {
-          msg.should().equal('echo');
+          msg.should.equal('echo');
           socket.disconnect();
           next();
         });
@@ -109,7 +109,7 @@
 
       function finish () {
         socket.of('').disconnect();
-        connect.should().equal(3);
+        connect.should.equal(3);
         next();
       }
 
@@ -120,7 +120,7 @@
       socket.of('/woot').on('connect', function () {
         connect++;
       }).on('message', function (msg) {
-        msg.should().equal('connected to woot');
+        msg.should.equal('connected to woot');
         --namespaces || finish();
       }).on('error', function (msg) {
         throw new Error(msg || 'Received an error');
@@ -129,7 +129,7 @@
       socket.of('/chat').on('connect', function () {
         connect++;
       }).on('message', function (msg) {
-        msg.should().equal('connected to chat');
+        msg.should.equal('connected to chat');
         --namespaces || finish();
       }).on('error', function (msg) {
         throw new Error(msg || 'Received an error');
@@ -196,7 +196,7 @@
       });
 
       socket.on('message', function (msg) {
-        msg.should().eql(3141592);
+        msg.should.eql(3141592);
         socket.disconnect();
         next();
       });
@@ -211,7 +211,7 @@
 
       socket.json.send([1, 2, 3]);
       socket.on('message', function (msg) {
-        msg.should().equal('echo');
+        msg.should.equal('echo');
         socket.disconnect();
         next();
       });
@@ -266,7 +266,7 @@
       });
 
       socket.on('woot', function (a, fn) {
-        a.should().eql(1);
+        a.should.eql(1);
         fn('test');
 
         socket.on('done', function () {
@@ -284,7 +284,7 @@
       });
 
       socket.emit('tobi', 1, 2, function (a) {
-        a.should().eql({ hello: 'world' });
+        a.should.eql({ hello: 'world' });
         socket.disconnect();
         next();
       });
@@ -320,7 +320,7 @@
       });
 
       socket.on('message', function (data) {
-        data.query.foo.should().eql('bar');
+        data.query.foo.should.eql('bar');
 
         socket.disconnect();
         next();
