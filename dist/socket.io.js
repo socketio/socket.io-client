@@ -1124,7 +1124,7 @@
 
     if (!pieces) return {};
 
-    var id = pieces[2] || ''
+    var id = parseInt(pieces[2]) || ''
       , data = pieces[5] || ''
       , packet = {
             type: packets[pieces[1]]
