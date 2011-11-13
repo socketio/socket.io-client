@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -26,30 +25,7 @@ var port = 3000;
  */
 
 var args = process.argv.slice(2)
-  , transport = args.length ? args : ['xhr-polling'];
-
-/**
- * Test reconnect
- */
-
-var reconnectTests = +process.env.RECONNECT == 1;
-
-/**
- * Tests that should run
- */
-
-var tests;
-if (reconnectTests) {
-  tests = ['reconnect.test.js'];
-} else {
-  tests = [
-      'io.test.js'
-    , 'parser.test.js'
-    , 'util.test.js'
-    , 'events.test.js'
-    , 'socket.test.js'
-  ];
-}
+  , transport = args.length ? args[0] : 'xhr-polling';
 
 /**
  * A map of tests to socket.io ports we're listening on.
@@ -77,7 +53,6 @@ app.get('/', function (req, res) {
   res.render('index', {
       layout: false
     , testsPorts: testsPorts
-    , tests: JSON.stringify(tests)
   });
 });
 
@@ -115,9 +90,9 @@ var io = sio.listen(app);
 
 io.configure(function () {
   io.set('browser client handler', handler);
-  io.set('transports',
+  io.set('transports', [
       transport
-  );
+  ]);
 });
 
 /**
@@ -140,7 +115,7 @@ function server (name, fn) {
 
   var io = sio.listen(port);
   io.configure(function () {
-    io.set('transports', transport);
+    io.set('transports', [transport]);
   });
 
   fn(io);
@@ -148,29 +123,9 @@ function server (name, fn) {
 };
 
 /**
- * Kills the current running server to test reconnect support on the client
- */
-
-function reconnect (io, timeout, fn) {
-  var address = io.server.address();
-
-  io.server.close();
-
-  // restart the a server again on the same port
-  setTimeout(function () {
-    var io = sio.listen(address.port);
-    io.configure(function () {
-      io.set('transports', transport);
-    });
-
-    fn(io);
-  }, timeout);
-};
-
-/**
  * Socket.IO servers.
  */
-if (!reconnectTests)
+
 suite('socket.test.js', function () {
 
   server('test connecting the socket and disconnecting', function (io) {
@@ -321,61 +276,6 @@ suite('socket.test.js', function () {
     io.sockets.on('connection', function (socket) {
       socket.json.send(socket.handshake);
     })
-  });
-});
-
-if (reconnectTests)
-suite('reconnect.test.js', function () {
-  server('test exponential backoff', function (io) {
-    function setup (io) {
-      io.set('close timeout', .25);
-
-      io.sockets.on('connection', function (socket) {
-        socket.emit('alive');
-
-        socket.on('simulate', function (data) {
-          reconnect(io, data.timeout || 2000, setup);
-        });
-      });
-    }
-
-    setup(io);
-  });
-
-  server('test connect event after reconnect', function (io) {
-    function setup (io) {
-      io.set('close timeout', .25);
-
-      io.sockets.on('connection', function (socket) {
-        socket.emit('alive');
-
-        socket.on('simulate', function (data) {
-          reconnect(io, data.timeout || 2000, setup);
-        });
-      });
-
-      io.of('/namespace').on('connection', function (socket) {
-        socket.emit('alive');
-      });
-    }
-
-    setup(io);
-  });
-
-  server('test reopen instead of reconnect', function (io) {
-    function setup (io) {
-      io.sockets.on('connection', function (socket) {
-        var pong = 0;
-        socket.emit('alive');
-
-        socket.on('ping', function () {
-          ++pong;
-          socket.send(pong);
-        });
-      });
-    }
-
-    setup(io);
   });
 
   server('test sending newline', function (io) {
