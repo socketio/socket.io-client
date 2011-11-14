@@ -13,9 +13,6 @@ test:
 test-acceptance:
 	@node support/test-runner/app $(TRANSPORT)
 
-test-reconnect:
-	@$(MAKE) RECONNECT="1" test-acceptance
-
 build:
 	@node ./bin/builder.js
 
