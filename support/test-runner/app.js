@@ -306,7 +306,7 @@ suite('socket.test.js', function () {
             socket.disconnect();
           }, 500);
         }*/
-      }, 300);
+      }, 8000);
     });
   });
 

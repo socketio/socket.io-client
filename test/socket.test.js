@@ -12,7 +12,7 @@
   }
 
   module.exports = {
-
+/*
     'test connecting the socket and disconnecting': function (next) {
       var socket = create();
 
@@ -388,7 +388,48 @@
         socket.disconnect();
         next();
       });
-    }
+    },*/
+    
+    'test receiving messages on many sockets': function (next) {
+      var createClient = function(nsp) {
+        var connected = false
+          , messages = 0
+          , socket;
+
+        socket = io.connect(
+              document.location.protocol + '//' + document.location.hostname
+            + ':' + testsPorts[currentSuite][currentCase] + '/' + (nsp || ''),
+            {'force new connection': true}
+          );
+
+        socket.on('error', function (msg) {
+          throw new Error(msg || 'Received an error');
+        });
+
+        socket.on('connect', function () {
+          connected = true;
+        });
+
+        socket.on('message', function (i) {
+          //String(++messages).should().equal(i);
+        });
+
+        socket.on('disconnect', function (reason) {
+          connected.should().be_true;
+          messages.should().equal(3);
+          reason.should().eql('booted');
+          next();
+        });
+      }
+
+      var createClientAtRandomTime = function(nsp) {
+        setTimeout(function() {
+          createClient(nsp);
+        }, 200*Math.random());
+      }
+
+      for(var i=0; 1>i; i++) { createClientAtRandomTime(i); }
+    },
   };
 
 })(
