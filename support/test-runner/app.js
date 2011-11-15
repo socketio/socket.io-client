@@ -41,6 +41,7 @@ var testsPorts = {};
 app.configure(function () {
   app.use(stylus.middleware({ src: __dirname + '/public' }))
   app.use(express.static(__dirname + '/public'));
+  app.use('/test', express.static(__dirname + '/../../test'));
   app.set('views', __dirname);
   app.set('view engine', 'jade');
 });
@@ -54,14 +55,6 @@ app.get('/', function (req, res) {
       layout: false
     , testsPorts: testsPorts
   });
-});
-
-/**
- * Sends test files.
- */
-
-app.get('/test/:file', function (req, res) {
-  res.sendfile(path.normalize(__dirname + '/../../test/' + req.params.file));
 });
 
 /**
@@ -186,18 +179,6 @@ suite('socket.test.js', function () {
     });
   });
 
-  server('test different namespace connection methods', function (io) {
-    io.of('/a').on('connection', function (socket) {
-      socket.send('a');
-    });
-    io.of('/b').on('connection', function (socket) {
-      socket.send('b');
-    });
-    io.of('/c').on('connection', function (socket) {
-      socket.send('c');
-    });
-  });
-
   server('test disconnecting from namespaces', function (io) {
     io.of('/a').on('connection', function (socket) {});
     io.of('/b').on('connection', function (socket) {});
@@ -306,6 +287,36 @@ suite('socket.test.js', function () {
     io.sockets.on('connection', function (socket) {
       socket.json.send(socket.handshake);
     })
+  });
+
+  server('test sending newline', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.on('message', function (msg) {
+        if (msg == '\n') {
+          socket.emit('done');
+        }
+      });
+    });
+  });
+
+  server('test sending unicode', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.on('message', function (msg) {
+        if (msg.test == "☃") {
+          socket.emit('done');
+        }
+      });
+    });
+  });
+
+  server('test webworker connection', function (io) {
+    io.sockets.on('connection', function (socket) {
+      socket.on('message', function (msg) {
+        if (msg == 'woot') {
+          socket.emit('done');
+        }
+      });
+    });
   });
 
 });

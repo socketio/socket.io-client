@@ -1,4 +1,82 @@
 
+0.8.7 / 2011-11-05
+==================
+
+  * Bumped client
+
+0.8.6 / 2011-10-27 
+==================
+
+  * Added WebWorker support.
+  * Fixed swfobject and web_socket.js to not assume window.
+  * Fixed CORS detection for webworker.
+  * Fix `defer` for webkit in a webworker.
+  * Fixed io.util.request to not rely on window.
+  * FIxed; use global instead of window and dont rely on document.
+  * Fixed; JSON-P handshake if CORS is not available.
+  * Made underlying Transport disconnection trigger immediate socket.io disconnect.
+  * Fixed warning when compressing with Google Closure Compiler.
+  * Fixed builder's uglify utf-8 support.
+  * Added workaround for loading indicator in FF jsonp-polling. [3rd-Eden]
+  * Fixed host discovery lookup. [holic]
+  * Fixed close timeout when disconnected/reconnecting. [jscharlach]
+  * Fixed jsonp-polling feature detection.
+  * Fixed jsonp-polling client POSTing of \n.
+  * Fixed test runner on IE6/7
+
+0.8.5 / 2011-10-07
+==================
+
+  * Bumped client
+
+0.8.4 / 2011-09-06
+==================
+
+  * Corrected build
+
+0.8.3 / 2011-09-03
+==================
+
+  * Fixed `\n` parsing for non-JSON packets.
+  * Fixed; make Socket.IO XHTML doctype compatible (fixes #460 from server)
+  * Fixed support for Node.JS running `socket.io-client`.
+  * Updated repository name in `package.json`.
+  * Added support for different policy file ports without having to port
+    forward 843 on the server side [3rd-Eden]
+
+0.8.2 / 2011-08-29
+==================
+
+  * Fixed flashsocket detection.
+
+0.8.1 / 2011-08-29
+==================
+
+  * Bump version.
+
+0.8.0 / 2011-08-28
+==================
+
+  * Added MozWebSocket support (hybi-10 doesn't require API changes) [einaros].
+
+0.7.11 / 2011-08-27
+===================
+
+  * Corrected previous release (missing build).
+
+0.7.10 / 2011-08-27
+===================
+
+  * Fix for failing fallback in websockets
+
+0.7.9 / 2011-08-12
+==================
+
+  * Added check on `Socket#onConnect` to prevent double `connect` events on the main manager.
+  * Fixed socket namespace connect test. Remove broken alternative namespace connect test.
+  * Removed test handler for removed test.
+  * Bumped version to match `socket.io` server.
+
 0.7.5 / 2011-08-08
 ==================
 
@@ -14,7 +92,7 @@
   * Fixed jsonp-polling over-buffering [3rd-Eden]
   * Fixed ascii preservation in minified socket.io client [3rd-Eden]
   * Fixed socket.io in situations where the page is not served through utf8.
-   Fixed namespaces not reconnecting after disconnect [3rd-Eden]
+  * Fixed namespaces not reconnecting after disconnect [3rd-Eden]
   * Fixed default port for secure connections.
 
 0.7.4 / 2011-07-12
