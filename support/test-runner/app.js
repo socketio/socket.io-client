@@ -290,24 +290,26 @@ suite('socket.test.js', function () {
   });
   
   server('test receiving messages on many sockets', function (io) {
-    io.sockets.on('connection', function (socket) {
-      console.log("on-connection!!!!!!")
-      var messages = 0;
-      var interval = setInterval(function () {
-        var str = '';
-        for(var i=0; 40>i; i++) {
-          str += Math.random()+'';
-        }
-        socket.send(str);
-
-        /*if (messages == 3) {
-          clearInterval(interval);
-          setTimeout(function () {
-            socket.disconnect();
-          }, 500);
-        }*/
-      }, 8000);
-    });
+    io.of('/api')
+      .authorization(function (handshake, callback) {
+        return callback(null, 22)
+      })
+      .on('connection', function (channel) {
+        channel.on('start', function(callback) {
+          console.log("on-connection!!!!!!")
+          var messages = 0;
+          var interval = setInterval(function () {
+            var str = '';
+            for(var i=0; 40>i; i++) {
+              str += Math.random()+'';
+            }
+            for(var i=0; 900000>i; i++) {
+              // Do something busy
+            }
+            callback(str);
+          }, 30000);
+        });
+      });
   });
 
   server('test sending newline', function (io) {
