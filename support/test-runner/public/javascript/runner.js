@@ -1,6 +1,6 @@
 // useful globals
 
-var currentSuite, currentCase, testsList;
+var currentSuite, currentCase, testsList, testDisableTimeout = false;
 
 // loads common.js module
 function load (test, fn) {
@@ -180,6 +180,7 @@ function test (testcase, fn) {
   try {
     if (testcase.length > 0) {
       var timer = setTimeout(function () {
+        if(testDisableTimeout) { return; }
         complete(new Error('Timeout'));
       }, 8000);
 
