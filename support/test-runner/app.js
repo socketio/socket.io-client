@@ -288,27 +288,6 @@ suite('socket.test.js', function () {
       socket.json.send(socket.handshake);
     })
   });
-  
-  server('test receiving messages on many sockets', function (io) {
-    io.sockets.on('connection', function (socket) {
-      console.log("on-connection!!!!!!")
-      var messages = 0;
-      var interval = setInterval(function () {
-        var str = '';
-        for(var i=0; 40>i; i++) {
-          str += Math.random()+'';
-        }
-        socket.send(str);
-
-        /*if (messages == 3) {
-          clearInterval(interval);
-          setTimeout(function () {
-            socket.disconnect();
-          }, 500);
-        }*/
-      }, 300);
-    });
-  });
 
   server('test sending newline', function (io) {
     io.sockets.on('connection', function (socket) {

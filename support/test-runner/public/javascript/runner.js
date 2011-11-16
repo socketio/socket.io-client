@@ -181,7 +181,7 @@ function test (testcase, fn) {
     if (testcase.length > 0) {
       var timer = setTimeout(function () {
         complete(new Error('Timeout'));
-      }, 20000);
+      }, 2000);
 
       testcase(complete);
     } else {
@@ -195,7 +195,7 @@ function test (testcase, fn) {
 
 // exposes a function to easily create a server for the current test
 
-function create (nsp, details) {
+function create (nsp) {
   if (!testsPorts[currentSuite]) {
     throw new Error('No socket server defined for suite "' + currentSuite + '"');
   }
