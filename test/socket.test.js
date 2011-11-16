@@ -12,7 +12,6 @@
   }
 
   module.exports = {
-
     'test connecting the socket and disconnecting': function (next) {
       var socket = create();
 
@@ -186,6 +185,40 @@
         .on('error', function (msg) {
           throw new Error(msg || 'Received an error');
         });
+    },
+    
+    'test authorizing for namespaces with a slowly loading transport': function (next) {
+      
+      var prevUtilDefer = io.util.defer;
+        
+      // Mock a long page load and increase time for this unit test
+      testDisableTimeout = true;
+      io.util.defer = function(fn) { setTimeout(fn, 40*1000); }
+      
+      var socket = create().socket
+
+      function finish () {
+        socket.of('').disconnect();
+        next();
+      };
+
+      var numErrorsReceived = 0;
+      socket.of('/a')
+        .on('error', function (msg) {
+          // Don't yield error
+          numErrorsReceived++;
+          if(numErrorsReceived == 1) {
+            setTimeout(function() {
+              // Haven't received a billion errors after 4 seconds? Test passed!
+              numErrorsReceived.should().eql(1);
+              testDisableTimeout = false;
+              io.util.defer = prevUtilDefer;
+              next();
+            }, 4*1000);
+            
+          }
+        });
+        
     },
 
     'test sending json from server': function (next) {

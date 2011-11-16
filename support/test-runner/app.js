@@ -191,6 +191,19 @@ suite('socket.test.js', function () {
       })
       .on('connection', function (socket) {});
   });
+  
+  server('test authorizing for namespaces with a slowly loading transport', function (io) {
+    
+    io.of('/a')
+      .authorization(function (data, fn) {
+        fn(null, false);
+      })
+      .on('connection', function (socket) {
+        
+        socket.send('hello');
+        
+      });
+  });
 
   server('test sending json from server', function (io) {
     io.sockets.on('connection', function (socket) {
