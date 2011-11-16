@@ -186,15 +186,15 @@
           throw new Error(msg || 'Received an error');
         });
     },
-    
+
     'test authorizing for namespaces with a slowly loading transport': function (next) {
-      
+
       var prevUtilDefer = io.util.defer;
-        
+
       // Mock a long page load and increase time for this unit test
       testDisableTimeout = true;
       io.util.defer = function(fn) { setTimeout(fn, 40*1000); }
-      
+
       var socket = create().socket
 
       function finish () {
@@ -215,10 +215,10 @@
               io.util.defer = prevUtilDefer;
               next();
             }, 4*1000);
-            
+
           }
         });
-        
+
     },
 
     'test sending json from server': function (next) {
@@ -344,7 +344,7 @@
         next();
       });
     },
-    
+
     'test encoding some more or less exotic unicode': function (next) {
       var socket = create('/woot');
 

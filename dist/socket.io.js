@@ -1767,7 +1767,7 @@
    */
 
   Socket.prototype.disconnect = function () {
-    if (this.connected) {
+    if (this.connected || this.transport.open) {
       if (this.open) {
         this.of('').packet({ type: 'disconnect' });
       }
@@ -1809,7 +1809,7 @@
     var port = global.location.port ||
       ('https:' == global.location.protocol ? 443 : 80);
 
-    return this.options.host !== global.location.hostname 
+    return this.options.host !== global.location.hostname
       || this.options.port != port;
   };
 
@@ -1869,7 +1869,7 @@
 
   Socket.prototype.onError = function (err) {
     if (err && err.advice) {
-      if (err.advice === 'reconnect' && this.connected) {
+      if (err.advice === 'reconnect' && (this.connected || this.transport.open)) {
         this.disconnect();
         this.reconnect();
       }
@@ -1891,7 +1891,7 @@
     this.connecting = false;
     this.open = false;
 
-    if (wasConnected) {
+    if (wasConnected || this.transport.open) {
       this.transport.close();
       this.transport.clearTimeouts();
       this.publish('disconnect', reason);
