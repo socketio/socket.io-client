@@ -15,13 +15,13 @@
 
       event.on('test', function (a, b) {
         ++calls;
-        a.should().eql('a');
-        b.should().eql('b');
+        a.should.eql('a');
+        b.should.eql('b');
       });
 
       event.emit('test', 'a', 'b');
-      calls.should().eql(1);
-      event.on.should().eql(event.addListener);
+      calls.should.eql(1);
+      event.on.should.eql(event.addListener);
     },
 
     'remove listener': function () {
@@ -32,8 +32,8 @@
       event.on('test:more', empty);
       event.removeAllListeners('test');
 
-      event.listeners('test').should().eql([]);
-      event.listeners('test:more').should().eql([empty]);
+      event.listeners('test').should.eql([]);
+      event.listeners('test:more').should.eql([empty]);
     },
 
     'remove all listeners with no arguments': function () {
@@ -45,8 +45,8 @@
       event.removeAllListeners();
 
       // TODO: with node 0.5 we'll change this to expect []
-      event.listeners('test').should().eql([empty]);
-      event.listeners('test:more').should().eql([empty]);
+      event.listeners('test').should.eql([empty]);
+      event.listeners('test:more').should.eql([empty]);
     },
 
     'remove listeners functions': function () {
@@ -59,16 +59,16 @@
 
       event.on('one', one);
       event.removeListener('one', one);
-      event.listeners('one').should().eql([]);
+      event.listeners('one').should.eql([]);
 
       event.on('two', two);
       event.removeListener('two', one);
-      event.listeners('two').should().eql([two]);
+      event.listeners('two').should.eql([two]);
 
       event.on('three', three);
       event.on('three', two);
       event.removeListener('three', three);
-      event.listeners('three').should().eql([two]);
+      event.listeners('three').should.eql([two]);
     },
 
     'number of arguments': function () {
@@ -86,7 +86,7 @@
       event.emit('test', null, null, null, null);
       event.emit('test', null, null, null, null, null);
 
-      [0, 1, 2, 3, 4, 5].should().eql(number);
+      [0, 1, 2, 3, 4, 5].should.eql(number);
     },
 
     'once': function () {
@@ -102,14 +102,14 @@
       event.emit('test', 'a', 'b');
 
       function removed () {
-        should().fail('not removed');
+        should.fail('not removed');
       };
 
       event.once('test:removed', removed);
       event.removeListener('test:removed', removed);
       event.emit('test:removed');
 
-      calls.should().eql(1);
+      calls.should.eql(1);
     }
 
   };

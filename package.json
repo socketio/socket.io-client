@@ -18,15 +18,15 @@
       , "url": "https://github.com/LearnBoost/socket.io-client.git"
     }
   , "dependencies": {
-        "uglify-js": "1.0.6"
-      , "websocket-client": "1.0.0"
-      , "xmlhttprequest": "1.2.2"
+        "uglify-js": ">=1.0.6"
+      , "xmlhttprequest": ">=1.2.2"
     }
   , "devDependencies": {
-        "expresso": "0.7.7"
-      , "express": "2.3.11"
-      , "jade": "0.12.1"
-      , "stylus": "0.13.3"
+        "expresso": ">=0.7.7"
+      , "express": ">=2.3.11"
+      , "jade": ">=0.12.1"
+      , "should": ">=0.0.1"
+      , "stylus": ">=0.13.3"
       , "socket.io": "0.8.7"
       , "socket.io-client": "0.8.7"
     }
