@@ -44,7 +44,7 @@
       });
 
       socket.on('disconnect', function (reason) {
-        connected.should().be_true;
+        connected.should().be.true;
         messages.should().equal(3);
         reason.should().eql('booted');
         next();
@@ -374,6 +374,6 @@
 
 })(
     'undefined' == typeof module ? module = {} : module
-  , 'undefined' == typeof io ? require('socket.io-client') : io
+  , 'undefined' == typeof io ? require('../lib/io') : io
   , 'undefined' == typeof should ? require('should-browser') : should
 );
