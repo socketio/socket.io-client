@@ -1,4 +1,3 @@
-
 ALL_TESTS = $(shell find test/ -name '*.test.js')
 
 run-tests:

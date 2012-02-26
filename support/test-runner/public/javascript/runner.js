@@ -1,6 +1,6 @@
 // useful globals
 
-var currentSuite, currentCase, testsList;
+var currentSuite, currentCase, testsList, testDisableTimeout = false;
 
 // loads common.js module
 function load (test, fn) {
@@ -180,8 +180,9 @@ function test (testcase, fn) {
   try {
     if (testcase.length > 0) {
       var timer = setTimeout(function () {
+        if(testDisableTimeout) { return; }
         complete(new Error('Timeout'));
-      }, 2000);
+      }, 8000);
 
       testcase(complete);
     } else {
@@ -195,7 +196,7 @@ function test (testcase, fn) {
 
 // exposes a function to easily create a server for the current test
 
-function create (nsp) {
+function create (nsp, options) {
   if (!testsPorts[currentSuite]) {
     throw new Error('No socket server defined for suite "' + currentSuite + '"');
   }
