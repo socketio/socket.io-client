@@ -1,5 +1,5 @@
 body {
-  font-family: "Helvetica", "Helvetica Neue", sans-serif;
+  font-family: 'Helvetica', 'Helvetica Neue', sans-serif;
   margin: 0;
   color: #333;
   font-size: 16px;
@@ -113,4 +113,15 @@ h2 a {
   line-height: 5px;
   padding-left: 14px;
   padding-bottom: 5px;
+}
+.warn {
+  background: #ffefc6;
+  padding: 5px;
+  text-align: center;
+  font-size: 15px;
+  text-shadow: 0 1px 0 #fff;
+  margin-bottom: 30px;
+}
+.warn b {
+  color: #ae0000;
 }
