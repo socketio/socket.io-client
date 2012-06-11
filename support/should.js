@@ -6,7 +6,7 @@
 (function (should) {
 
   if ('undefined' != typeof exports) {
-    exports = module.exports = should = require('assert');
+    module.exports = exports = should = require('assert');
   }
 
   /**
@@ -48,6 +48,7 @@
 
               if ('undefined' != typeof exports) {
                 fn.__proto__ = exports;
+                fn.exports = exports;
               }
 
               return fn;
@@ -394,7 +395,7 @@
    */
 
   Assertion.prototype.contain = function (obj) {
-    this.obj.should.be.an.instance.of(Array);
+    this.obj.should().be.an.instance.of(Array);
     this.assert(
         ~this.obj.indexOf(obj)
       , 'expected ' + i(this.obj) + ' to contain ' + i(obj)
@@ -555,7 +556,7 @@
       }
 
       // Dates without properties can be shortcutted
-      if (isDate(value) && keys.length === 0) {
+      if (isDate(value) && $keys.length === 0) {
         return stylize(value.toUTCString(), 'date');
       }
 
@@ -582,7 +583,7 @@
         base = ' ' + value.toUTCString();
       }
 
-      if (keys.length === 0) {
+      if ($keys.length === 0) {
         return braces[0] + base + braces[1];
       }
 
@@ -596,7 +597,7 @@
 
       seen.push(value);
 
-      var output = map(keys, function(key) {
+      var output = map($keys, function(key) {
         var name, str;
         if (value.__lookupGetter__) {
           if (value.__lookupGetter__(key)) {
