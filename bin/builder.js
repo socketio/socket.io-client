@@ -169,7 +169,7 @@ var builder = module.exports = function () {
       if (error) return callback(error);
 
       // concatinate the file contents in order
-      var code = development
+      var code = ""
         , ignore = 0;
 
       files.forEach(function (file) {
@@ -208,6 +208,13 @@ var builder = module.exports = function () {
 
           return ret == 0;
         }).join('\n');
+
+        code = development + 
+          "\n(function() {\n" +
+          "var io = {};\n" +
+          "'object' === typeof module ? module.exports = io : window.io = io;\n" +
+          code +
+          "\n})();";
       }
 
       // check if we need to process it any further
@@ -215,7 +222,7 @@ var builder = module.exports = function () {
         var ast = uglify.parser.parse(code);
         ast = uglify.uglify.ast_mangle(ast);
         ast = uglify.uglify.ast_squeeze(ast);
-
+        
         code = production + uglify.uglify.gen_code(ast, { ascii_only: true });
       }
 
