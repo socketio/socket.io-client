@@ -1,4 +1,101 @@
 
+0.9.6 / 2012-04-17
+==================
+
+  * Don't position the jsonp form off the screen (android fix).
+
+0.9.5 / 2012-04-05
+==================
+
+  * Bumped version.
+
+0.9.4 / 2012-04-01
+==================
+
+  * Fixes polling loop upon reconnect advice (fixes #438).
+
+0.9.3 / 2012-03-28
+==================
+
+  * Fix XHR.check, which was throwing an error transparently and causing non-IE browsers to fall back to JSONP [mikito]
+  * Fixed forced disconnect on window close [zzzaaa]
+
+0.9.2 / 2012-03-13
+==================
+
+  * Transport order set by "options" [zzzaaa]
+
+0.9.1-1 / 2012-03-02
+====================
+
+  * Fixed active-x-obfuscator NPM dependency.
+
+0.9.1 / 2012-03-02
+==================
+
+  * Misc corrections.
+  * Added warning within Firefox about webworker test in test runner.
+  * Update ws dependency [einaros]
+  * Implemented client side heartbeat checks. [felixge]
+  * Improved Firewall support with ActiveX obfuscation. [felixge]
+  * Fixed error handling during connection process. [Outsideris]
+
+0.9.0 / 2012-02-26
+==================
+
+  * Added DS_Store to gitignore.
+  * Updated depedencies.
+  * Bumped uglify
+  * Tweaking code so it doesn't throw an exception when used inside a WebWorker in Firefox
+  * Do not rely on Array.prototype.indexOf as it breaks with pages that use the Prototype.js library.
+  * Windows support landed
+  * Use @einaros ws module instead of the old crap one
+  * Fix for broken closeTimeout and 'IE + xhr' goes into infinite loop on disconnection
+  * Disabled reconnection on error if reconnect option is set to false
+  * Set withCredentials to true before xhr to fix authentication
+  * Clears the timeout from reconnection attempt when there is a successful or failed reconnection. 
+    This fixes the issue of setTimeout's carrying over from previous reconnection
+    and changing (skipping) values of self.reconnectionDelay in the newer reconnection.
+  * Removed decoding of parameters when chunking the query string.
+    This was used later on to construct the url to post to the socket.io server
+    for connection and if we're adding custom parameters of our own to this url
+    (for example for OAuth authentication) they were being sent decoded, which is wrong.
+
+0.8.7 / 2011-11-05
+==================
+
+  * Bumped client
+
+0.8.6 / 2011-10-27 
+==================
+
+  * Added WebWorker support.
+  * Fixed swfobject and web_socket.js to not assume window.
+  * Fixed CORS detection for webworker.
+  * Fix `defer` for webkit in a webworker.
+  * Fixed io.util.request to not rely on window.
+  * FIxed; use global instead of window and dont rely on document.
+  * Fixed; JSON-P handshake if CORS is not available.
+  * Made underlying Transport disconnection trigger immediate socket.io disconnect.
+  * Fixed warning when compressing with Google Closure Compiler.
+  * Fixed builder's uglify utf-8 support.
+  * Added workaround for loading indicator in FF jsonp-polling. [3rd-Eden]
+  * Fixed host discovery lookup. [holic]
+  * Fixed close timeout when disconnected/reconnecting. [jscharlach]
+  * Fixed jsonp-polling feature detection.
+  * Fixed jsonp-polling client POSTing of \n.
+  * Fixed test runner on IE6/7
+
+0.8.5 / 2011-10-07
+==================
+
+  * Bumped client
+
+0.8.4 / 2011-09-06
+==================
+
+  * Corrected build
+
 0.8.3 / 2011-09-03
 ==================
 

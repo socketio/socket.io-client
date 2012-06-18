@@ -1,7 +1,7 @@
 {
     "name": "socket.io-client"
   , "description": "Socket.IO client for the browser and node.js"
-  , "version": "0.8.5"
+  , "version": "0.9.6"
   , "main" : "./lib/io.js"
   , "browserify": "./dist/socket.io.js"
   , "homepage": "http://socket.io"
@@ -18,17 +18,18 @@
       , "url": "https://github.com/LearnBoost/socket.io-client.git"
     }
   , "dependencies": {
-        "uglify-js": "1.0.6"
-      , "websocket-client": "1.0.0"
+        "uglify-js": "1.2.5"
+      , "ws": "0.4.x"
       , "xmlhttprequest": "1.2.2"
+      , "active-x-obfuscator": "0.0.1"
     }
   , "devDependencies": {
-        "expresso": "0.7.7"
-      , "express": "2.3.11"
-      , "jade": "0.12.1"
-      , "stylus": "0.13.3"
-      , "socket.io": "0.8.5"
-      , "socket.io-client": "0.8.5"
+        "expresso": "*"
+      , "express": "2.5.x"
+      , "jade": "*"
+      , "stylus": "*"
+      , "socket.io": "0.9.6"
+      , "socket.io-client": "0.9.6"
     }
   , "engines": { "node": ">= 0.4.0" }
 }
