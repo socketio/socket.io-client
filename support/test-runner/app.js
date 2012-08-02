@@ -289,11 +289,42 @@ suite('socket.test.js', function () {
       });
     });
   });
+  
+  server('test encoding some more or less exotic unicode', function (io) {
+    io.of('/woot').on('connection', function (socket) {
+
+      socket.on('message', function (a) {
+        console.dir(a)
+        socket.emit('done');
+      });
+    });
+  });
 
   server('test sending query strings to the server', function (io) {
     io.sockets.on('connection', function (socket) {
       socket.json.send(socket.handshake);
     })
+  });
+  
+  server('test receiving messages on many sockets', function (io) {
+    io.sockets.on('connection', function (socket) {
+      console.log("on-connection!!!!!!")
+      var messages = 0;
+      var interval = setInterval(function () {
+        var str = '';
+        for(var i=0; 40>i; i++) {
+          str += Math.random()+'';
+        }
+        socket.send(str);
+
+        /*if (messages == 3) {
+          clearInterval(interval);
+          setTimeout(function () {
+            socket.disconnect();
+          }, 500);
+        }*/
+      }, 300);
+    });
   });
 
   server('test sending newline', function (io) {

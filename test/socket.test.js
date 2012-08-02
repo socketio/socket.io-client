@@ -156,7 +156,7 @@
         next();
       }
 
-      socket.on('connect', function(){
+      io.on('connect', function(){
         connect++;
       });
 
@@ -177,6 +177,52 @@
       }).on('error', function (msg) {
         throw new Error(msg || 'Received an error');
       });
+
+    },
+
+    'test different namespace connection methods': function (next) {
+      var io = create('/a')
+        , connect = 0
+        , message = 0
+        , socket = io.socket;
+
+      function finish () {
+        socket.of('').disconnect();
+        connect.should().equal(3);
+        message.should().equal(3);
+        next();
+      }
+
+      io.on('connect', function () {
+        ++connect;
+      }).on('message', function (data) {
+        data.should().eql('a');
+
+        if (++message === 3) finish();
+      }).on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+      socket.of('/b').on('connect', function () {
+        ++connect;
+      }).on('message', function (data) {
+        data.should().eql('b');
+
+        if (++message === 3) finish();
+      }).on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+      io.of('/c').on('connect', function () {
+        ++connect;
+      }).on('message', function (data) {
+        data.should().eql('c');
+
+        if (++message === 3) finish();
+      }).on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
     },
 
     'test disconnecting from namespaces': function (next) {
@@ -354,6 +400,23 @@
         next();
       });
     },
+    
+    'test encoding some more or less exotic unicode': function (next) {
+      var socket = create('/woot');
+
+      socket.on('error', function (msg) {
+        throw new Error(msg || 'Received an error');
+      });
+
+      socket.on('connect', function () {
+        socket.emit('message', {"UH LA LA": "\ud83d\udc4d"});
+      });
+
+      socket.on('done', function () {
+        socket.disconnect();
+        next();
+      });
+    },
 
     'test sending query strings to the server': function (next) {
       var socket = create('?foo=bar');
@@ -368,51 +431,7 @@
         socket.disconnect();
         next();
       });
-    },
-
-    'test sending newline': function (next) {
-      var socket = create();
-
-      socket.on('error', function (msg) {
-        throw new Error(msg || 'Received an error');
-      });
-
-      socket.send('\n');
-
-      socket.on('done', function () {
-        socket.disconnect();
-        next();
-      });
-    },
-
-    'test sending unicode': function (next) {
-      var socket = create();
-
-      socket.on('error', function (msg) {
-        throw new Error(msg || 'Received an error');
-      });
-
-      socket.json.send({ test: "☃" });
-
-      socket.on('done', function () {
-        socket.disconnect();
-        next();
-      });
-    },
-
-    'test webworker connection': function (next) {
-      if (!window.Worker) {
-        return next();
-      }
-
-      var worker = new Worker('/test/worker.js');
-      worker.postMessage(uri());
-      worker.onmessage = function (ev) {
-        if ('done!' == ev.data) return next();
-        throw new Error('Unexpected message: ' + ev.data);
-      }
     }
-
   };
 
 })(
