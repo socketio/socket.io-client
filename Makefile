@@ -17,4 +17,7 @@ test-acceptance:
 build:
 	@node ./bin/builder.js
 
+browserify:
+	@node ./bin/browserify.js
+
 .PHONY: test
