@@ -125,6 +125,14 @@ true
 
   The amount of attempts should we make using the current transport to connect to the server? After this we will do one final attempt, and re-try with all enabled transport methods before we give up.
 
+- *'cookie'*
+
+  Any cookies to pass along into the handshake. For example: 
+
+```js
+  io.connect('http://localhost', {'cookie': 'express-sid=aGRKnI4jThJDdWPxEEZIDIGeH5DlA0Fs'});
+```
+  
 ##### Properties:
 
 - *options*
