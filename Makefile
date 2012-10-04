@@ -1,10 +1,13 @@
 
 ALL_TESTS = $(shell find test/ -name '*.test.js')
 
+# Expresso's --include option no longer works
+# as node no longer supports require.paths so instead
+# we have to add our include paths to the NODE_PATH
+export NODE_PATH := $(NODE_PATH):lib:support
+
 run-tests:
 	@./node_modules/.bin/expresso \
-		-I lib \
-		-I support \
 		--serial \
 		$(TESTS)
 
