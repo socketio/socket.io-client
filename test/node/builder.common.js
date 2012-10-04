@@ -80,6 +80,9 @@ exports.env = function env () {
   details.document = details;
   details.document.domain = details.location.href;
 
+  // Allows the builder test to run without falling over trying to detect if the browser is Firefox
+  details.document.documentElement = {style: {}};
+
   return details;
 };
 
