@@ -11,4 +11,5 @@
       , { "name": "Vladimir Dronnikov", "email": "dronnikov@gmail.com" }
       , { "name": "Einar Otto Stangvik", "email": "einaros@gmail.com" }
     ]
+  , "license": "MIT"
 }
