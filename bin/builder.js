@@ -83,7 +83,7 @@ var baseTransports = {
  * If doing a node build for server-side client, this wrapper is NOT included.
  * @api private
  */
-var wrapperPre = "\n(function() {\n";
+var wrapperPre = "\nvar io = module.exports;\n(function() {\n";
 
 var wrapperPost = "\n})();";
 
