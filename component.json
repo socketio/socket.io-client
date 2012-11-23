@@ -4,7 +4,7 @@
   , "version": "0.9.11"
   , "main": "dist/socket.io.js"
   , "scripts": [
-      "index.js"
+      "index.js",
       "dist/socket.io.js"
     ]
   , "keywords": ["websocket", "socket", "realtime", "socket.io", "comet", "ajax"]
