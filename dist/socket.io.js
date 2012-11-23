@@ -1,23 +1,8 @@
 /*! Socket.IO.js build:0.9.11, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
-var io = ('undefined' === typeof module ? {} : module.exports);
-(function() {
-
-/**
- * socket.io
- * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
- * MIT Licensed
- */
+var io = module.exports;
 
 (function (exports, global) {
-
-  /**
-   * IO namespace.
-   *
-   * @namespace
-   */
-
-  var io = exports;
 
   /**
    * Socket.IO version
@@ -104,7 +89,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     return socket.of(uri.path.length > 1 ? uri.path : '');
   };
 
-})('object' === typeof module ? module.exports : (this.io = {}), this);
+})(io, window);
+
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -465,7 +451,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
   util.ua.iDevice = 'undefined' != typeof navigator
       && /iPad|iPhone|iPod/i.test(navigator.userAgent);
 
-})('undefined' != typeof io ? io : module.exports, this);
+})(io, window);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -644,10 +630,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     return true;
   };
 
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
+})(io, io);
 
 /**
  * socket.io
@@ -966,9 +949,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       throw new SyntaxError('JSON.parse');
   };
 
-})(
-    'undefined' != typeof io ? io : module.exports
-  , typeof JSON !== 'undefined' ? JSON : undefined
+})(io , typeof JSON !== 'undefined' ? JSON : undefined
 );
 
 /**
@@ -1228,10 +1209,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     }
   };
 
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
+})(io, io);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -1484,10 +1462,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
   Transport.prototype.ready = function (socket, fn) {
     fn.call(this);
   };
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
+})(io, io);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -2059,11 +2034,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     this.on('connect', maybeReconnect);
   };
 
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-  , this
-);
+})(io, io, window);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -2302,10 +2273,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     this.namespace.emit.apply(this.namespace, arguments);
   };
 
-})(
-    'undefined' != typeof io ? io : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
+})(io, io);
 
 /**
  * socket.io
@@ -2492,11 +2460,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
   io.transports.push('websocket');
 
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-  , this
-);
+})(io.Transport, io, window);
 
 /**
  * socket.io
@@ -3255,11 +3219,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
     return XHR.check(socket, true);
   };
 
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-  , this
-);
+})(io.Transport, io, window);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -3427,10 +3387,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   io.transports.push('htmlfile');
 
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-);
+})(io.Transport, io);
 
 /**
  * socket.io
@@ -3603,11 +3560,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   io.transports.push('xhr-polling');
 
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-  , this
-);
+})(io.Transport, io, window);
 
 /**
  * socket.io
@@ -3859,13 +3812,5 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   io.transports.push('jsonp-polling');
 
-})(
-    'undefined' != typeof io ? io.Transport : module.exports
-  , 'undefined' != typeof io ? io : module.parent.exports
-  , this
-);
-
-if (typeof define === "function" && define.amd) {
-  define([], function () { return io; });
-}
+})(io.Transport, io, window);
 })();
