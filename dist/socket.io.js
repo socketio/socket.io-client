@@ -1,6 +1,5 @@
 /*! Socket.IO.js build:0.9.11, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
-var io = module.exports = exports;
 (function() {
 
 /**
