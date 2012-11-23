@@ -1,8 +1,23 @@
 /*! Socket.IO.js build:0.9.11, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
-var io = module.exports;
+var io = ('undefined' === typeof module ? {} : module.exports);
+(function() {
+
+/**
+ * socket.io
+ * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
+ * MIT Licensed
+ */
 
 (function (exports, global) {
+
+  /**
+   * IO namespace.
+   *
+   * @namespace
+   */
+
+  var io = exports;
 
   /**
    * Socket.IO version
@@ -89,8 +104,7 @@ var io = module.exports;
     return socket.of(uri.path.length > 1 ? uri.path : '');
   };
 
-})(io, window);
-
+})('object' === typeof module ? module.exports : (this.io = {}), this);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -451,7 +465,7 @@ var io = module.exports;
   util.ua.iDevice = 'undefined' != typeof navigator
       && /iPad|iPhone|iPod/i.test(navigator.userAgent);
 
-})(io, window);
+})('undefined' != typeof io ? io : module.exports, this);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -630,7 +644,10 @@ var io = module.exports;
     return true;
   };
 
-})(io, io);
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
 
 /**
  * socket.io
@@ -949,7 +966,9 @@ var io = module.exports;
       throw new SyntaxError('JSON.parse');
   };
 
-})(io , typeof JSON !== 'undefined' ? JSON : undefined
+})(
+    'undefined' != typeof io ? io : module.exports
+  , typeof JSON !== 'undefined' ? JSON : undefined
 );
 
 /**
@@ -1209,7 +1228,10 @@ var io = module.exports;
     }
   };
 
-})(io, io);
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -1462,7 +1484,10 @@ var io = module.exports;
   Transport.prototype.ready = function (socket, fn) {
     fn.call(this);
   };
-})(io, io);
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -2034,7 +2059,11 @@ var io = module.exports;
     this.on('connect', maybeReconnect);
   };
 
-})(io, io, window);
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+  , this
+);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -2273,7 +2302,10 @@ var io = module.exports;
     this.namespace.emit.apply(this.namespace, arguments);
   };
 
-})(io, io);
+})(
+    'undefined' != typeof io ? io : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
 
 /**
  * socket.io
@@ -2460,7 +2492,11 @@ var io = module.exports;
 
   io.transports.push('websocket');
 
-})(io.Transport, io, window);
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+  , this
+);
 
 /**
  * socket.io
@@ -3219,7 +3255,11 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
     return XHR.check(socket, true);
   };
 
-})(io.Transport, io, window);
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+  , this
+);
 /**
  * socket.io
  * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -3387,7 +3427,10 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   io.transports.push('htmlfile');
 
-})(io.Transport, io);
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+);
 
 /**
  * socket.io
@@ -3560,7 +3603,11 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   io.transports.push('xhr-polling');
 
-})(io.Transport, io, window);
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+  , this
+);
 
 /**
  * socket.io
@@ -3812,5 +3859,10 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
   io.transports.push('jsonp-polling');
 
-})(io.Transport, io, window);
+})(
+    'undefined' != typeof io ? io.Transport : module.exports
+  , 'undefined' != typeof io ? io : module.parent.exports
+  , this
+);
+
 })();
