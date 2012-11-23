@@ -2,6 +2,7 @@
     "name": "socket.io"
   , "description": "Socket.IO client for the browser and node.js"
   , "version": "0.9.11"
+  , "main": "dist/socket.io.js"
   , "scripts": ["dist/socket.io.js"]
   , "keywords": ["websocket", "socket", "realtime", "socket.io", "comet", "ajax"]
   , "author": "Guillermo Rauch <guillermo@learnboost.com>"
