@@ -3865,4 +3865,10 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   , this
 );
 
+<<<<<<< HEAD
+=======
+if (typeof define === "function" && define.amd) {
+  define([], function () { return io; });
+}
+>>>>>>> parent of 01f466c... changed socket.io.js for component
 })();
