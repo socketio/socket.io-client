@@ -8,7 +8,8 @@
     "component/bind": "0.0.1",
     "component/json-fallback": "*",
     "timoxley/to-array": "0.1.4",
-    "visionmedia/debug": "*"
+    "visionmedia/debug": "*",
+    "component/url": "*"
   },
   "main": "lib/index.js",
   "scripts": [
