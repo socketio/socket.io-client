@@ -9,6 +9,7 @@
     "component/json-fallback": "*",
     "timoxley/to-array": "0.1.4",
     "visionmedia/debug": "*",
+    "component/object": "*",
     "component/url": "*"
   },
   "main": "lib/index.js",
