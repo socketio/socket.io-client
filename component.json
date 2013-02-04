@@ -10,11 +10,14 @@
     "timoxley/to-array": "0.1.4",
     "visionmedia/debug": "*"
   },
+  "main": "lib/index.js",
   "scripts": [
     "lib/index.js",
     "lib/manager.js",
     "lib/engine.js",
     "lib/socket.js",
-    "lib/emitter.js"
+    "lib/emitter.js",
+    "lib/url.js",
+    "lib/on.js"
   ]
 }
