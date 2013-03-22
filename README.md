@@ -123,7 +123,7 @@ true
 10
 ```
 
-  The amount of attempts should we make using the current transport to connect to the server? After this we will do one final attempt, and re-try with all enabled transport methods before we give up.
+  The amount of attempts should we make using the current transport to connect to the server? After this we will do one final attempt, and re-try with all enabled transport methods before we give up. If set to a negative number, will keep attempting to reconnect forever.
 
 ##### Properties:
 
