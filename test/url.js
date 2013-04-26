@@ -39,4 +39,12 @@ describe('url', function(){
     expect(url('http://google.com/').pathname).to.be('/');
   });
 
+  it('works with no argument', function(){
+    loc.protocol = 'http:';
+    loc.hostname = 'woot.com';
+    var parsed = url();
+    expect(parsed.protocol).to.be('http:');
+    expect(parsed.hostname).to.be('woot.com');
+  });
+
 });
