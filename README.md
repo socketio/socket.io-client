@@ -19,7 +19,7 @@
     var socket = io('http://localhost');
     socket.on('connect', function(){
       socket.on('event', function(data){});
-      socket.on('disconnect', fucntion(){});
+      socket.on('disconnect', function(){});
     });
   </script>
   ```
@@ -33,7 +33,7 @@
   var socket = require('socket.io')('http://localhost');
   socket.on('connect', function(){
     socket.on('event', function(data){});
-    socket.on('disconnect', fucntion(){});
+    socket.on('disconnect', function(){});
   });
   ```
 
@@ -45,7 +45,7 @@
   var socket = require('socket.io-client')('http://localhost');
   socket.on('connect', function(){
     socket.on('event', function(data){});
-    socket.on('disconnect', fucntion(){});
+    socket.on('disconnect', function(){});
   });
   ```
 
