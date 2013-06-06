@@ -1,4 +1,10 @@
 
+0.9.15 / 2013-06-06
+===================
+
+  * transports: added unescaping for escaped htmlfile
+  * skipped 12-14 to match socket.io server version
+
 0.9.11 / 2012-11-02
 ===================
 
