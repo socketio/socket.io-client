@@ -2021,7 +2021,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
   Socket.prototype.reconnect = function () {
     this.reconnecting = true;
-    this.reconnectionAttempts = 0;
+    this.reconnectionAttempts = 1;
     this.reconnectionDelay = this.options['reconnection delay'];
 
     var self = this
@@ -2066,6 +2066,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
           self.transport = self.getTransport();
           self.redoTransports = true;
           self.connect();
+          self.publish('reconnecting', self.reconnectionDelay, self.reconnectionAttempts);
+          self.reconnectionTimer = setTimeout(maybeReconnect, self.reconnectionDelay);
         } else {
           self.publish('reconnect_failed');
           reset();
