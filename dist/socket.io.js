@@ -1610,7 +1610,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     function complete (data) {
       if (data instanceof Error) {
         self.connecting = false;
-        self.onError(data.message);
+        if (data.advice != 'silent') {
+          self.onError(data.message);
+        }
       } else {
         fn.apply(null, data.split(':'));
       }
@@ -1643,6 +1645,10 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         xhr.withCredentials = true;
       }
       xhr.onreadystatechange = function () {
+        if (self.xhrTimeout) {
+            clearTimeout(self.xhrTimeout);
+            delete self.xhrTimeout;
+        }
         if (xhr.readyState == 4) {
           xhr.onreadystatechange = empty;
 
@@ -1656,6 +1662,16 @@ var io = ('undefined' === typeof module ? {} : module.exports);
           }
         }
       };
+      if (this.reconnecting) {
+        this.xhrTimeout=setTimeout(function() {
+            delete self.xhrTimeout;
+            xhr.abort();
+            var err = new Error('handshake timeout while reconnecting');
+            err.advice = 'silent';
+            complete(err);
+          }
+          , Math.floor(self.reconnectionDelay * 0.9));
+      }
       xhr.send(null);
     }
   };
@@ -1957,13 +1973,20 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
   Socket.prototype.onDisconnect = function (reason) {
     var wasConnected = this.connected
-      , wasConnecting = this.connecting;
+      , wasConnecting = this.connecting
+      , bootedWhileReconnecting = this.reconnecting && reason == 'booted';
 
     this.connected = false;
     this.connecting = false;
     this.open = false;
 
-    if (wasConnected || wasConnecting) {
+    if (bootedWhileReconnecting) {
+      clearReconnect(this);
+      this.removeAllListeners('connect_failed');
+      this.removeAllListeners('connect');
+    }
+
+    if (bootedWhileReconnecting || wasConnected || wasConnecting) {
       this.transport.close();
       this.transport.clearTimeouts();
       if (wasConnected) {
@@ -1982,6 +2005,20 @@ var io = ('undefined' === typeof module ? {} : module.exports);
    * @api private
    */
 
+  function clearReconnect(self) {
+    clearTimeout(self.reconnectionTimer);
+
+    self.reconnecting = false;
+
+    delete self.reconnectionAttempts;
+    delete self.reconnectionDelay;
+    delete self.reconnectionTimer;
+    delete self.redoTransports;
+
+    self.options['try multiple transports'] = self.savedTryMultiple;
+    delete self.savedTryMultiple;
+  }
+
   Socket.prototype.reconnect = function () {
     this.reconnecting = true;
     this.reconnectionAttempts = 0;
@@ -1989,8 +2026,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     var self = this
       , maxAttempts = this.options['max reconnection attempts']
-      , tryMultiple = this.options['try multiple transports']
       , limit = this.options['reconnection limit'];
+
+    self.savedTryMultiple = this.options['try multiple transports'];
 
     function reset () {
       if (self.connected) {
@@ -2002,19 +2040,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         self.publish('reconnect', self.transport.name, self.reconnectionAttempts);
       }
 
-      clearTimeout(self.reconnectionTimer);
-
+      clearReconnect(self);
       self.removeListener('connect_failed', maybeReconnect);
       self.removeListener('connect', maybeReconnect);
-
-      self.reconnecting = false;
-
-      delete self.reconnectionAttempts;
-      delete self.reconnectionDelay;
-      delete self.reconnectionTimer;
-      delete self.redoTransports;
-
-      self.options['try multiple transports'] = tryMultiple;
     };
 
     function maybeReconnect () {
