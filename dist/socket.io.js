@@ -1610,11 +1610,15 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     function complete (data) {
       if (data instanceof Error) {
         self.connecting = false;
+        fn.apply(null, [null]); // not nice to leave him hanging
         if (data.advice != 'silent') {
           self.onError(data.message);
         }
-      } else {
+      } else if (self.connecting) {
+        // added this check to stop handshake process if client requested disconnect()
         fn.apply(null, data.split(':'));
+      } else {
+        fn.apply(null, [null]);
       }
     };
 
@@ -1662,16 +1666,24 @@ var io = ('undefined' === typeof module ? {} : module.exports);
           }
         }
       };
+
+      var timeoutVal;
       if (this.reconnecting) {
-        this.xhrTimeout=setTimeout(function() {
-            delete self.xhrTimeout;
-            xhr.abort();
-            var err = new Error('handshake timeout while reconnecting');
-            err.advice = 'silent';
-            complete(err);
-          }
-          , Math.floor(self.reconnectionDelay * 0.9));
+        timeoutVal = this.reconnectionDelay - 100;
+      } else {
+        timeoutVal = options['connect timeout'];
       }
+
+      this.xhrTimeout=setTimeout(function() {
+        delete self.xhrTimeout;
+        xhr.abort();
+        var err = new Error('handshake timeout');
+        if (self.reconnecting) {
+          err.advice = 'silent';
+        }
+        complete(err);
+      }, timeoutVal);
+
       xhr.send(null);
     }
   };
@@ -1713,16 +1725,18 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     self.connecting = true;
     
     this.handshake(function (sid, heartbeat, close, transports) {
-      self.sessionid = sid;
-      self.closeTimeout = close * 1000;
-      self.heartbeatTimeout = heartbeat * 1000;
-      if(!self.transports)
-          self.transports = self.origTransports = (transports ? io.util.intersect(
-              transports.split(',')
-            , self.options.transports
-          ) : self.options.transports);
+      if (sid){
+        self.sessionid = sid;
+        self.closeTimeout = close * 1000;
+        self.heartbeatTimeout = heartbeat * 1000;
+        if(!self.transports)
+            self.transports = self.origTransports = (transports ? io.util.intersect(
+                transports.split(',')
+              , self.options.transports
+            ) : self.options.transports);
 
-      self.setHeartbeatTimeout();
+        self.setHeartbeatTimeout();
+      }
 
       function connect (transports){
         if (self.transport) self.transport.clearTimeouts();
@@ -1759,13 +1773,15 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         });
       }
 
-      connect(self.transports);
+      if (sid) {
+        connect(self.transports);
 
-      self.once('connect', function (){
-        clearTimeout(self.connectTimeoutTimer);
+        self.once('connect', function (){
+          clearTimeout(self.connectTimeoutTimer);
 
-        fn && typeof fn == 'function' && fn();
-      });
+          fn && typeof fn == 'function' && fn();
+        });
+      }
     });
 
     return this;
@@ -1987,8 +2003,10 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     }
 
     if (bootedWhileReconnecting || wasConnected || wasConnecting) {
-      this.transport.close();
-      this.transport.clearTimeouts();
+      if (this.transport) {
+        this.transport.close();
+        this.transport.clearTimeouts();
+      }
       if (wasConnected) {
         this.publish('disconnect', reason);
 
