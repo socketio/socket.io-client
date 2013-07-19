@@ -1608,6 +1608,10 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       , options = this.options;
 
     function complete (data) {
+      if (data == 'just exit') {
+        fn.apply(null, [null]); // not nice to leave him hanging
+        return;
+      }
       if (data instanceof Error) {
         self.connecting = false;
         fn.apply(null, [null]); // not nice to leave him hanging
@@ -1649,21 +1653,25 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         xhr.withCredentials = true;
       }
       xhr.onreadystatechange = function () {
-        if (self.xhrTimeout) {
+        if (xhr.readyState == 4) {
+          if (self.xhrTimeout) {
             clearTimeout(self.xhrTimeout);
             delete self.xhrTimeout;
-        }
-        if (xhr.readyState == 4) {
+          }
           xhr.onreadystatechange = empty;
 
           if (xhr.status == 200) {
             complete(xhr.responseText);
+            return;
           } else if (xhr.status == 403) {
+            delete self.newTimeout;
             self.onError(xhr.responseText);
           } else {
-            self.connecting = false;            
+            self.connecting = false;
+            delete self.newTimeout;
             !self.reconnecting && self.onError(xhr.responseText);
           }
+          complete('just exit');
         }
       };
 
@@ -1671,11 +1679,12 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       if (this.reconnecting) {
         timeoutVal = this.reconnectionDelay - 100;
       } else {
-        timeoutVal = options['connect timeout'];
+        timeoutVal = this.newTimeout ? this.newTimeout - 100 :  options['connect timeout'];
       }
 
       this.xhrTimeout=setTimeout(function() {
         delete self.xhrTimeout;
+        delete self.newTimeout;
         xhr.abort();
         var err = new Error('handshake timeout');
         if (self.reconnecting) {
@@ -1716,13 +1725,18 @@ var io = ('undefined' === typeof module ? {} : module.exports);
    * @api public
    */
 
-  Socket.prototype.connect = function (fn) {
-    if (this.connecting) {
+  Socket.prototype.connect = function (fn, newTimeout) {
+    // we can override the 'connect timeout' with a newTimeout value
+    // This is required if we want to handle our own reconnects
+    if (this.connecting || this.connected) {
       return this;
     }
 
     var self = this;
     self.connecting = true;
+    if (newTimeout) {
+      self.newTimeout = newTimeout;
+    }
     
     this.handshake(function (sid, heartbeat, close, transports) {
       if (sid){
@@ -1742,16 +1756,22 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         if (self.transport) self.transport.clearTimeouts();
 
         self.transport = self.getTransport(transports);
-        if (!self.transport) return self.publish('connect_failed');
+        if (!self.transport) {
+          delete self.newTimeout;
+          return self.publish('connect_failed');
+        }
 
         // once the transport is ready
         self.transport.ready(self, function () {
           self.connecting = true;
           self.publish('connecting', self.transport.name);
+
           self.transport.open();
 
-          if (self.options['connect timeout']) {
+          var connectTimeout = self.newTimeout ? self.newTimeout : self.options['connect timeout'];
+          if (connectTimeout) {
             self.connectTimeoutTimer = setTimeout(function () {
+              delete self.connectTimeoutTimer;
               if (!self.connected) {
                 self.connecting = false;
 
@@ -1764,11 +1784,12 @@ var io = ('undefined' === typeof module ? {} : module.exports);
                     if (remaining.length){
                       connect(remaining);
                     } else {
+                      delete self.newTimeout;
                       self.publish('connect_failed');
                     }
                 }
               }
-            }, self.options['connect timeout']);
+            }, connectTimeout);
           }
         });
       }
@@ -1777,7 +1798,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         connect(self.transports);
 
         self.once('connect', function (){
+          delete self.newTimeout;
           clearTimeout(self.connectTimeoutTimer);
+          delete self.connectTimeoutTimer;
 
           fn && typeof fn == 'function' && fn();
         });
@@ -1995,6 +2018,11 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     this.connected = false;
     this.connecting = false;
     this.open = false;
+
+    if (this.connectTimeoutTimer) {
+      clearTimeout(this.connectTimeoutTimer);
+      delete this.connectTimeoutTimer;
+    }
 
     if (bootedWhileReconnecting) {
       clearReconnect(this);
