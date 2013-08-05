@@ -1451,9 +1451,12 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       self.open();
     }, this.socket.options['reopen delay']);*/
 
-    this.isOpen = false;
-    this.socket.onClose();
-    this.onDisconnect();
+    /* only call close if transport hasn't been swapped out already */
+    if (this.socket.transport === this) {
+      this.isOpen = false;
+      this.socket.onClose();
+      this.onDisconnect();
+    }
   };
 
   /**
@@ -3865,7 +3868,4 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   , this
 );
 
-if (typeof define === "function" && define.amd) {
-  define([], function () { return io; });
-}
 })();
