@@ -1,7 +1,14 @@
 {
   "name": "socket.io-client",
   "version": "1.0.0",
-  "keywords": ["realtime", "framework", "websocket", "tcp", "events", "client"],
+  "keywords": [
+    "realtime",
+    "framework",
+    "websocket",
+    "tcp",
+    "events",
+    "client"
+  ],
   "dependencies": {
     "engine.io-client": "0.4.3",
     "emitter-component": "0.0.6",
@@ -17,10 +24,22 @@
     "uglify-js": "*"
   },
   "contributors": [
-    { "name": "Guillermo Rauch", "email": "rauchg@gmail.com" },
-    { "name": "Arnout Kazemier", "email": "info@3rd-eden.com" },
-    { "name": "Vladimir Dronnikov", "email": "dronnikov@gmail.com" },
-    { "name": "Einar Otto Stangvik", "email": "einaros@gmail.com" }
+    {
+      "name": "Guillermo Rauch",
+      "email": "rauchg@gmail.com"
+    },
+    {
+      "name": "Arnout Kazemier",
+      "email": "info@3rd-eden.com"
+    },
+    {
+      "name": "Vladimir Dronnikov",
+      "email": "dronnikov@gmail.com"
+    },
+    {
+      "name": "Einar Otto Stangvik",
+      "email": "einaros@gmail.com"
+    }
   ],
   "component": {
     "scripts": {
@@ -30,5 +49,9 @@
       "engine.io/socket.js": "lib/socket.js",
       "engine.io/emitter.js": "lib/emitter.js"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LearnBoost/socket.io-client.git"
   }
 }
