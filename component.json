@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "learnboost/engine.io-client": "*",
-    "learnboost/socket.io-protocol": "1.0.2",
+    "learnboost/socket.io-protocol": "*",
     "component/emitter": "*",
     "component/bind": "*",
     "component/json-fallback": "*",
