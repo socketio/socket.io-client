@@ -10,7 +10,8 @@
     "timoxley/to-array": "*",
     "visionmedia/debug": "*",
     "component/url": "*",
-    "component/bind": "*"
+    "component/bind": "*",
+    "component/object": "*"
   },
   "scripts": [
     "lib/index.js",
