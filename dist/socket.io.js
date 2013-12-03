@@ -3867,7 +3867,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   , this
 );
 
-if (typeof define === "function" && define.amd) {
+if ('undefined' === typeof module && typeof define === "function" && define.amd) {
   define([], function () { return io; });
 }
 })();
