@@ -91,7 +91,7 @@ var baseTransports = {
  */
 var wrapperPre = "\nvar io = ('undefined' === typeof module ? {} : module.exports);\n(function() {\n";
 
-var wrapperPost = "\nif (typeof define === \"function\" && define.amd) {" +
+var wrapperPost = "\nif ('undefined' === typeof module && typeof define === \"function\" && define.amd) {" +
                   "\n  define([], function () { return io; });" +
                   "\n}\n})();";
 
