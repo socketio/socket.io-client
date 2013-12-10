@@ -41,7 +41,7 @@
   Add `socket.io-client` to your `package.json` and then:
 
   ```js
-  var socket = require('socket.io-client')('http://localhost');
+  var socket = require('socket.io-client').connect('http://localhost');
   socket.on('connect', function(){
     socket.on('event', function(data){});
     socket.on('disconnect', fucntion(){});
