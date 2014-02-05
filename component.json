@@ -4,14 +4,19 @@
   "dependencies": {
     "learnboost/engine.io-client": "0.4.0",
     "learnboost/socket.io-protocol": "1.0.2",
+    "component/url": "0.1.0",
     "component/emitter": "0.0.6",
     "component/bind": "0.0.1",
+    "component/object": "0.0.3",
     "component/json-fallback": "*",
     "timoxley/to-array": "0.1.4",
     "visionmedia/debug": "*"
   },
+  "main": "lib/index.js",
   "scripts": [
     "lib/index.js",
+    "lib/url.js",
+    "lib/on.js",
     "lib/manager.js",
     "lib/engine.js",
     "lib/socket.js",
