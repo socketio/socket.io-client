@@ -125,6 +125,14 @@ true
 
   The amount of attempts should we make using the current transport to connect to the server? After this we will do one final attempt, and re-try with all enabled transport methods before we give up.
 
+- *'xhr onready delay'*
+
+```js
+100
+```
+
+  The amount of milliseconds the Webkit browsers have to wait before starting a XHR polling request to avoid it to show an infinit spinner. Older hardware, i.e. some old Android devices, need to wait longer to avoid the spinner to be shown.
+
 ##### Properties:
 
 - *options*
