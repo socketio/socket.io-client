@@ -1,6 +1,8 @@
 
-var old = global.location;
 var loc = {};
+if (typeof global.location === 'undefined') {
+  global.location = {};
+}
 var url = require('../lib/url');
 var expect = require('expect.js');
 
@@ -35,7 +37,7 @@ describe('url', function(){
     loc.protocol = 'http:';
     loc.hostname = 'woot.com';
 
-    expect(url('/woot').pathname).to.be('/woot');
+    expect(url('/woot', loc).pathname).to.be('/woot');
     expect(url('http://google.com').pathname).to.be('/');
     expect(url('http://google.com/').pathname).to.be('/');
   });
