@@ -87,9 +87,13 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
     reconnection (`1000`)
   - `reconnectionDelayMax` maximum amount of time to wait between
     reconnections (`5000`). Each attempt increases the reconnection by
-    the amount specified by `reconnectionDelay`.
+    the amount specified by the time returned by `backoffMethod`, which uses exponential back off as default.
   - `timeout` connection timeout before a `connect_error`
     and `connect_timeout` events are emitted (`20000`)
+  - `initialDelay` how long is the first delay, default is 1000 (`1000`)
+  - `backoffMultipler` how much should be multiplied to increase the delay time, default is 1.5 (`1.5`)
+  - `randomizeFactor` how much should the multiplied time be randomized default is (`0`)
+  - `backoffMethod` a fuction that returns the backoff method of delays (`function(){ return 1000; }`)
 
 #### Events
 
