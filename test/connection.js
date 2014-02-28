@@ -135,4 +135,12 @@ if (global.Blob && null != textBlobBuilder('xxx')) {
   });
 }
 
+  it('should emit reconnecting event', function(done) {
+    var socket = io();
+    socket.io.on('reconnecting', function(){
+      socket.close();
+      done();
+    });
+    socket.io.reconnect();
+  });
 });
