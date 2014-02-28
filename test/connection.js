@@ -135,4 +135,14 @@ if (global.Blob && null != textBlobBuilder('xxx')) {
   });
 }
 
+  it('should call user\'s backoff function when given', function() {
+    var socket = io();
+    var called = false;
+    socket.io.backoffMethod(function(){
+      called = true;
+      return 100;
+    });
+    socket.io.reconnect();
+    expect(called).to.be(true);
+  });
 });
