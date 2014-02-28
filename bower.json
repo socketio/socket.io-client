@@ -1,0 +1,6 @@
+{
+  "name": "socket.io-client",
+  "homepage": "https://github.com/LearnBoost/socket.io-client",
+  "version": "0.9.16",
+  "main": "dist/socket.io.js"
+}
