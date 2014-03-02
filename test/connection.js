@@ -138,7 +138,7 @@ if (global.Blob && null != textBlobBuilder('xxx')) {
   it('should call user\'s backoff function when given', function() {
     var socket = io();
     var called = false;
-    socket.io.backoffMethod(function(){
+    socket.io.reconnectionBackoffMethod(function(){
       called = true;
       return 100;
     });
