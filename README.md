@@ -83,8 +83,6 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
 
   Options:
   - `reconnection` whether to reconnect automatically (`true`)
-  - `reconnectionDelay` how long to wait before attempting a new
-    reconnection (`1000`)
   - `reconnectionDelayMax` maximum amount of time to wait between
     reconnections (`5000`). Each attempt increases the reconnection by
     the amount specified by the return value (in ms) of `reonnectionBackoffMethod`, which uses exponential back off as default.
@@ -118,24 +116,39 @@ reconnect that depend on this `Manager`.
   Sets the `reconnection` option, or returns it if no parameters
   are passed.
 
-### Manager#reconnectionAttempts(v:Boolean):Manager
+### Manager#reconnectionAttempts(v:Integer):Manager
 
   Sets the `reconnectionAttempts` option, or returns it if no parameters
   are passed.
 
-### Manager#reconnectionDelay(v:Boolean):Manager
+### Manager#reconnectionDelayMax(v:Integer):Manager
 
-  Sets the `reconectionDelay` option, or returns it if no parameters
+  Sets the `reconnectionDelayMax` option, or returns it if no parameters
   are passed.
 
-### Manager#reconnectionDelayMax(v:Boolean):Manager
-
-  Sets the `reconectionDelayMax` option, or returns it if no parameters
-  are passed.
-
-### Manager#timeout(v:Boolean):Manager
+### Manager#timeout(v:Integer):Manager
 
   Sets the `timeout` option, or returns it if no parameters
+  are passed.
+
+### Manager#reconnectionInitialDelay(v:Integer):Manager
+
+  Sets the `reconnectionInitialDelay` option, or returns it if no parameters
+  are passed.
+
+### Manager#reconnectionBackoffMultipler(v:Float):Manager
+
+  Sets the `reconnectionBackoffMultipler` option, or returns it if no parameters
+  are passed.
+
+### Manager#reconnectionRandomizeFactor(v:Float):Manager
+
+  Sets the `reconnectionRandomizeFactor` option, or returns it if no parameters
+  are passed.
+
+### Manager#reconnectionBackoffMethod(v:Function):Manager
+
+  Sets the `reconnectionBackoffMethod` option, or returns it if no parameters
   are passed.
 
 ### Socket
