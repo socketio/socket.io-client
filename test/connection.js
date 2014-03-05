@@ -44,6 +44,15 @@ describe('connection', function() {
     });
   });
 
+  it('should emit reconnecting event', function(done) {
+    var socket = io('/a');
+    socket.on('reconnecting', function(){
+      socket.close();
+      done();
+    });
+    socket.io.reconnect();
+  });
+
 if (!global.Blob && !global.ArrayBuffer) {
   it('should get base64 data as a last resort', function(done) {
     socket.on('takebin', function(a) {
@@ -134,13 +143,4 @@ if (global.Blob && null != textBlobBuilder('xxx')) {
     done();
   });
 }
-
-  it('should emit reconnecting event', function(done) {
-    var socket = io('/a');
-    socket.on('reconnecting', function(){
-      socket.close();
-      done();
-    });
-    socket.io.reconnect();
-  });
 });
