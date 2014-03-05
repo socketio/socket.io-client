@@ -8,6 +8,7 @@ describe('connection', function() {
   this.timeout(10000);
   var socket = io();
 
+
   it('should connect to localhost', function(done) {
     socket.emit('hi');
     socket.on('hi', function(data){
@@ -42,6 +43,16 @@ describe('connection', function() {
         done();
       });
     });
+  });
+
+  it('should call user\'s backoff function when given', function() {
+    var called = false;
+    socket.io.reconnectionBackoffMethod(function(){
+      called = true;
+      return 100;
+    });
+    socket.io.reconnect();
+    expect(called).to.be(true);
   });
 
 if (!global.Blob && !global.ArrayBuffer) {
@@ -134,15 +145,4 @@ if (global.Blob && null != textBlobBuilder('xxx')) {
     done();
   });
 }
-
-  it('should call user\'s backoff function when given', function() {
-    var socket = io();
-    var called = false;
-    socket.io.reconnectionBackoffMethod(function(){
-      called = true;
-      return 100;
-    });
-    socket.io.reconnect();
-    expect(called).to.be(true);
-  });
 });
