@@ -5,7 +5,7 @@ var b64 = require('base64-js');
 var textBlobBuilder = require('text-blob-builder');
 
 describe('connection', function() {
-  this.timeout(10000);
+  this.timeout(20000);
   var socket = io();
 
   it('should connect to localhost', function(done) {
@@ -134,5 +134,35 @@ if (global.Blob && null != textBlobBuilder('xxx')) {
     done();
   });
 }
+
+  it ('should emit reconnect event', function(done) {
+    var manager = io.Manager();
+    socket = manager.socket('/');
+    socket.on('connect', function() {
+      socket.io.on('reconnect', function() {
+        done();
+      });
+      socket.emit('reconn');
+    });
+  });
+
+  it ('should emit timeout and failure events', function(done) {
+    socket.io.reconnectionAttempts(2);
+    socket.io.timeout(1000);
+    var connect_timeout = false;
+    var reconnect_error = false
+    socket.io.on('connect_timeout', function() {
+      connect_timeout = true;
+    });
+    socket.io.on('reconnect_error', function() {
+      reconnect_error = true;
+    });
+    socket.io.once('reconnect_failed', function() {
+      expect(connect_timeout).to.be(true);
+      expect(reconnect_error).to.be(true);
+      done();
+    });
+    socket.emit('timeout_fail');
+  });
 
 });

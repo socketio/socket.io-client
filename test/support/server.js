@@ -2,7 +2,7 @@
 // this is a test server to support tests which make requests
 
 var io = require('socket.io');
-var server = io(process.env.ZUUL_PORT);
+var server = io(process.env.ZUUL_PORT, {pingInterval: 800, pingTimeout: 2000});
 var expect = require('expect.js');
 
 server.on('connection', function(socket){
@@ -91,5 +91,15 @@ server.on('connection', function(socket){
   socket.on('getbin', function() {
     buf = new Buffer('asdfasdf', 'utf8');
     socket.emit('takebin', buf);
+  });
+
+  // reconnect test
+  socket.on('reconn', function() {
+    socket.conn.sendPacket = function() {};
+  });
+
+  // connect_timeout, reconnect_error, reconnect_failed test
+  socket.on('timeout_fail', function() {
+    Object.getPrototypeOf(socket.conn).sendPacket = function() {};
   });
 });
