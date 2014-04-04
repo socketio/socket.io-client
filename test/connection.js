@@ -54,6 +54,16 @@ describe('connection', function() {
     });
   });
 
+  it('should call user\'s backoff function when given', function() {
+    var called = false;
+    socket.io.reconnectionBackoffMethod(function(){
+      called = true;
+      return 100;
+    });
+    socket.io.reconnect();
+    expect(called).to.be(true);
+  });
+
   it('should try to reconnect twice and fail when requested two attempts with incorrect address and reconnect enabled', function(done) {
     var manager = io.Manager('http://localhost:3940', { reconnection: true, reconnectionAttempts: 2, reconnectionDelay: 10 });
     var socket = manager.socket('/asd');
