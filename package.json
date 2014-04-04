@@ -1,6 +1,6 @@
 {
   "name": "socket.io-client",
-  "version": "1.0.0",
+  "version": "1.0.0-pre",
   "keywords": [
     "realtime",
     "framework",
@@ -10,11 +10,11 @@
     "client"
   ],
   "dependencies": {
-    "engine.io-client": "LearnBoost/engine.io-client#7c9b0f",
+    "engine.io-client": "1.0.5",
     "emitter": "http://github.com/component/emitter/archive/1.0.1.tar.gz",
     "bind": "http://github.com/component/bind/archive/0.0.1.tar.gz",
     "object-component": "0.0.3",
-    "socket.io-parser": "2.1.0",
+    "socket.io-parser": "2.1.2",
     "parseuri": "0.0.2",
     "to-array": "0.1.3",
     "debug": "0.7.4",
@@ -22,7 +22,7 @@
     "indexof": "0.0.1"
   },
   "devDependencies": {
-    "socket.io": "LearnBoost/socket.io#d293e3b",
+    "socket.io": "LearnBoost/socket.io#6aa553",
     "mocha": "1.16.2",
     "zuul": "1.5.4",
     "istanbul": "0.2.1",
