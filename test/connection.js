@@ -55,12 +55,11 @@ describe('connection', function() {
   });
 
   it('should emit reconnecting event', function(done) {
-    var socket = io('/a');
+    var socket = io();
     socket.on('reconnecting', function(){
-      socket.close();
       done();
     });
-    socket.io.reconnect();
+    socket.io.engine.close();
   });
 
 
