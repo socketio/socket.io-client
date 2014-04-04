@@ -54,6 +54,15 @@ describe('connection', function() {
     });
   });
 
+  it('should emit reconnecting event', function(done) {
+    var socket = io();
+    socket.on('reconnecting', function(){
+      done();
+    });
+    socket.io.engine.close();
+  });
+
+
   it('should try to reconnect twice and fail when requested two attempts with incorrect address and reconnect enabled', function(done) {
     var manager = io.Manager('http://localhost:3940', { reconnection: true, reconnectionAttempts: 2, reconnectionDelay: 10 });
     var socket = manager.socket('/asd');
