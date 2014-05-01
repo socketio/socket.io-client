@@ -147,4 +147,3 @@ reconnect that depend on this `Manager`.
 ## License
 
 MIT
-deleteme
