@@ -89,6 +89,8 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
     the amount specified by `reconnectionDelay`.
   - `timeout` connection timeout before a `connect_error`
     and `connect_timeout` events are emitted (`20000`)
+  - `autoConnect` by setting this false, you have to call `manager.open`
+    whenever you decide it's appropriate
 
 #### Events
 
@@ -100,10 +102,14 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
   - `reconnect`. Fired upon a successful reconnection.
     Parameters:
       - `Number` reconnection attempt number
+  - `reconnect_attempt`. Fired upon an attempt to reconnect.
+  - `reconnecting`. Fired upon an attempt to reconnect.
+    Parameters:
+      - `Number` reconnection attempt number
   - `reconnect_error`. Fired upon a reconnection attempt error.
     Parameters:
       - `Object` error object
-  - `reconnect_failed`
+  - `reconnect_failed`. Fired when couldn't reconnect within `reconnectionAttempts`
 
 The events above are also emitted on the individual sockets that
 reconnect that depend on this `Manager`.
@@ -142,6 +148,17 @@ reconnect that depend on this `Manager`.
     Parameters:
       - `Object` error data
   - `disconnect`. Fired upon a disconnection.
+  - `reconnect`. Fired upon a successful reconnection.
+    Parameters:
+      - `Number` reconnection attempt number
+  - `reconnect_attempt`. Fired upon an attempt to reconnect.
+  - `reconnecting`. Fired upon an attempt to reconnect.
+    Parameters:
+      - `Number` reconnection attempt number
+  - `reconnect_error`. Fired upon a reconnection attempt error.
+    Parameters:
+      - `Object` error object
+  - `reconnect_failed`. Fired when couldn't reconnect within `reconnectionAttempts`
 
 ## License
 
