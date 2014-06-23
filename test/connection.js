@@ -41,6 +41,26 @@ describe('connection', function() {
     });
   });
 
+  it('should not send volatile messages', function(done) {
+    var socket = io({volatile: true, forceNew: true}); // forceNew because cache sockets not volatile
+    var recievedEvent = false;
+    socket.emit('volatile'); // this should be received
+
+    socket.on('serverReceivedVolatile', function() {
+      if (!receivedEvent) {
+        // the message successfully sent the first time
+        receivedEvent = true;
+        socket.io.engine.writable = false; // simulate disconnection
+        socket.emit('volatile'); // then emit another (shouldn't send)
+      }
+      throw new Error('this means the volatile event was received');
+    });
+    setTimeout(function() {
+      socket.io.writable = true;
+      done();
+    }, 500);
+  });
+
   it('should receive utf8 multibyte characters', function(done) {
     var correct = [
       'てすと',
