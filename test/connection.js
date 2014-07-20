@@ -100,6 +100,21 @@ describe('connection', function() {
     });
   });
 
+  it('should create a new socket for a closed namespace', function(done) {
+    var manager = io.Manager();
+    var socket1 = manager.socket('/nsp');
+    socket1.on('connect', function() {
+      socket1.disconnect();
+    }).on('disconnect', function() {
+      var socket2 = manager.socket('/nsp');
+      expect(socket2).not.to.be(socket1);
+      socket2.on('connect', function() {
+        socket2.disconnect();
+        done();
+      });
+    });
+  });
+
   it('should reconnect by default', function(done){
     var socket = io({ forceNew: true });
     socket.io.on('reconnect', function() {
