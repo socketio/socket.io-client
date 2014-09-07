@@ -1,10 +1,14 @@
 
 REPORTER = dot
 
-build: socket.io.js
+build: socket.io.js dist/socket.io.min.js
 
 socket.io.js: lib/*.js package.json
 	@./support/browserify.sh > socket.io.js
+
+dist/socket.io.min.js: socket.io.js
+	@install -d dist
+	@./node_modules/.bin/uglifyjs $^ -c > $@
 
 test:
 	@if [ "x$(BROWSER_NAME)" = "x" ]; then make test-node; else make test-zuul; fi
