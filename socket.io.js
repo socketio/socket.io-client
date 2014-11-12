@@ -141,7 +141,7 @@ function Manager(uri, opts){
   this.timeout(null == opts.timeout ? 20000 : opts.timeout);
   this.readyState = 'closed';
   this.uri = uri;
-  this.connecting = [];
+  this.connected = [];
   this.attempts = 0;
   this.encoding = false;
   this.packetBuffer = [];
@@ -391,9 +391,12 @@ Manager.prototype.socket = function(nsp){
   if (!socket) {
     socket = new Socket(this, nsp);
     this.nsps[nsp] = socket;
-    if (!~indexOf(self.connecting, socket)) {
-      this.connecting.push(socket);
-    }
+    var self = this;
+    socket.on('connect', function(){
+      if (!~indexOf(self.connected, socket)) {
+        self.connected.push(socket);
+      }
+    });
   }
   return socket;
 };
@@ -405,9 +408,9 @@ Manager.prototype.socket = function(nsp){
  */
 
 Manager.prototype.destroy = function(socket){
-  var index = indexOf(this.connecting, socket);
-  if (~index) this.connecting.splice(index, 1);
-  if (this.connecting.length) return;
+  var index = indexOf(this.connected, socket);
+  if (~index) this.connected.splice(index, 1);
+  if (this.connected.length) return;
 
   this.close();
 };
