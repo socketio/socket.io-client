@@ -1192,6 +1192,12 @@ Emitter.prototype.removeEventListener = function(event, fn){
     cb = callbacks[i];
     if (cb === fn || cb.fn === fn) {
       callbacks.splice(i, 1);
+
+      //check if there are any handlers left for the events callbacks, if not, delete the entry
+      if(callbacks.length == 0){
+          delete this._callbacks[event];
+      }
+
       break;
     }
   }
