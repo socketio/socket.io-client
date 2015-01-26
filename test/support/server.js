@@ -61,6 +61,11 @@ server.on('connection', function(socket){
     socket.emit('false', false);
   });
 
+  // volatile test
+  socket.on('volatile', function() {
+    socket.emit('serverReceivedVolatile');
+  });
+
   // binary test
   socket.on('doge', function(){
     buf = new Buffer('asdfasdf', 'utf8');
