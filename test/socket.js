@@ -2,6 +2,8 @@ var expect = require('expect.js');
 var io = require('../');
 
 describe('socket', function(){
+  this.timeout(70000);
+
   it('should have an accessible socket id equal to the engine.io socket id', function(done) {
     var socket = io({ forceNew: true });
     socket.on('connect', function(){
@@ -21,6 +23,34 @@ describe('socket', function(){
       });
 
       socket.disconnect();
+    });
+  });
+
+  it('doesn\'t fire a connect_error if we force disconnect in opening state', function(done){
+    var socket = io({ forceNew: true, timeout: 100 });
+    socket.disconnect();
+    socket.on('connect_error', function(){
+      throw new Error('Unexpected');
+    });
+    setTimeout(function(){
+      done();
+    }, 300);
+  });
+
+  it('should ping and pong with latency', function(done){
+    var socket = io({ forceNew: true });
+    socket.on('connect', function(){
+      var pinged;
+      socket.once('ping', function(){
+        pinged = true;
+      });
+      socket.once('pong', function(ms){
+        expect(pinged).to.be(true);
+        expect(ms).to.be.a('number');
+        expect(ms).to.be.greaterThan(0);
+        socket.disconnect();
+        done();
+      });
     });
   });
 

@@ -6,7 +6,7 @@ var textBlobBuilder = require('text-blob-builder');
 describe('connection', function() {
   this.timeout(70000);
 
-  it('should connect to localhost', function(done) {
+  it('should connect to localhost', function(done){
     var socket = io({ forceNew: true });
     socket.emit('hi');
     socket.on('hi', function(data){
@@ -19,6 +19,24 @@ describe('connection', function() {
     var socket = io({ forceNew: true, autoConnect: false });
     expect(socket.io.engine).to.not.be.ok();
     socket.disconnect();
+  });
+
+  it('should start two connections with same path', function(){
+    var s1 = io('/');
+    var s2 = io('/');
+
+    expect(s1.io).to.not.be(s2.io);
+    s1.disconnect();
+    s2.disconnect();
+  });
+
+  it('should start two connections with same path and different querystrings', function(){
+    var s1 = io('/?woot');
+    var s2 = io('/');
+
+    expect(s1.io).to.not.be(s2.io);
+    s1.disconnect();
+    s2.disconnect();
   });
 
   it('should work with acks', function(done){

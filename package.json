@@ -9,11 +9,12 @@
     "events",
     "client"
   ],
+  "main": "./lib/index",
   "dependencies": {
-    "debug": "0.7.4",
-    "engine.io-client": "automattic/engine.io-client#90b72d",
+    "debug": "2.1.3",
+    "engine.io-client": "automattic/engine.io-client#fb7c198",
     "component-bind": "1.0.0",
-    "component-emitter": "1.1.2",
+    "component-emitter": "1.2.0",
     "object-component": "0.0.3",
     "socket.io-parser": "2.2.3",
     "has-binary": "0.1.6",

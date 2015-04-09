@@ -4,6 +4,7 @@
 [![Build Status](https://secure.travis-ci.org/Automattic/socket.io-client.svg)](http://travis-ci.org/Automattic/socket.io-client)
 ![NPM version](https://badge.fury.io/js/socket.io-client.svg)
 ![Downloads](http://img.shields.io/npm/dm/socket.io-client.svg?style=flat)
+[![](http://slack.socket.io/badge.svg)](http://slack.socket.io)
 
 ## How to use
 
@@ -96,7 +97,6 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
 
 #### Events
 
-  - `connect`. Fired upon a successful connection.
   - `connect_error`. Fired upon a connection error.
     Parameters:
       - `Object` error object
@@ -112,6 +112,10 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
     Parameters:
       - `Object` error object
   - `reconnect_failed`. Fired when couldn't reconnect within `reconnectionAttempts`
+  - `ping`. Fired when a ping packet is written out to the server.
+  - `pong`. Fired when a pong is received from the server.
+    Parameters:
+      - `Number` number of ms elapsed since `ping` packet (i.e.: latency).
 
 The events above are also emitted on the individual sockets that
 reconnect that depend on this `Manager`.
