@@ -153,13 +153,13 @@ A property on the `socket` instance that is equal to the underlying engine.io so
 
 The property is present once the socket has connected, is removed when the socket disconnects and is updated if the socket reconnects.
 
-#### Socket#volatile():Socket
+#### Socket#volatile:Socket
 
   Sets a modifier for a subsequent event emission that the event message will
   be dropped when this client is not ready to send messages.
 
   ```js
-  socket.volatile().emit('an event', { some: 'data' });
+  socket.volatile.emit('an event', { some: 'data' });
   ```
 
 #### Socket#compress(v:Boolean):Socket

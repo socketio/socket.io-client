@@ -105,7 +105,7 @@ describe('socket', function(){
         counter++;
       });
       socket.emit('hi');
-      socket.volatile().emit('hi');
+      socket.volatile.emit('hi');
 
       setTimeout(function() {
         expect(counter).to.be(1);
@@ -121,7 +121,7 @@ describe('socket', function(){
       socket.on('hi', function(){
         counter++;
       });
-      socket.volatile().emit('hi');
+      socket.volatile.emit('hi');
 
       setTimeout(function() {
         expect(counter).to.be(1);
@@ -137,7 +137,8 @@ describe('socket', function(){
       socket.on('hi', function(){
         counter++;
       });
-      socket.volatile().emit('hi');
+      socket.volatile.emit('hi');
+      socket.volatile.emit('hi');
 
       setTimeout(function() {
         expect(counter).to.be(1);
@@ -154,7 +155,7 @@ describe('socket', function(){
         counter++;
       });
       socket.emit('hi');
-      socket.volatile().emit('hi');
+      socket.volatile.emit('hi');
       socket.emit('hi');
 
       setTimeout(function() {
@@ -173,7 +174,7 @@ describe('socket', function(){
           counter++;
         });
         socket.emit('hi');
-        socket.volatile().emit('hi');
+        socket.volatile.emit('hi');
 
         setTimeout(function() {
           expect(counter).to.be(1);
@@ -189,7 +190,7 @@ describe('socket', function(){
         socket.on('hi', function(){
           counter++;
         });
-        socket.volatile().emit('hi');
+        socket.volatile.emit('hi');
 
         setTimeout(function() {
           expect(counter).to.be(1);
@@ -205,7 +206,8 @@ describe('socket', function(){
         socket.on('hi', function(){
           counter++;
         });
-        socket.volatile().emit('hi');
+        socket.volatile.emit('hi');
+        socket.volatile.emit('hi');
 
         setTimeout(function() {
           expect(counter).to.be(1);
@@ -222,7 +224,7 @@ describe('socket', function(){
           counter++;
         });
         socket.emit('hi');
-        socket.volatile().emit('hi');
+        socket.volatile.emit('hi');
         socket.emit('hi');
 
         setTimeout(function() {
@@ -232,4 +234,16 @@ describe('socket', function(){
       });
     });
   }
+
+  it('should set volatile and compress flags', function(done){
+    var socket = io({ forceNew: true });
+    socket.on('connect', function(){
+      socket.io.engine.once('packetCreate', function(packet){
+        expect(packet.options.volatile).to.be(true);
+        expect(packet.options.compress).to.be(false);
+        done();
+      });
+      socket.volatile.compress(false).emit('hi');
+    });
+  });
 });
