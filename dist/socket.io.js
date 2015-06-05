@@ -1638,9 +1638,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
     } else {
       var xhr = io.util.request();
 
+      xhr.open('GET', url, true);
       xhr.timeout = 1000;
 
-      xhr.open('GET', url, true);
       if (this.isXDomain()) {
         xhr.withCredentials = true;
       }
