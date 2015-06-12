@@ -1527,6 +1527,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       , 'auto connect': true
       , 'flash policy port': 10843
       , 'manualFlush': false
+      , 'handshake timeout': 5000
     };
 
     io.util.merge(this.options, options);
@@ -1639,7 +1640,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       var xhr = io.util.request();
 
       xhr.open('GET', url, true);
-      xhr.timeout = 1000;
+      xhr.timeout = options['handshake timeout'];
 
       if (this.isXDomain()) {
         xhr.withCredentials = true;
