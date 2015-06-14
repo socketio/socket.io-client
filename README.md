@@ -15,7 +15,7 @@ serve the file `socket.io.js` found at the root of this repository.
 ```html
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io('http://localhost');
+  var socket = io.connect('http://localhost');
   socket.on('connect', function(){});
   socket.on('event', function(data){});
   socket.on('disconnect', function(){});
