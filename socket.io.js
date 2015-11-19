@@ -1665,7 +1665,16 @@ Socket.parser = _dereq_('engine.io-parser');
  * @api private
  */
 
-Socket.prototype.createTransport = function (name) {
+Socket.prototype.createTransport = function (transport) {
+  var name, options = {};
+
+  if (transport.options) {
+    name = transport.name;
+    options = transport.options;
+  } else {
+    name = transport;
+  }
+
   debug('creating transport "%s"', name);
   var query = clone(this.query);
 
@@ -1680,10 +1689,10 @@ Socket.prototype.createTransport = function (name) {
 
   var transport = new transports[name]({
     agent: this.agent,
-    hostname: this.hostname,
-    port: this.port,
-    secure: this.secure,
-    path: this.path,
+    hostname: options.hostname || this.hostname,
+    port: options.port || this.port,
+    secure: options.secure || this.secure,
+    path: options.path || this.path,
     query: query,
     forceJSONP: this.forceJSONP,
     jsonp: this.jsonp,
