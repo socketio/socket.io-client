@@ -18,7 +18,7 @@ browsers:
     version: latest
     platform: Windows 10
   - name: ie
-    version: [6..9, latest]
+    version: [6..11, latest]
   - name: iphone
     version: 6.0..latest
   - name: android
