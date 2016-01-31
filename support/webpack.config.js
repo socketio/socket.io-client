@@ -9,6 +9,7 @@ module.exports = {
   externals: {
     global: glob()
   },
+  devtool: 'source-map',
   module: {
     loaders: [{
       test: /\.js$/,
