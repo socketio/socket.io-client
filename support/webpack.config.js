@@ -1,4 +1,3 @@
-
 module.exports = {
   entry: './lib/index.js',
   output: {
@@ -9,7 +8,7 @@ module.exports = {
   externals: {
     global: glob()
   },
-  devtool: 'source-map',
+  devtool: 'cheap-module-source-map',
   module: {
     loaders: [{
       test: /\.js$/,
