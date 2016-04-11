@@ -4,11 +4,11 @@ var io = require('../');
 describe('socket', function () {
   this.timeout(70000);
 
-  it('should have an accessible socket id equal to the engine.io socket id', function (done) {
+  it('should have an accessible socket id equal to nsp + the engine.io socket id', function (done) {
     var socket = io({ forceNew: true });
     socket.on('connect', function () {
       expect(socket.id).to.be.ok();
-      expect(socket.id).to.eql(socket.io.engine.id);
+      expect(socket.id).to.eql('/#' + socket.io.engine.id);
       socket.disconnect();
       done();
     });
