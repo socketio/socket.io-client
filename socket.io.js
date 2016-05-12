@@ -432,6 +432,14 @@ Socket.prototype.onOpen = function () {
 
 Socket.prototype.onPacket = function (packet) {
   if ('opening' == this.readyState || 'open' == this.readyState) {
+
+    if(!this.transport.writable && (this.transport.name === "websocket")) {
+      // Here we ensure that queued responses are flushed before handling new packets.
+      // Waiting for the browser to handle our 'fake drain' caused latency in Safari 
+      this.transport.writable = true;
+      this.transport.emit('drain');
+    }
+
     debug('socket receive: type "%s", data "%s"', packet.type, packet.data);
 
     this.emit('packet', packet);
@@ -2081,8 +2089,10 @@ WS.prototype.write = function(packets){
     // fake drain
     // defer to next tick to allow Socket to clear writeBuffer
     setTimeout(function(){
-      self.writable = true;
-      self.emit('drain');
+      if(!self.writable) {
+        self.writable = true;
+        self.emit('drain');
+      }
     }, 0);
   }
 };
