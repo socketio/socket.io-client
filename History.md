@@ -1,4 +1,68 @@
 
+1.4.8 / 2016-06-23
+==================
+
+  * package: bump `engine.io-client`
+
+1.4.7 / 2016-06-23
+==================
+
+  * bump engine.io-client
+
+1.4.6 / 2016-05-02
+==================
+
+  * bump engine.io-client
+
+1.4.5 / 2016-01-26
+==================
+
+  * fix `NativeScript` support
+
+1.4.4 / 2016-01-10
+==================
+
+  * bump `engine.io-client`
+
+1.4.3 / 2016-01-08
+==================
+
+  * remove `webpack.config.js`
+
+1.4.2 / 2016-01-07
+==================
+
+  * exclude `ws` instead of `ignore`ing it from build [@lpinca]
+  * add global object as another fallback [@ligaz]
+  * bump `engine.io-client`
+
+1.4.1 / 2016-01-07
+==================
+
+  * package: bump `engine.io-client`
+
+1.4.0 / 2015-11-28
+==================
+
+  * package: bump `engine.io-client`
+  * manager: fix `Object.prototype` extensions
+  * package: bump `zuul` and `zuul-ngrok`
+  * package: bump `debug`
+  * package: bump `socket.io-parser`
+  * package: bump `has-binary`
+  * remove unnecessary `index.js`
+  * added support for `ping` and `pong` events
+  * proper handling of disconnection while in `opening` state
+  * instrumentation / style tweaks
+  * added tests for same-namespace new connection handling
+  * do not call apply if packet id is not in acks
+  * build sio client with make to autogenerate new socket.io.js
+  * bugfix/1956 don't reuse same-namespace connections #2
+  * fix has-binary to work with all objects [gunta]
+  * bugfix/1956 don't reuse same-namespace connections
+  * add support for compression [nkzawa]
+  * fix: location.port was ignored
+
 1.3.7 / 2015-09-21
 ==================
 
