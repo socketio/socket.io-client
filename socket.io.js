@@ -4023,7 +4023,14 @@ WS.prototype.doOpen = function(){
     opts.headers = this.extraHeaders;
   }
 
-  this.ws = BrowserWebSocket ? new WebSocket(uri) : new WebSocket(uri, protocols, opts);
+  try {
+    this.ws = BrowserWebSocket ? new WebSocket(uri) : new WebSocket(uri, protocols, opts);
+  } catch (e) {
+    this.addEventListeners ();
+    this.onError ('websocket error', e);
+    this.onClose ();
+    return;
+  }
 
   if (this.ws.binaryType === undefined) {
     this.supportsBinary = false;
