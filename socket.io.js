@@ -4139,7 +4139,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    xhr.open(this.method, this.uri, this.async);
 	    try {
 	      if (this.extraHeaders) {
-	        xhr.setDisableHeaderCheck(true);
+	        if ( xhr.setDisableHeaderCheck)
+	          xhr.setDisableHeaderCheck(true);
 	        for (var i in this.extraHeaders) {
 	          if (this.extraHeaders.hasOwnProperty(i)) {
 	            xhr.setRequestHeader(i, this.extraHeaders[i]);
