@@ -408,7 +408,7 @@ describe('connection', function () {
         asdSocket.on('reconnect_attempt', function () {
           expect().fail('EIO socket was leaked');
         });
-      })
+      });
 
       asdSocket.on('connect', function () {
         asdSocket.disconnect();
