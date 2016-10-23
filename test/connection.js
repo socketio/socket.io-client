@@ -383,6 +383,40 @@ describe('connection', function () {
     });
   });
 
+  it('should not leak an EIO socket when disconnect is called right before connecting again', function (done) {
+    // The EIO socket close event is only emitted after the transport
+    // emits a drain event.
+    //
+    // The websocket transport has a "fake drain" drain which
+    // means it's more likly to trigger the EIO socket close
+    // event before we can successfuly connect.
+    //
+    // See fake drain: https://github.com/socketio/engine.io-client/blob/410189e/lib/transports/websocket.js#L196
+    var manager = io.Manager({ transports: ['websocket'] });
+
+    var fooSocket = manager.socket('/foo');
+    fooSocket.on('connect', function () {
+      // This disconnect should not break
+      // the conection of the asdSocket.
+      fooSocket.disconnect();
+
+      var asdSocket = manager.socket('/asd');
+
+      // Only fail if reconnect_attempt it emitted
+      // even if the IEO Socket was successfully opened.
+      manager.engine.on('open', function () {
+        asdSocket.on('reconnect_attempt', function () {
+          expect().fail('EIO socket was leaked');
+        });
+      })
+
+      asdSocket.on('connect', function () {
+        asdSocket.disconnect();
+        done();
+      });
+    });
+  });
+
   it('should connect while disconnecting another socket', function (done) {
     var manager = io.Manager();
     var socket1 = manager.socket('/foo');
