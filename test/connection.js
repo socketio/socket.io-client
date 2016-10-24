@@ -383,46 +383,48 @@ describe('connection', function () {
     });
   });
 
-  it('should not leak an EIO socket when disconnect is called right before connecting again (#1014)', function (done) {
-    // The EIO socket close event is only emitted after the transport
-    // emits a drain event.
-    //
-    // The websocket transport has a "fake drain" drain which
-    // means it's more likly to trigger the EIO socket close
-    // event before we can successfuly connect.
-    //
-    // See fake drain: https://github.com/socketio/engine.io-client/blob/410189e/lib/transports/websocket.js#L196
-    var manager = io.Manager({
-      transports: ['websocket'],
-      reconnectionDelay: 10,
-      reconnectionDelayMax: 35
-    });
+  if (typeof window === 'undefined' || window.WebSocket || window.MozWebSocket) {
+    it('should not leak an EIO socket when disconnect is called right before connecting again (#1014)', function (done) {
+      // The EIO socket close event is only emitted after the transport
+      // emits a drain event.
+      //
+      // The websocket transport has a "fake drain" drain which
+      // means it's more likly to trigger the EIO socket close
+      // event before we can successfuly connect.
+      //
+      // See fake drain: https://github.com/socketio/engine.io-client/blob/410189e/lib/transports/websocket.js#L196
+      var manager = io.Manager({
+        transports: ['websocket'],
+        reconnectionDelay: 10,
+        reconnectionDelayMax: 35
+      });
 
-    var fooSocket = manager.socket('/foo');
-    fooSocket.on('connect', function () {
-      // This disconnect should not break
-      // the conection of the asdSocket.
-      fooSocket.disconnect();
+      var fooSocket = manager.socket('/foo');
+      fooSocket.on('connect', function () {
+        // This disconnect should not break
+        // the conection of the asdSocket.
+        fooSocket.disconnect();
 
-      var asdSocket = manager.socket('/asd');
+        var asdSocket = manager.socket('/asd');
 
-      // Only fail if reconnect_attempt it emitted
-      // even if the IEO Socket was successfully opened.
-      manager.engine.on('open', function () {
-        asdSocket.on('reconnect_attempt', function () {
-          expect().fail('should not try to reconnect aftert successful connect');
+        // Only fail if reconnect_attempt it emitted
+        // even if the IEO Socket was successfully opened.
+        manager.engine.on('open', function () {
+          asdSocket.on('reconnect_attempt', function () {
+            expect().fail('should not try to reconnect aftert successful connect');
+          });
+        });
+
+        asdSocket.on('connect', function () {
+          // set a timeout to let reconnection possibly fire
+          setTimeout(function () {
+            asdSocket.disconnect();
+            done();
+          }, 60);
         });
       });
-
-      asdSocket.on('connect', function () {
-        // set a timeout to let reconnection possibly fire
-        setTimeout(function () {
-          asdSocket.disconnect();
-          done();
-        }, 60);
-      });
     });
-  });
+  }
 
   it('should connect while disconnecting another socket', function (done) {
     var manager = io.Manager();
