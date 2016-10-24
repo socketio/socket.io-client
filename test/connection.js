@@ -416,7 +416,7 @@ describe('connection', function () {
 
       asdSocket.on('connect', function () {
         // set a timeout to let reconnection possibly fire
-        setTimeout(function() {
+        setTimeout(function () {
           asdSocket.disconnect();
           done();
         }, 60);
