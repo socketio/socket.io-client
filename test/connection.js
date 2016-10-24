@@ -383,7 +383,7 @@ describe('connection', function () {
     });
   });
 
-  it('should not leak an EIO socket when disconnect is called right before connecting again', function (done) {
+  it('should not leak an EIO socket when disconnect is called right before connecting again (#1014)', function (done) {
     // The EIO socket close event is only emitted after the transport
     // emits a drain event.
     //
@@ -392,7 +392,11 @@ describe('connection', function () {
     // event before we can successfuly connect.
     //
     // See fake drain: https://github.com/socketio/engine.io-client/blob/410189e/lib/transports/websocket.js#L196
-    var manager = io.Manager({ transports: ['websocket'] });
+    var manager = io.Manager({
+      transports: ['websocket'],
+      reconnectionDelay: 10,
+      reconnectionDelayMax: 35
+    });
 
     var fooSocket = manager.socket('/foo');
     fooSocket.on('connect', function () {
@@ -406,13 +410,16 @@ describe('connection', function () {
       // even if the IEO Socket was successfully opened.
       manager.engine.on('open', function () {
         asdSocket.on('reconnect_attempt', function () {
-          expect().fail('EIO socket was leaked');
+          expect().fail('should not try to reconnect aftert successful connect');
         });
       });
 
       asdSocket.on('connect', function () {
-        asdSocket.disconnect();
-        done();
+        // set a timeout to let reconnection possibly fire
+        setTimeout(function() {
+          asdSocket.disconnect();
+          done();
+        }, 60);
       });
     });
   });
