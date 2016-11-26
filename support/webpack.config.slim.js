@@ -27,7 +27,7 @@ module.exports = {
       loader: 'imports?define=>false'
     }, {
       test: /\.js$/,
-      loader: "strip-loader?strip[]=debug"
+      loader: 'strip-loader?strip[]=debug'
     }]
   }
 };

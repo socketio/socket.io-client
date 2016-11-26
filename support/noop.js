@@ -1,2 +1,2 @@
 
-module.exports = function() { return function () {} };
+module.exports = function () { return function () {}; };
