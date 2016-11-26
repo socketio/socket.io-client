@@ -84,7 +84,7 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
 
   Options:
   - `reconnection` whether to reconnect automatically (`true`)
-  - `reconnectionAttempts` the max times of attempting a new reconnection. (`Infinity`) 
+  - `reconnectionAttempts` (`Infinity`) before giving up
   - `reconnectionDelay` how long to initially wait before attempting a new
     reconnection (`1000`). Affected by +/- `randomizationFactor`,
     for example the default initial delay will be between 500 to 1500ms.
@@ -95,7 +95,7 @@ Socket.IO is compatible with [browserify](http://browserify.org/).
   - `timeout` connection timeout before a `connect_error`
     and `connect_timeout` events are emitted (`20000`)
   - `autoConnect` by setting this false, you have to call `manager.open`
-    whenever you decide it's appropriate(`true`)
+    whenever you decide it's appropriate
 
 #### Events
 
