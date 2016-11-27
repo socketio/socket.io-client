@@ -15,7 +15,7 @@ module.exports = {
   },
   devtool: 'cheap-module-source-map',
   plugins: [
-    new webpack.NormalModuleReplacementPlugin(/(debug|json3)/, process.cwd() + '/support/noop.js')
+    new webpack.NormalModuleReplacementPlugin(/debug/, process.cwd() + '/support/noop.js')
   ],
   module: {
     loaders: [{
