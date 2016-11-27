@@ -10,7 +10,8 @@ module.exports = {
     filename: 'socket.io.slim.js'
   },
   externals: {
-    global: glob()
+    global: glob(),
+    json3: 'JSON'
   },
   devtool: 'cheap-module-source-map',
   plugins: [
