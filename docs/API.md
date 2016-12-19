@@ -29,6 +29,7 @@
     - [socket.connect()](#socketconnect)
     - [socket.send([...args][, ack])](#socketsendargs-ack)
     - [socket.emit(eventName[, ...args][, ack])](#socketemiteventname-args-ack)
+    - [socket.on(eventName, callback)](#socketoneventname-callback)
     - [socket.compress(value)](#socketcompressvalue)
     - [socket.close()](#socketclose)
     - [socket.disconnect()](#socketdisconnect)
@@ -56,7 +57,7 @@ The protocol revision number.
 
   - `url` _(String)_
   - `options` _(Object)_
-  - **Returns** `io.Socket`
+  - **Returns** `Socket`
 
 Creates a new `Manager` for the given URL, and attempts to reuse an existing `Manager` for subsequent calls, unless the `multiplex` option is passed with `false`. Passing this option is the equivalent of passing `'force new connection': true` or `forceNew: true`.
 
@@ -83,7 +84,7 @@ See [new Manager(url[, options])](#managerurl-options) for available `options`.
       and `connect_timeout` events are emitted (`20000`)
     - `autoConnect` _(Boolean)_ by setting this false, you have to call `manager.open`
       whenever you decide it's appropriate
-  - **Returns** `io.Socket`
+  - **Returns** `Socket`
 
 The `options` are also passed to `engine.io-client` upon initialization of the underlying `Socket`. See the available `options` [here](https://github.com/socketio/engine.io-client#methods).
 
@@ -195,7 +196,17 @@ Fired when a pong is received from the server.
 
   - _(String)_
 
-A unique identifier for the socket session.
+An unique identifier for the socket session. Set after the `connect` event is triggered, and updated after the `reconnect` event.
+
+```js
+var socket = io('http://localhost');
+
+console.log(socket.id); // undefined
+
+socket.on('connect', function(){
+  console.log(socket.id); // 'G5p5...'
+});
+```
 
 #### socket.open()
 
@@ -242,6 +253,20 @@ socket.emit('ferret', 'tobi', function (data) {
 //      fn('woot');
 //    });
 //  });
+```
+
+#### socket.on(eventName, callback)
+
+  - `eventName` _(String)_
+  - `callback` _(Function)_
+  - **Returns** `Socket`
+
+Register a new handler for the given event.
+
+```js
+socket.on('news', function (data) {
+  console.log(data);
+});
 ```
 
 #### socket.compress(value)
