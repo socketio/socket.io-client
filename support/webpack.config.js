@@ -1,4 +1,3 @@
-
 module.exports = {
   name: 'default',
   entry: './lib/index.js',
