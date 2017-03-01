@@ -73,20 +73,24 @@ See [new Manager(url[, options])](#managerurl-options) for available `options`.
 
   - `url` _(String)_
   - `options` _(Object)_
-    - `path` _(String)_ name of the path that is captured on the server side (`/socket.io`)
-    - `reconnection` _(Boolean)_ whether to reconnect automatically (`true`)
-    - `reconnectionAttempts` _(Number)_ number of reconnection attempts before giving up (`Infinity`)
-    - `reconnectionDelay` _(Number)_ how long to initially wait before attempting a new
+  
+  ```
+  - `path` _(String)_ name of the path that is captured on the server side (`/socket.io`)
+  - `reconnection` _(Boolean)_ whether to reconnect automatically (`true`)
+  - `reconnectionAttempts` _(Number)_ number of reconnection attempts before giving up (`Infinity`)
+  - `reconnectionDelay` _(Number)_ how long to initially wait before attempting a new
       reconnection (`1000`). Affected by +/- `randomizationFactor`,
       for example the default initial delay will be between 500 to 1500ms.
-    - `reconnectionDelayMax` _(Number)_ maximum amount of time to wait between
+  - `reconnectionDelayMax` _(Number)_ maximum amount of time to wait between
       reconnections (`5000`). Each attempt increases the reconnection delay by 2x
       along with a randomization as above
-    - `randomizationFactor` _(Number)_ (`0.5`), 0 <= randomizationFactor <= 1
-    - `timeout` _(Number)_ connection timeout before a `connect_error`
+  - `randomizationFactor` _(Number)_ (`0.5`), 0 <= randomizationFactor <= 1
+  - `timeout` _(Number)_ connection timeout before a `connect_error`
       and `connect_timeout` events are emitted (`20000`)
-    - `autoConnect` _(Boolean)_ by setting this false, you have to call `manager.open`
+  - `autoConnect` _(Boolean)_ by setting this false, you have to call `manager.open`
       whenever you decide it's appropriate
+  ```
+  
   - **Returns** `Socket`
 
 The `options` are also passed to `engine.io-client` upon initialization of the underlying `Socket`. See the available `options` [here](https://github.com/socketio/engine.io-client#methods).
