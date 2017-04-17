@@ -19,7 +19,7 @@ serve the file `socket.io.js` found in the `dist` folder.
 ```html
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io('http://localhost');
+  var socket = io.connect('http://localhost');
   socket.on('connect', function(){});
   socket.on('event', function(data){});
   socket.on('disconnect', function(){});
