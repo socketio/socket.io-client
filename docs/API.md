@@ -4,6 +4,14 @@
 - [IO](#io)
   - [io.protocol](#ioprotocol)
   - [io([url][, options])](#iourl-options)
+    - [Initialization examples](#initialization-examples)
+      - [With multiplexing](#with-multiplexing)
+      - [With custom path](#with-custom-path)
+      - [With query parameters](#with-query-parameters)
+      - [With query option](#with-query-option)
+      - [With extraHeaders](#with-extraheaders)
+      - [With websocket transport only](#with-websocket-transport-only)
+      - [With a custom parser](#with-a-custom-parser)
   - [Class: io.Manager](#manager)
     - [new Manager(url[, options])](#new-managerurl-options)
     - [manager.reconnection([value])](#managerreconnectionvalue)
@@ -59,6 +67,7 @@ The protocol revision number.
 
   - `url` _(String)_ (defaults to `window.location`)
   - `options` _(Object)_
+    - `forceNew` _(Boolean)_ whether to reuse an existing connection
   - **Returns** `Socket`
 
 Creates a new `Manager` for the given URL, and attempts to reuse an existing `Manager` for subsequent calls, unless the `multiplex` option is passed with `false`. Passing this option is the equivalent of passing `'force new connection': true` or `forceNew: true`.
@@ -210,6 +219,22 @@ socket.on('reconnect_attempt', () => {
 });
 ```
 
+##### With a custom parser
+
+The default [parser](https://github.com/socketio/socket.io-parser) promotes compatibility (support for `Blob`, `File`, binary check) at the expense of performance. A custom parser can be provided to match the needs of your application. Please see the example [here](https://github.com/socketio/socket.io/tree/master/examples/custom-parsers).
+
+```js
+const parser = require('socket.io-msgpack-parser'); // or require('socket.io-json-parser')
+const socket = io({
+  parser: parser
+});
+
+// the server-side must have the same parser, to be able to communicate
+const io = require('socket.io')({
+  parser: parser
+});
+```
+
 ### Manager
 
 #### new Manager(url[, options])
@@ -231,6 +256,7 @@ socket.on('reconnect_attempt', () => {
     - `autoConnect` _(Boolean)_ by setting this false, you have to call `manager.open`
       whenever you decide it's appropriate
     - `query` _(Object)_: additional query parameters that are sent when connecting a namespace (then found in `socket.handshake.query` object on the server-side)
+    - `parser` _(Parser)_: the parser to use. Defaults to an instance of the `Parser` that ships with socket.io. See [socket.io-parser](https://github.com/socketio/socket.io-parser).
   - **Returns** `Manager`
 
 The `options` are also passed to `engine.io-client` upon initialization of the underlying `Socket`. See the available `options` [here](https://github.com/socketio/engine.io-client#methods).
