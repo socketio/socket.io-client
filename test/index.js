@@ -5,8 +5,8 @@ require('./support/env');
 global.___eio = null;
 
 require('./url');
+require('./manager');
 
 // browser only tests
 require('./connection');
 require('./socket');
-
