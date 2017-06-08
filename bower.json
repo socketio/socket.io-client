@@ -1,0 +1,17 @@
+{
+  "name": "socket.io-client",
+  "main": "socket.io.js",
+  "homepage": "https://github.com/socketio/socket.io-client",
+  "version": "1.4.8",
+  "_release": "1.4.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.4.8",
+    "commit": "2bed4f433dcc09487c9be15ff013d767570aa8d9"
+  },
+  "_source": "https://github.com/socketio/socket.io-client.git",
+  "_target": "^1.4.8",
+  "_originalSource": "socket.io-client",
+  "_direct": true
+}
+
