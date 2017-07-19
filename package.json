@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "active-x-obfuscator": "0.0.1",
-    "uglify-js": "1.2.5",
+    "uglify-js": "3.0.24",
     "ws": "3.0.0",
     "xmlhttprequest": "1.4.2"
   },

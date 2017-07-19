@@ -234,11 +234,7 @@ var builder = module.exports = function () {
 
       // check if we need to process it any further
       if (settings.minify) {
-        var ast = uglify.parser.parse(code);
-        ast = uglify.uglify.ast_mangle(ast);
-        ast = uglify.uglify.ast_squeeze(ast);
-
-        code = production + uglify.uglify.gen_code(ast, { ascii_only: true });
+        code = production + uglify.minify(code).code;
       }
 
       callback(error, code);
