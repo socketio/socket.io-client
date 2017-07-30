@@ -496,15 +496,16 @@ Sets a modifier for a subsequent event emission that the event data will only be
 socket.compress(false).emit('an event', { some: 'data' });
 ```
 
-#### socket.close()
+#### socket.close(callback)
 
+  - `callback` _(Function)_
   - **Returns** `Socket`
 
-Disconnects the socket manually.
+Disconnects the socket manually and triggers callback once it's done.
 
-#### socket.disconnect()
+#### socket.disconnect(callback)
 
-Synonym of [socket.close()](#socketclose).
+Synonym of [socket.close(callback)](#socketclose).
 
 #### Event: 'connect'
 
