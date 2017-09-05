@@ -396,6 +396,34 @@ socket.on('connect', () => {
 });
 ```
 
+#### socket.connected
+
+  - _(Boolean)_
+
+Whether or not the socket is connected to the server.
+
+```js
+const socket = io('http://localhost');
+
+socket.on('connect', () => {
+  console.log(socket.connected); // true
+});
+```
+
+#### socket.disconnected
+
+  - _(Boolean)_
+
+Whether or not the socket is disconnected from the server.
+
+```js
+const socket = io('http://localhost');
+
+socket.on('connect', () => {
+  console.log(socket.disconnected); // false
+});
+```
+
 #### socket.open()
 
   - **Returns** `Socket`
