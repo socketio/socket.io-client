@@ -33,6 +33,8 @@
     - [Event: 'pong'](#event-pong)
   - [Class: io.Socket](#socket)
     - [socket.id](#socketid)
+    - [socket.connected](#socketconnected)
+    - [socket.disconnected](#socketdisconnected)
     - [socket.open()](#socketopen)
     - [socket.connect()](#socketconnect)
     - [socket.send([...args][, ack])](#socketsendargs-ack)
