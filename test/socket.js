@@ -158,4 +158,156 @@ describe('socket', function () {
       });
     });
   });
+
+  describe('volatile', function () {
+    it('should not emit volatile event after regular event (polling)', function (done) {
+      var socket = io({ forceNew: true, transports: ['polling'] });
+      socket.on('connect', function () {
+        var counter = 0;
+        socket.on('hi', function () {
+          counter++;
+        });
+        socket.emit('hi');
+        socket.volatile.emit('hi');
+
+        setTimeout(function () {
+          expect(counter).to.be(1);
+          done();
+        }, 1000);
+      });
+    });
+
+    it('should emit volatile event (polling)', function (done) {
+      var socket = io({ forceNew: true, transports: ['polling'] });
+      socket.on('connect', function () {
+        var counter = 0;
+        socket.on('hi', function () {
+          counter++;
+        });
+        socket.volatile.emit('hi');
+
+        setTimeout(function () {
+          expect(counter).to.be(1);
+          done();
+        }, 1000);
+      });
+    });
+
+    it('should emit only one consecutive volatile event (polling)', function (done) {
+      var socket = io({ forceNew: true, transports: ['polling'] });
+      socket.on('connect', function () {
+        var counter = 0;
+        socket.on('hi', function () {
+          counter++;
+        });
+        socket.volatile.emit('hi');
+        socket.volatile.emit('hi');
+
+        setTimeout(function () {
+          expect(counter).to.be(1);
+          done();
+        }, 1000);
+      });
+    });
+
+    it('should emit regular events after trying a failed volatile event (polling)', function (done) {
+      var socket = io({ forceNew: true, transports: ['polling'] });
+      socket.on('connect', function () {
+        var counter = 0;
+        socket.on('hi', function () {
+          counter++;
+        });
+        socket.emit('hi');
+        socket.volatile.emit('hi');
+        socket.emit('hi');
+
+        setTimeout(function () {
+          expect(counter).to.be(2);
+          done();
+        }, 1000);
+      });
+    });
+
+    if (global.WebSocket) {
+      it('should not emit volatile event after regular event (ws)', function (done) {
+        var socket = io({ forceNew: true, transports: ['websocket'] });
+        socket.on('connect', function () {
+          var counter = 0;
+          socket.on('hi', function () {
+            counter++;
+          });
+          socket.emit('hi');
+          socket.volatile.emit('hi');
+
+          setTimeout(function () {
+            expect(counter).to.be(1);
+            done();
+          }, 1000);
+        });
+      });
+
+      it('should emit volatile event (ws)', function (done) {
+        var socket = io({ forceNew: true, transports: ['websocket'] });
+        socket.on('connect', function () {
+          var counter = 0;
+          socket.on('hi', function () {
+            counter++;
+          });
+          socket.volatile.emit('hi');
+
+          setTimeout(function () {
+            expect(counter).to.be(1);
+            done();
+          }, 1000);
+        });
+      });
+
+      it('should emit only one consecutive volatile event (ws)', function (done) {
+        var socket = io({ forceNew: true, transports: ['websocket'] });
+        socket.on('connect', function () {
+          var counter = 0;
+          socket.on('hi', function () {
+            counter++;
+          });
+          socket.volatile.emit('hi');
+          socket.volatile.emit('hi');
+
+          setTimeout(function () {
+            expect(counter).to.be(1);
+            done();
+          }, 1000);
+        });
+      });
+
+      it('should emit regular events after trying a failed volatile event (ws)', function (done) {
+        var socket = io({ forceNew: true, transports: ['websocket'] });
+        socket.on('connect', function () {
+          var counter = 0;
+          socket.on('hi', function () {
+            counter++;
+          });
+          socket.emit('hi');
+          socket.volatile.emit('hi');
+          socket.emit('hi');
+
+          setTimeout(function () {
+            expect(counter).to.be(2);
+            done();
+          }, 1000);
+        });
+      });
+    }
+
+    it('should set volatile and compress flags', function (done) {
+      var socket = io({ forceNew: true });
+      socket.on('connect', function () {
+        socket.io.engine.once('packetCreate', function (packet) {
+          expect(packet.options.volatile).to.be(true);
+          expect(packet.options.compress).to.be(false);
+          done();
+        });
+        socket.volatile.compress(false).emit('hi');
+      });
+    });
+  });
 });

@@ -41,6 +41,7 @@
     - [socket.emit(eventName[, ...args][, ack])](#socketemiteventname-args-ack)
     - [socket.on(eventName, callback)](#socketoneventname-callback)
     - [socket.compress(value)](#socketcompressvalue)
+    - [socket.volatile](#socketvolatile)
     - [socket.close()](#socketclose)
     - [socket.disconnect()](#socketdisconnect)
     - [Event: 'connect'](#event-connect)
@@ -524,6 +525,16 @@ Sets a modifier for a subsequent event emission that the event data will only be
 
 ```js
 socket.compress(false).emit('an event', { some: 'data' });
+```
+
+#### socket.volatile
+
+  - **Returns** `Socket`
+
+Sets a modifier for a subsequent event emission that the event message will be dropped when this client is not ready to send messages.
+
+```js
+socket.volatile.emit('an event', { some: 'data' });
 ```
 
 #### socket.close()
