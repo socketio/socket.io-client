@@ -24,6 +24,19 @@ describe('socket', function () {
     });
   });
 
+  it('should connect if host ends with / (custom namespace)', function (done) {
+    let original = global.location.host;
+    global.location.host = global.location.host + '/';
+    var socket = io('/foo', { forceNew: true });
+    socket.on('connect', function () {
+      expect(socket.id).to.be.ok();
+      expect(socket.id).to.eql('/foo#' + socket.io.engine.id);
+      socket.disconnect();
+      global.location.host = original;
+      done();
+    });
+  });
+
   it('clears socket.id upon disconnection', function (done) {
     var socket = io({ forceNew: true });
     socket.on('connect', function () {
