@@ -80,4 +80,9 @@ describe('url', function () {
     expect(parsed.port).to.be('80');
     expect(parsed.id).to.be('http://[::1]:80');
   });
+
+  it('works with 3-th arg (\'path\' from options)', function () {
+    var parsed = url('https://woot.com', null, '/some-path');
+    expect(parsed.id).to.be('https://woot.com:443/some-path');
+  });
 });
