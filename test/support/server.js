@@ -21,6 +21,19 @@ server.of('/asd').on('connection', function () {
   // register namespace
 });
 
+server.of('/abc').on('connection', function (socket) {
+  socket.emit('handshake', socket.handshake);
+});
+
+server.use(function (socket, next) {
+  if (socket.request._query.fail) return next(new Error('Auth failed (main namespace)'));
+  next();
+});
+
+server.of('/no').use(function (socket, next) {
+  next(new Error('Auth failed (custom namespace)'));
+});
+
 server.on('connection', function (socket) {
   // simple test
   socket.on('hi', function () {
@@ -127,5 +140,9 @@ server.on('connection', function (socket) {
   socket.on('getbin', function () {
     var buf = new Buffer('asdfasdf', 'utf8');
     socket.emit('takebin', buf);
+  });
+
+  socket.on('getHandshake', function (cb) {
+    cb(socket.handshake);
   });
 });

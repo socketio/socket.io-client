@@ -1,35 +1,25 @@
+var webpack = require('webpack');
+var merge = require('webpack-merge');
+var baseConfig = require('./webpack.config.dev.js');
 
-module.exports = {
-  entry: './lib/index.js',
+module.exports = merge(baseConfig, {
   output: {
     library: 'io',
     libraryTarget: 'umd',
     filename: 'socket.io.js'
   },
-  externals: {
-    global: glob()
-  },
-  module: {
-    loaders: [{
-      test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
-      loader: 'babel', // 'babel-loader' is also a legal name to reference
-      query: { presets: ['es2015'] }
-    }, {
-      test: /\json3.js/,
-      loader: 'imports?define=>false'
-    }]
-  }
-};
-
-/**
- * Populates `global`.
- *
- * @api private
- */
-
-function glob () {
-  return 'typeof self !== "undefined" ? self : ' +
-    'typeof window !== "undefined" ? window : ' +
-    'typeof global !== "undefined" ? global : {}';
-}
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        screw_ie8: false
+      },
+      mangle: {
+        screw_ie8: false
+      },
+      output: {
+        screw_ie8: false,
+        beautify: false
+      }
+    })
+  ]
+});
