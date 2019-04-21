@@ -535,6 +535,17 @@ Specifies whether the emitted data contains binary. Increases performance when s
 socket.binary(false).emit('an event', { some: 'data' });
 ```
 
+#### socket.volatile(value)
+
+  - `value` _(Boolean)_
+  - **Returns** `Socket`
+
+Specifies whether the emitted data will be dropped when this client is not ready to send messages. Can be `true` or `false`.
+
+```js
+socket.volatile(true).emit('an event', { some: 'data' });
+```
+
 #### socket.close()
 
   - **Returns** `Socket`
