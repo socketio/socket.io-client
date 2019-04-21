@@ -176,4 +176,55 @@ describe('socket', function () {
       done();
     });
   });
+
+  it('should buffer messages and send to server after reconnected', function (done) {
+    var socket = io({ forceNew: true });
+    var received = 0;
+    var sending = 100;
+
+    socket.on('hi', function (data) {
+      received++;
+    });
+
+    socket.on('reconnect_attempt', function () {
+      for (var idx = 0; idx < sending; idx++) {
+        socket.emit('hi');
+      }
+      socket.on('connect', function () {
+        setTimeout(function () {
+          expect(received).to.eql(sending);
+          done();
+        }, 200);
+      });
+    });
+
+    socket.io.engine.close();
+  });
+
+  it('should not buffer messages if sending with `volatile(true)`', function (done) {
+    var socket = io({ forceNew: true });
+    var received = 0;
+    var sending = 100;
+
+    socket.on('hi', function () {
+      received++;
+    });
+
+    socket.once('connect', function () {
+      socket.io.engine.close();
+    });
+
+    socket.on('reconnect_attempt', function () {
+      for (var idx = 0; idx < sending; idx++) {
+        socket.volatile(true).emit('hi'); // dropped
+        socket.volatile(false).emit('hi');
+      }
+      socket.on('connect', function () {
+        setTimeout(function () {
+          expect(received).to.eql(sending);
+          done();
+        }, 200);
+      });
+    });
+  });
 });
