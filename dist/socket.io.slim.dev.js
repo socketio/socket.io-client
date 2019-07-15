@@ -1,8 +1,3 @@
-/*!
- * Socket.IO v2.2.0
- * (c) 2014-2018 Guillermo Rauch
- * Released under the MIT License.
- */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -154,7 +149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	exports.Manager = __webpack_require__(9);
-	exports.Socket = __webpack_require__(33);
+	exports.Socket = __webpack_require__(34);
 
 /***/ }),
 /* 1 */
@@ -1079,14 +1074,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	var eio = __webpack_require__(10);
-	var Socket = __webpack_require__(33);
+	var Socket = __webpack_require__(34);
 	var Emitter = __webpack_require__(5);
 	var parser = __webpack_require__(4);
-	var on = __webpack_require__(35);
-	var bind = __webpack_require__(36);
+	var on = __webpack_require__(36);
+	var bind = __webpack_require__(37);
 	var debug = __webpack_require__(3)('socket.io-client:manager');
-	var indexOf = __webpack_require__(32);
-	var Backoff = __webpack_require__(37);
+	var indexOf = __webpack_require__(33);
+	var Backoff = __webpack_require__(38);
 	
 	/**
 	 * IE6+ hasOwnProperty
@@ -1666,10 +1661,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var transports = __webpack_require__(12);
 	var Emitter = __webpack_require__(5);
 	var debug = __webpack_require__(3)('engine.io-client:socket');
-	var index = __webpack_require__(32);
+	var index = __webpack_require__(33);
 	var parser = __webpack_require__(18);
 	var parseuri = __webpack_require__(2);
-	var parseqs = __webpack_require__(26);
+	var parseqs = __webpack_require__(27);
 	
 	/**
 	 * Module exports.
@@ -2417,8 +2412,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var XMLHttpRequest = __webpack_require__(13);
 	var XHR = __webpack_require__(15);
-	var JSONP = __webpack_require__(29);
-	var websocket = __webpack_require__(30);
+	var JSONP = __webpack_require__(30);
+	var websocket = __webpack_require__(31);
 	
 	/**
 	 * Export transports.
@@ -2545,7 +2540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var XMLHttpRequest = __webpack_require__(13);
 	var Polling = __webpack_require__(16);
 	var Emitter = __webpack_require__(5);
-	var inherit = __webpack_require__(27);
+	var inherit = __webpack_require__(28);
 	var debug = __webpack_require__(3)('engine.io-client:polling-xhr');
 	
 	/**
@@ -2962,10 +2957,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	var Transport = __webpack_require__(17);
-	var parseqs = __webpack_require__(26);
+	var parseqs = __webpack_require__(27);
 	var parser = __webpack_require__(18);
-	var inherit = __webpack_require__(27);
-	var yeast = __webpack_require__(28);
+	var inherit = __webpack_require__(28);
+	var yeast = __webpack_require__(29);
 	var debug = __webpack_require__(3)('engine.io-client:polling');
 	
 	/**
@@ -3380,13 +3375,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var keys = __webpack_require__(19);
 	var hasBinary = __webpack_require__(20);
-	var sliceBuffer = __webpack_require__(21);
-	var after = __webpack_require__(22);
-	var utf8 = __webpack_require__(23);
+	var sliceBuffer = __webpack_require__(22);
+	var after = __webpack_require__(23);
+	var utf8 = __webpack_require__(24);
 	
 	var base64encoder;
 	if (typeof ArrayBuffer !== 'undefined') {
-	  base64encoder = __webpack_require__(24);
+	  base64encoder = __webpack_require__(25);
 	}
 	
 	/**
@@ -3444,7 +3439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 	
-	var Blob = __webpack_require__(25);
+	var Blob = __webpack_require__(26);
 	
 	/**
 	 * Encodes a packet.
@@ -4016,7 +4011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Module requirements.
 	 */
 	
-	var isArray = __webpack_require__(7);
+	var isArray = __webpack_require__(21);
 	
 	var toString = Object.prototype.toString;
 	var withNativeBlob = typeof Blob === 'function' ||
@@ -4080,6 +4075,17 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 21 */
 /***/ (function(module, exports) {
 
+	var toString = {}.toString;
+	
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
 	/**
 	 * An abstraction for slicing an arraybuffer even when
 	 * ArrayBuffer.prototype.slice is not supported
@@ -4112,7 +4118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	module.exports = after
@@ -4146,7 +4152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 	/*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -4362,7 +4368,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	/*
@@ -4435,7 +4441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 	/**
@@ -4541,7 +4547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 	/**
@@ -4584,7 +4590,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 	
@@ -4596,7 +4602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -4670,7 +4676,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -4678,7 +4684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	var Polling = __webpack_require__(16);
-	var inherit = __webpack_require__(27);
+	var inherit = __webpack_require__(28);
 	
 	/**
 	 * Module exports.
@@ -4916,7 +4922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -4925,17 +4931,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var Transport = __webpack_require__(17);
 	var parser = __webpack_require__(18);
-	var parseqs = __webpack_require__(26);
-	var inherit = __webpack_require__(27);
-	var yeast = __webpack_require__(28);
+	var parseqs = __webpack_require__(27);
+	var inherit = __webpack_require__(28);
+	var yeast = __webpack_require__(29);
 	var debug = __webpack_require__(3)('engine.io-client:websocket');
+	
 	var BrowserWebSocket, NodeWebSocket;
-	if (typeof self === 'undefined') {
-	  try {
-	    NodeWebSocket = __webpack_require__(31);
-	  } catch (e) { }
-	} else {
+	
+	if (typeof WebSocket !== 'undefined') {
+	  BrowserWebSocket = WebSocket;
+	} else if (typeof self !== 'undefined') {
 	  BrowserWebSocket = self.WebSocket || self.MozWebSocket;
+	} else {
+	  try {
+	    NodeWebSocket = __webpack_require__(32);
+	  } catch (e) { }
 	}
 	
 	/**
@@ -4944,7 +4954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * interface exposed by `ws` for Node-like environment.
 	 */
 	
-	var WebSocket = BrowserWebSocket || NodeWebSocket;
+	var WebSocketImpl = BrowserWebSocket || NodeWebSocket;
 	
 	/**
 	 * Module exports.
@@ -4968,7 +4978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.usingBrowserWebSocket = BrowserWebSocket && !opts.forceNode;
 	  this.protocols = opts.protocols;
 	  if (!this.usingBrowserWebSocket) {
-	    WebSocket = NodeWebSocket;
+	    WebSocketImpl = NodeWebSocket;
 	  }
 	  Transport.call(this, opts);
 	}
@@ -5028,7 +5038,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	
 	  try {
-	    this.ws = this.usingBrowserWebSocket && !this.isReactNative ? (protocols ? new WebSocket(uri, protocols) : new WebSocket(uri)) : new WebSocket(uri, protocols, opts);
+	    this.ws =
+	      this.usingBrowserWebSocket && !this.isReactNative
+	        ? protocols
+	          ? new WebSocketImpl(uri, protocols)
+	          : new WebSocketImpl(uri)
+	        : new WebSocketImpl(uri, protocols, opts);
 	  } catch (err) {
 	    return this.emit('error', err);
 	  }
@@ -5201,18 +5216,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	WS.prototype.check = function () {
-	  return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
+	  return !!WebSocketImpl && !('__initialize' in WebSocketImpl && this.name === WS.prototype.name);
 	};
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 	
@@ -5227,7 +5242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5240,11 +5255,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var parser = __webpack_require__(4);
 	var Emitter = __webpack_require__(5);
-	var toArray = __webpack_require__(34);
-	var on = __webpack_require__(35);
-	var bind = __webpack_require__(36);
+	var toArray = __webpack_require__(35);
+	var on = __webpack_require__(36);
+	var bind = __webpack_require__(37);
 	var debug = __webpack_require__(3)('socket.io-client:socket');
-	var parseqs = __webpack_require__(26);
+	var parseqs = __webpack_require__(27);
 	var hasBin = __webpack_require__(20);
 	
 	/**
@@ -5662,7 +5677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 	module.exports = toArray
@@ -5681,7 +5696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -5711,7 +5726,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 	/**
@@ -5740,7 +5755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 	
