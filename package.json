@@ -59,6 +59,9 @@
     "zuul-builder-webpack": "^1.2.0",
     "zuul-ngrok": "4.0.0"
   },
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "scripts": {
     "test": "gulp test"
   },
