@@ -10,16 +10,16 @@ module.exports = {
   externals: {
     global: glob()
   },
+  node: {
+    Buffer: false
+  },
   devtool: 'source-map',
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
+      include: /debug/,
       loader: 'babel-loader',
       query: { presets: ['es2015'] }
-    }, {
-      test: /\json3.js/,
-      loader: 'imports?define=>false'
     }]
   }
 };
