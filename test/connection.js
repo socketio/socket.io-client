@@ -459,9 +459,7 @@ describe('connection', function () {
       var socket = manager.socket('/room1');
 
       setTimeout(() => {
-        manager.socket(
-          `/room2`,
-        );
+        manager.socket('/room2');
       }, delay);
     });
   }
