@@ -1,5 +1,5 @@
 
-# socket.io-client
+# socket.io-client to build awesome js application.
 
 [![Build Status](https://secure.travis-ci.org/socketio/socket.io-client.svg?branch=master)](http://travis-ci.org/socketio/socket.io-client)
 [![Dependency Status](https://david-dm.org/socketio/socket.io-client.svg)](https://david-dm.org/socketio/socket.io-client)
@@ -10,11 +10,11 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/socket.svg)](https://saucelabs.com/u/socket)
 
-## How to use
+## How to use the socket.io in JavaScript.
 
-A standalone build of `socket.io-client` is exposed automatically by the
-socket.io server as `/socket.io/socket.io.js`. Alternatively you can
-serve the file `socket.io.js` found in the `dist` folder or include it via [CDN](https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js).
+A standalone build of `socket.io-client` is exposed or access automatically by the
+socket.io server as `/socket.io/socket.io.js`file. Alternatively you can
+serve the file `socket.io.js` found in the `dist` folder or include it via [CDN link](https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js).
 
 ```html
 <script src="/socket.io/socket.io.js"></script>
