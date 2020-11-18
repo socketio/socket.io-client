@@ -1,5 +1,5 @@
-import io from "./build/index.js";
+import {io as lookupIO} from "./build/index.js";
 
 export const Manager = io.Manager;
-export const io = io;
+export const io = lookupIO;
 export default io;
