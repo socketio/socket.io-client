@@ -162,7 +162,7 @@ export class Socket extends Emitter {
       debug("discard packet as the transport is not currently writable");
     } else if (this.connected) {
       this.packet(packet);
-    } else {
+    } else if (this.io._enableSendBuffer) {
       this.sendBuffer.push(packet);
     }
 
@@ -273,7 +273,7 @@ export class Socket extends Emitter {
       args.push(this.ack(packet.id));
     }
 
-    if (this.connected) {
+    if (this.connected || !this.io._enableReceiveBuffer) {
       this.emitEvent(args);
     } else {
       this.receiveBuffer.push(args);
