@@ -282,7 +282,7 @@ export class Manager extends Emitter {
   private readonly uri: string;
   private readonly opts: Partial<ManagerOptions>;
 
-  private nsps: Record<string, Socket>;
+  private nsps: Record<string, Socket> = {};
   private subs: Array<ReturnType<typeof on>> = [];
   private backoff: Backoff;
   private _reconnection: boolean;

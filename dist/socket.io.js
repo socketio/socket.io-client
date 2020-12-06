@@ -296,6 +296,7 @@ var Manager = /*#__PURE__*/function (_Emitter) {
     _classCallCheck(this, Manager);
 
     _this = _super.call(this);
+    _this.nsps = {};
     _this.subs = [];
     _this.connecting = [];
 
