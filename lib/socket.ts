@@ -17,7 +17,6 @@ export interface SocketOptions {
  * Internal events.
  * These events can't be emitted by the user.
  */
-
 const RESERVED_EVENTS = Object.freeze({
   connect: 1,
   connect_error: 1,
@@ -113,7 +112,7 @@ export class Socket extends Emitter {
   /**
    * Sends a `message` event.
    *
-   * @return {Socket} self
+   * @return self
    * @public
    */
   public send(...args: any[]): Socket {
@@ -126,8 +125,8 @@ export class Socket extends Emitter {
    * Override `emit`.
    * If the event is in `events`, it's emitted normally.
    *
-   * @param {String} ev - event name
-   * @return {Socket} self
+   * @param ev - event name
+   * @return self
    * @public
    */
   public emit(ev: string, ...args: any[]): Socket {
@@ -174,7 +173,7 @@ export class Socket extends Emitter {
   /**
    * Sends a packet.
    *
-   * @param {Object} packet
+   * @param packet
    * @private
    */
   private packet(packet: Partial<Packet>) {
@@ -215,7 +214,7 @@ export class Socket extends Emitter {
   /**
    * Called with socket packet.
    *
-   * @param {Object} packet
+   * @param packet
    * @private
    */
   private onpacket(packet: Packet) {
