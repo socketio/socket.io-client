@@ -83,9 +83,9 @@ export class Socket extends Emitter {
 
     const io = this.io;
     this.subs = [
-      on(io, "open",   bind(this, "onopen")),
+      on(io, "open", bind(this, "onopen")),
       on(io, "packet", bind(this, "onpacket")),
-      on(io, "close",  bind(this, "onclose")),
+      on(io, "close", bind(this, "onclose")),
     ];
   }
 
@@ -502,11 +502,10 @@ export class Socket extends Emitter {
   }
 }
 export namespace Socket {
-  export type CloseReason
-    = "io server disconnect"
+  export type CloseReason =
+    | "io server disconnect"
     | "io client disconnect"
     | "ping timeout"
     | "transport close"
-    | "transport error"
-    ;
+    | "transport error";
 }

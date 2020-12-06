@@ -306,7 +306,10 @@ export class Manager extends Emitter {
    */
   constructor(opts: Partial<ManagerOptions>);
   constructor(uri?: string, opts?: Partial<ManagerOptions>);
-  constructor(uri?: string | Partial<ManagerOptions>, opts?: Partial<ManagerOptions>) {
+  constructor(
+    uri?: string | Partial<ManagerOptions>,
+    opts?: Partial<ManagerOptions>
+  ) {
     super();
     if (uri && "object" === typeof uri) {
       opts = uri;
@@ -546,7 +549,7 @@ export class Manager extends Emitter {
       on(socket, "ping", bind(this, "onping")),
       on(socket, "error", bind(this, "onerror")),
       on(socket, "close", bind(this, "onclose")),
-      on(this.decoder, "decoded", bind(this, "ondecoded")),
+      on(this.decoder, "decoded", bind(this, "ondecoded"))
     );
   }
 
@@ -636,7 +639,7 @@ export class Manager extends Emitter {
    * @param packet
    * @private
    */
-  _packet(packet: Partial<Packet & { query: string, options: any }>) {
+  _packet(packet: Partial<Packet & { query: string; options: any }>) {
     debug("writing packet %j", packet);
     if (packet.query && packet.type === 0) packet.nsp += "?" + packet.query;
 

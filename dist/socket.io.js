@@ -165,7 +165,7 @@ function lookup(uri, opts) {
   var source = parsed.source;
   var id = parsed.id;
   var path = parsed.path;
-  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var sameNamespace = cache[id] && path in cache[id]["nsps"];
   var newConnection = opts.forceNew || opts["force new connection"] || false === opts.multiplex || sameNamespace;
   var io;
 
@@ -296,7 +296,6 @@ var Manager = /*#__PURE__*/function (_Emitter) {
     _classCallCheck(this, Manager);
 
     _this = _super.call(this);
-    _this.nsps = {};
     _this.subs = [];
     _this.connecting = [];
 
@@ -356,25 +355,31 @@ var Manager = /*#__PURE__*/function (_Emitter) {
   }, {
     key: "reconnectionDelay",
     value: function reconnectionDelay(v) {
+      var _a;
+
       if (v === undefined) return this._reconnectionDelay;
       this._reconnectionDelay = v;
-      this.backoff && this.backoff.setMin(v);
+      (_a = this.backoff) === null || _a === void 0 ? void 0 : _a.setMin(v);
       return this;
     }
   }, {
     key: "randomizationFactor",
     value: function randomizationFactor(v) {
+      var _a;
+
       if (v === undefined) return this._randomizationFactor;
       this._randomizationFactor = v;
-      this.backoff && this.backoff.setJitter(v);
+      (_a = this.backoff) === null || _a === void 0 ? void 0 : _a.setJitter(v);
       return this;
     }
   }, {
     key: "reconnectionDelayMax",
     value: function reconnectionDelayMax(v) {
+      var _a;
+
       if (v === undefined) return this._reconnectionDelayMax;
       this._reconnectionDelayMax = v;
-      this.backoff && this.backoff.setMax(v);
+      (_a = this.backoff) === null || _a === void 0 ? void 0 : _a.setMax(v);
       return this;
     }
   }, {
@@ -404,7 +409,7 @@ var Manager = /*#__PURE__*/function (_Emitter) {
      * Sets the current transport `socket`.
      *
      * @param {Function} fn - optional, callback
-     * @return {Manager} self
+     * @return self
      * @public
      */
 
@@ -499,11 +504,7 @@ var Manager = /*#__PURE__*/function (_Emitter) {
 
 
       var socket = this.engine;
-      this.subs.push(on_1.on(socket, "data", bind(this, "ondata")));
-      this.subs.push(on_1.on(socket, "ping", bind(this, "onping")));
-      this.subs.push(on_1.on(socket, "error", bind(this, "onerror")));
-      this.subs.push(on_1.on(socket, "close", bind(this, "onclose")));
-      this.subs.push(on_1.on(this.decoder, "decoded", bind(this, "ondecoded")));
+      this.subs.push(on_1.on(socket, "data", bind(this, "ondata")), on_1.on(socket, "ping", bind(this, "onping")), on_1.on(socket, "error", bind(this, "onerror")), on_1.on(socket, "close", bind(this, "onclose")), on_1.on(this.decoder, "decoded", bind(this, "ondecoded")));
     }
     /**
      * Called upon a ping.
@@ -586,7 +587,7 @@ var Manager = /*#__PURE__*/function (_Emitter) {
     /**
      * Called upon a socket close.
      *
-     * @param {Socket} socket
+     * @param socket
      * @private
      */
 
@@ -602,7 +603,7 @@ var Manager = /*#__PURE__*/function (_Emitter) {
     /**
      * Writes a packet.
      *
-     * @param {Object} packet
+     * @param packet
      * @private
      */
 
@@ -786,7 +787,7 @@ function on(obj, ev, fn) {
   obj.on(ev, fn);
   return {
     destroy: function destroy() {
-      obj.removeListener(ev, fn);
+      obj.off(ev, fn);
     }
   };
 }
@@ -857,7 +858,7 @@ var debug = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.j
  */
 
 
-var RESERVED_EVENTS = {
+var RESERVED_EVENTS = Object.freeze({
   connect: 1,
   connect_error: 1,
   disconnect: 1,
@@ -865,7 +866,7 @@ var RESERVED_EVENTS = {
   // EventEmitter reserved events: https://nodejs.org/api/events.html#events_event_newlistener
   newListener: 1,
   removeListener: 1
-};
+});
 
 var Socket = /*#__PURE__*/function (_Emitter) {
   _inherits(Socket, _Emitter);
@@ -930,7 +931,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
     value: function connect() {
       if (this.connected) return this;
       this.subEvents();
-      if (!this.io._reconnecting) this.io.open(); // ensure open
+      if (!this.io["_reconnecting"]) this.io.open(); // ensure open
 
       if ("open" === this.io._readyState) this.onopen();
       return this;
@@ -1054,7 +1055,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
     /**
      * Called upon engine `close`.
      *
-     * @param {String} reason
+     * @param reason
      * @private
      */
 
@@ -1120,7 +1121,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
     /**
      * Called upon a server event.
      *
-     * @param {Object} packet
+     * @param packet
      * @private
      */
 
@@ -1138,7 +1139,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
       if (this.connected) {
         this.emitEvent(args);
       } else {
-        this.receiveBuffer.push(args);
+        this.receiveBuffer.push(Object.freeze(args));
       }
     }
   }, {
@@ -1195,7 +1196,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
     /**
      * Called upon a server acknowlegement.
      *
-     * @param {Object} packet
+     * @param packet
      * @private
      */
 
@@ -1238,16 +1239,15 @@ var Socket = /*#__PURE__*/function (_Emitter) {
   }, {
     key: "emitBuffered",
     value: function emitBuffered() {
-      for (var i = 0; i < this.receiveBuffer.length; i++) {
-        this.emitEvent(this.receiveBuffer[i]);
-      }
+      var _this3 = this;
 
+      this.receiveBuffer.forEach(function (args) {
+        return _this3.emitEvent(args);
+      });
       this.receiveBuffer = [];
-
-      for (var _i = 0; _i < this.sendBuffer.length; _i++) {
-        this.packet(this.sendBuffer[_i]);
-      }
-
+      this.sendBuffer.forEach(function (packet) {
+        return _this3.packet(packet);
+      });
       this.sendBuffer = [];
     }
     /**
@@ -1283,12 +1283,12 @@ var Socket = /*#__PURE__*/function (_Emitter) {
         this.subs = null;
       }
 
-      this.io._destroy(this);
+      this.io["_destroy"](this);
     }
     /**
      * Disconnects the socket manually.
      *
-     * @return {Socket} self
+     * @return self
      * @public
      */
 
@@ -1315,7 +1315,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
     /**
      * Alias for disconnect()
      *
-     * @return {Socket} self
+     * @return self
      * @public
      */
 
@@ -1327,8 +1327,8 @@ var Socket = /*#__PURE__*/function (_Emitter) {
     /**
      * Sets the compress flag.
      *
-     * @param {Boolean} compress - if `true`, compresses the sending data
-     * @return {Socket} self
+     * @param compress - if `true`, compresses the sending data
+     * @return self
      * @public
      */
 
@@ -1342,7 +1342,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
      * Sets a modifier for a subsequent event emission that the event message will be dropped when this socket is not
      * ready to send messages.
      *
-     * @returns {Socket} self
+     * @returns self
      * @public
      */
 
@@ -1457,9 +1457,9 @@ var debug = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.j
 /**
  * URL parser.
  *
- * @param {String} uri - url
- * @param {Object} loc - An object meant to mimic window.location.
- *                 Defaults to window.location.
+ * @param uri - url
+ * @param loc - An object meant to mimic window.location.
+ *        Defaults to window.location.
  * @public
  */
 
@@ -1470,7 +1470,7 @@ function url(uri, loc) {
   loc = loc || typeof location !== "undefined" && location;
   if (null == uri) uri = loc.protocol + "//" + loc.host; // relative path support
 
-  if ("string" === typeof uri) {
+  if (typeof uri === "string") {
     if ("/" === uri.charAt(0)) {
       if ("/" === uri.charAt(1)) {
         uri = loc.protocol + uri;

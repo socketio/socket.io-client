@@ -3,27 +3,27 @@ import * as parseuri from "parseuri";
 const debug = require("debug")("socket.io-client:url");
 
 type ParsedUrl = {
-  source: string,
-  protocol: string,
-  authority: string,
-  userInfo: string,
-  user: string,
-  password: string,
-  host: string,
-  port: string,
-  relative: string,
-  path: string,
-  directory: string,
-  file: string,
-  query: string,
-  anchor: string,
-  pathNames: Array<string>,
-  queryKey: Record<string, string>,
+  source: string;
+  protocol: string;
+  authority: string;
+  userInfo: string;
+  user: string;
+  password: string;
+  host: string;
+  port: string;
+  relative: string;
+  path: string;
+  directory: string;
+  file: string;
+  query: string;
+  anchor: string;
+  pathNames: Array<string>;
+  queryKey: Record<string, string>;
 
   // Custom properties (not native to parseuri):
-  id: string,
-  href: string,
-}
+  id: string;
+  href: string;
+};
 
 /**
  * URL parser.
