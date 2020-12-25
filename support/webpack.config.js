@@ -12,7 +12,7 @@ module.exports = {
     library: "io",
     libraryTarget: "umd",
     // see https://github.com/webpack/webpack/issues/6525
-    globalObject: `(() => {
+    globalObject: `(function () {
       if (typeof self !== 'undefined') {
           return self;
       } else if (typeof window !== 'undefined') {
