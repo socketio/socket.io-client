@@ -1,6 +1,6 @@
 /*!
- * Socket.IO v2.3.1
- * (c) 2014-2020 Guillermo Rauch
+ * Socket.IO v2.4.0
+ * (c) 2014-2021 Guillermo Rauch
  * Released under the MIT License.
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -3912,7 +3912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  debug('polling got data %s', data);
 	  var callback = function (packet, index, total) {
 	    // if its the first message we consider the transport open
-	    if ('opening' === self.readyState) {
+	    if ('opening' === self.readyState && packet.type === 'open') {
 	      self.onOpen();
 	    }
 	

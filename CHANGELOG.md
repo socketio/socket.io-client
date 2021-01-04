@@ -1,3 +1,8 @@
+# [2.4.0](https://github.com/Automattic/socket.io-client/compare/2.3.1...2.4.0) (2021-01-04)
+
+The minor bump is matching the bump of the server, but there is no new feature in this release.
+
+
 ## [2.3.1](https://github.com/socketio/socket.io-client/compare/2.3.0...2.3.1) (2020-09-30)
 
 The `debug` dependency has been reverted to `~3.1.0`, as the newer versions contains ES6 syntax which breaks in IE
