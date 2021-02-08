@@ -253,6 +253,13 @@ export interface ManagerOptions extends EngineOptions {
   autoConnect: boolean;
 
   /**
+   * weather we should unref the reconnect timer when it is
+   * create automatically
+   * @default false
+   */
+  autoUnref: boolean;
+
+  /**
    * the parser to use. Defaults to an instance of the Parser that ships with socket.io.
    */
   parser: any;
@@ -269,6 +276,10 @@ export class Manager extends Emitter {
    * @private
    */
   _autoConnect: boolean;
+  /**
+   * @private
+   */
+  _autoUnref: boolean;
   /**
    * @private
    */
@@ -338,6 +349,7 @@ export class Manager extends Emitter {
     this.encoder = new _parser.Encoder();
     this.decoder = new _parser.Decoder();
     this._autoConnect = opts.autoConnect !== false;
+    this._autoUnref = opts.autoUnref || false;
     if (this._autoConnect) this.open();
   }
 
@@ -749,6 +761,10 @@ export class Manager extends Emitter {
           }
         });
       }, delay);
+
+      if (this._autoUnref) {
+        timer.unref();
+      }
 
       this.subs.push(function subDestroy() {
         clearTimeout(timer);
