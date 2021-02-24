@@ -304,7 +304,7 @@ var Manager = /*#__PURE__*/function (_Emitter) {
 
     _this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
 
-    _this.randomizationFactor(opts.randomizationFactor || 0.5);
+    _this.randomizationFactor(opts.randomizationFactor ?? 0.5);
 
     _this.backoff = new Backoff({
       min: _this.reconnectionDelay(),

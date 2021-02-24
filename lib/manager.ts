@@ -325,7 +325,7 @@ export class Manager extends Emitter {
     this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
     this.reconnectionDelay(opts.reconnectionDelay || 1000);
     this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
-    this.randomizationFactor(opts.randomizationFactor || 0.5);
+    this.randomizationFactor(opts.randomizationFactor ?? 0.5);
     this.backoff = new Backoff({
       min: this.reconnectionDelay(),
       max: this.reconnectionDelayMax(),
