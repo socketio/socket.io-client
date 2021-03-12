@@ -1,5 +1,5 @@
 /*!
- * Socket.IO v3.1.2
+ * Socket.IO v3.1.3
  * (c) 2014-2021 Guillermo Rauch
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 		exports["io"] = factory();
 	else
 		root["io"] = factory();
-})(this, function() {
+})(self, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};

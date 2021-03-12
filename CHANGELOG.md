@@ -1,3 +1,11 @@
+## [3.1.3](https://github.com/socketio/socket.io-client/compare/3.1.2...3.1.3) (2021-03-12)
+
+
+### Bug Fixes
+
+* **bundle:** restore support for JS modules ([afa7953](https://github.com/socketio/socket.io-client/commit/afa79532f8a422cc9246175abdbe30299a0b0281))
+
+
 ## [3.1.2](https://github.com/socketio/socket.io-client/compare/3.1.1...3.1.2) (2021-02-26)
 
 
