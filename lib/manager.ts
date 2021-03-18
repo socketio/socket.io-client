@@ -798,7 +798,6 @@ export class Manager<
   private onreconnect(): void {
     const attempt = this.backoff.attempts;
     this._reconnecting = false;
-    this.backoff.reset();
     this.emitReserved("reconnect", attempt);
   }
 }
