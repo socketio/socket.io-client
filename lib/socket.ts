@@ -57,7 +57,7 @@ export class Socket<
   public sendBuffer: Array<Packet> = [];
 
   private readonly nsp: string;
-  private readonly auth: object | ((cb: (data: object) => void) => void);
+  public readonly auth: object | ((cb: (data: object) => void) => void);
 
   private ids: number = 0;
   private acks: object = {};
