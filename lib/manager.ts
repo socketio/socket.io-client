@@ -199,7 +199,7 @@ interface EngineOptions {
   withCredentials: boolean;
   
   /**
-   * Whether to automatically close the connection whenever the beforeunload event is recieved.
+   * Whether to automatically close the connection whenever the beforeunload event is received.
    * @default true
    */
   closeOnBeforeunload: boolean;
