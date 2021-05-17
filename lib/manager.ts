@@ -197,6 +197,12 @@ interface EngineOptions {
    * @default false
    */
   withCredentials: boolean;
+  
+  /**
+   * Whether to automatically close the connection whenever the beforeunload event is recieved.
+   * @default true
+   */
+  closeOnBeforeunload: boolean;
 }
 
 export interface ManagerOptions extends EngineOptions {
