@@ -203,6 +203,14 @@ interface EngineOptions {
    * @default true
    */
   closeOnBeforeunload: boolean;
+
+  /**
+   * Whether to always use the native setTimeout function. This allows the
+   * client to reconnect when the native setTimeout function is overridden,
+   * such as when mock clocks are installed.
+   * @default false
+   */
+  useNativeSetTimeout: boolean;
 }
 
 export interface ManagerOptions extends EngineOptions {
@@ -321,6 +329,7 @@ export class Manager<
   private nsps: Record<string, Socket> = {};
   private subs: Array<ReturnType<typeof on>> = [];
   private backoff: Backoff;
+  private setTimeoutFn: typeof setTimeout;
   private _reconnection: boolean;
   private _reconnectionAttempts: number;
   private _reconnectionDelay: number;
@@ -375,6 +384,9 @@ export class Manager<
     this.encoder = new _parser.Encoder();
     this.decoder = new _parser.Decoder();
     this._autoConnect = opts.autoConnect !== false;
+    this.setTimeoutFn = opts.useNativeSetTimeout
+      ? NATIVE_SET_TIMEOUT
+      : setTimeout;
     if (this._autoConnect) this.open();
   }
 
@@ -542,7 +554,7 @@ export class Manager<
       }
 
       // set timer
-      const timer = setTimeout(() => {
+      const timer = this.setTimeoutFn(() => {
         debug("connect attempt timed out after %d", timeout);
         openSubDestroy();
         socket.close();
@@ -769,7 +781,7 @@ export class Manager<
       debug("will wait %dms before reconnect attempt", delay);
 
       this._reconnecting = true;
-      const timer = setTimeout(() => {
+      const timer = this.setTimeoutFn(() => {
         if (self.skipReconnect) return;
 
         debug("attempting reconnect");
@@ -813,3 +825,7 @@ export class Manager<
     this.emitReserved("reconnect", attempt);
   }
 }
+
+// Keep a reference to the real setTimeout function so it can be used when
+// setTimeout is overridden.
+const NATIVE_SET_TIMEOUT = setTimeout;
