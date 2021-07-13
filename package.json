@@ -21,6 +21,7 @@
     "./dist/socket.io.js": "./dist/socket.io.js",
     "./dist/socket.io.js.map": "./dist/socket.io.js.map",
     ".": {
+      "browser": "./dist/socket.io.js",
       "import": "./wrapper.mjs",
       "require": "./build/index.js"
     }
