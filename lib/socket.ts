@@ -186,7 +186,7 @@ export class Socket<
       debug("discard packet as the transport is not currently writable");
     } else if (this.connected) {
       this.packet(packet);
-    } else {
+    } else if (this.io._enableSendBuffer) {
       this.sendBuffer.push(packet);
     }
 
@@ -318,7 +318,7 @@ export class Socket<
       args.push(this.ack(packet.id));
     }
 
-    if (this.connected) {
+    if (this.connected || !this.io._enableReceiveBuffer) {
       this.emitEvent(args);
     } else {
       this.receiveBuffer.push(Object.freeze(args));
