@@ -360,9 +360,9 @@ export class Manager<
     this.opts = opts;
     this.reconnection(opts.reconnection !== false);
     this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
-    this.reconnectionDelay(opts.reconnectionDelay || 1000);
-    this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
-    this.randomizationFactor(opts.randomizationFactor || 0.5);
+    this.reconnectionDelay(typeof(opts.reconnectionDelay)!=="undefined" ? opts.reconnectionDelay : 1000);
+    this.reconnectionDelayMax(typeof(opts.reconnectionDelayMax)!=="undefined" ? opts.reconnectionDelayMax : 5000);
+    this.randomizationFactor(typeof(opts.randomizationFactor)!=="undefined" ? opts.randomizationFactor: 0.5);
     this.backoff = new Backoff({
       min: this.reconnectionDelay(),
       max: this.reconnectionDelayMax(),
