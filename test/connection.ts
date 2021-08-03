@@ -599,7 +599,7 @@ describe("connection", function () {
     });
 
     it("should use native setTimeout with useNativeSetTimeout", async () => {
-      options.useNativeSetTimeout = true;
+      options.useNativeTimeouts = true;
       const clock = FakeTimers.install();
       const manager = new Manager(options);
       setupManagerCallbacks(manager);

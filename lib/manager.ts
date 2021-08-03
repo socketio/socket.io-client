@@ -1,4 +1,5 @@
 import * as eio from "engine.io-client";
+import { installTimeoutFunctions } from "engine.io-client/lib/util";
 import { Socket, SocketOptions } from "./socket";
 import * as parser from "socket.io-parser";
 import { Decoder, Encoder, Packet } from "socket.io-parser";
@@ -205,12 +206,12 @@ interface EngineOptions {
   closeOnBeforeunload: boolean;
 
   /**
-   * Whether to always use the native setTimeout function. This allows the
-   * client to reconnect when the native setTimeout function is overridden,
-   * such as when mock clocks are installed.
+   * Whether to always use the native timeouts. This allows the client to
+   * reconnect when the native timeout functions are overridden, such as when
+   * mock clocks are installed.
    * @default false
    */
-  useNativeSetTimeout: boolean;
+  useNativeTimeouts: boolean;
 }
 
 export interface ManagerOptions extends EngineOptions {
@@ -367,6 +368,7 @@ export class Manager<
 
     opts.path = opts.path || "/socket.io";
     this.opts = opts;
+    installTimeoutFunctions(this, opts);
     this.reconnection(opts.reconnection !== false);
     this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
     this.reconnectionDelay(opts.reconnectionDelay || 1000);
@@ -384,9 +386,6 @@ export class Manager<
     this.encoder = new _parser.Encoder();
     this.decoder = new _parser.Decoder();
     this._autoConnect = opts.autoConnect !== false;
-    this.setTimeoutFn = opts.useNativeSetTimeout
-      ? NATIVE_SET_TIMEOUT
-      : setTimeout;
     if (this._autoConnect) this.open();
   }
 
