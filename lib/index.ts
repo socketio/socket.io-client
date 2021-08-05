@@ -27,19 +27,19 @@ const cache: Record<string, Manager> = (exports.managers = {});
  *
  * @public
  */
-function lookup(opts?: Partial<ManagerOptions & SocketOptions>): Socket;
-function lookup(
+function lookup<ListenEvents, EmitEvents>(opts?: Partial<ManagerOptions & SocketOptions>): Socket<ListenEvents, EmitEvents>;
+function lookup<ListenEvents, EmitEvents>(
   uri: string,
   opts?: Partial<ManagerOptions & SocketOptions>
-): Socket;
-function lookup(
+): Socket<ListenEvents, EmitEvents>;
+function lookup<ListenEvents, EmitEvents>(
   uri: string | Partial<ManagerOptions & SocketOptions>,
   opts?: Partial<ManagerOptions & SocketOptions>
-): Socket;
-function lookup(
+): Socket<ListenEvents, EmitEvents>
+function lookup<ListenEvents, EmitEvents>(
   uri: string | Partial<ManagerOptions & SocketOptions>,
   opts?: Partial<ManagerOptions & SocketOptions>
-): Socket {
+): Socket<ListenEvents, EmitEvents> {
   if (typeof uri === "object") {
     opts = uri;
     uri = undefined;
