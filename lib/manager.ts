@@ -318,7 +318,7 @@ export class Manager<
   private readonly uri: string;
   public opts: Partial<ManagerOptions>;
 
-  private nsps: Record<string, Socket> = {};
+  private nsps: Record<string, Socket<ListenEvents, EmitEvents>> = {};
   private subs: Array<ReturnType<typeof on>> = [];
   private backoff: Backoff;
   private _reconnection: boolean;
@@ -643,10 +643,10 @@ export class Manager<
    * @return {Socket}
    * @public
    */
-  public socket(nsp: string, opts?: Partial<SocketOptions>): Socket {
+  public socket(nsp: string, opts?: Partial<SocketOptions>): Socket<ListenEvents, EmitEvents> {
     let socket = this.nsps[nsp];
     if (!socket) {
-      socket = new Socket(this, nsp, opts);
+      socket = new Socket<ListenEvents, EmitEvents>(this, nsp, opts);
       this.nsps[nsp] = socket;
     }
 
@@ -659,7 +659,7 @@ export class Manager<
    * @param socket
    * @private
    */
-  _destroy(socket: Socket): void {
+  _destroy(socket: Socket<ListenEvents, EmitEvents>): void {
     const nsps = Object.keys(this.nsps);
 
     for (const nsp of nsps) {
