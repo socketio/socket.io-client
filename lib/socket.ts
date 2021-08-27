@@ -77,7 +77,6 @@ export class Socket<
     this.ids = 0;
     this.acks = {};
     this.receiveBuffer = [];
-    this.sendBuffer = [];
     this.connected = false;
     this.disconnected = true;
     this.flags = {};
