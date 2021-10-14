@@ -174,9 +174,9 @@ export abstract class StrictEventEmitter<
    * @param event Event name
    * @returns boolean
    */
-   hasListeners<Ev extends ReservedOrUserEventNames<ReservedEvents, ListenEvents>>(
-    event: Ev
-  ): boolean {
+  hasListeners<
+    Ev extends ReservedOrUserEventNames<ReservedEvents, ListenEvents>
+  >(event: Ev): boolean {
     return super.hasListeners(event as string);
   }
 
@@ -186,7 +186,9 @@ export abstract class StrictEventEmitter<
    * @param ev Name of the event
    * @param listener Callback function
    */
-   removeListener<Ev extends ReservedOrUserEventNames<ReservedEvents, ListenEvents>>(
+  removeListener<
+    Ev extends ReservedOrUserEventNames<ReservedEvents, ListenEvents>
+  >(
     ev?: Ev,
     listener?: ReservedOrUserListener<ReservedEvents, ListenEvents, Ev>
   ): this {
@@ -199,11 +201,10 @@ export abstract class StrictEventEmitter<
    *
    * @param ev Name of the event
    */
-   removeAllListeners<Ev extends ReservedOrUserEventNames<ReservedEvents, ListenEvents>>(
-    ev?: Ev,
-  ): this {
+  removeAllListeners<
+    Ev extends ReservedOrUserEventNames<ReservedEvents, ListenEvents>
+  >(ev?: Ev): this {
     super.removeAllListeners(ev as string);
     return this;
   }
-
 }
