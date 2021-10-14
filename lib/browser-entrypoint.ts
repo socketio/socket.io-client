@@ -1,3 +1,1 @@
-import { io } from "./index.js";
-
-export default io;
+export * as io from "./index.js";
