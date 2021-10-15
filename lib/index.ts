@@ -79,6 +79,19 @@ function lookup(
 
 export { protocol } from "socket.io-parser";
 
+// Manually create a merged object which acts as both the `lookup` function and
+// a 'namespace' on which the other functionality is exported and available.
+// This lets callers invoke the funtion directly as `io(...)` and also lets them
+// invoke subvalues on it, e.g. `io.connect(...)`. This allows the browser
+// entrypoint module to export this `io` as default, while still providing a
+// more general ES module export below.
+const io = Object.assign(lookup, {
+  Manager,
+  Socket,
+  io: lookup,
+  connect: lookup,
+});
+
 /**
  * Expose constructors for standalone build.
  *
@@ -90,6 +103,6 @@ export {
   ManagerOptions,
   Socket,
   SocketOptions,
-  lookup as io,
+  io,
   lookup as connect,
 };
