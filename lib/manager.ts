@@ -83,6 +83,18 @@ export interface ManagerOptions extends EngineOptions {
    * the parser to use. Defaults to an instance of the Parser that ships with socket.io.
    */
   parser: any;
+
+  /**
+   * Should we buffer receive events if socket is not connected
+   * @default true
+   */
+  enableReceiveBuffer: boolean;
+
+  /**
+   * Should we buffer send events if socket is not connected
+   * @default true
+   */
+  enableSendBuffer: boolean;
 }
 
 interface ManagerReservedEvents {
@@ -119,6 +131,14 @@ export class Manager<
    * @private
    */
   _reconnecting: boolean;
+  /**
+   * @private
+   */
+  _enableReceiveBuffer: boolean;
+  /**
+   * @private
+   */
+  _enableSendBuffer: boolean;
 
   private readonly uri: string;
   public opts: Partial<ManagerOptions>;
@@ -182,6 +202,8 @@ export class Manager<
     this.encoder = new _parser.Encoder();
     this.decoder = new _parser.Decoder();
     this._autoConnect = opts.autoConnect !== false;
+    this._enableReceiveBuffer = opts.enableReceiveBuffer !== false;
+    this._enableSendBuffer = opts.enableSendBuffer !== false;
     if (this._autoConnect) this.open();
   }
 
