@@ -100,7 +100,7 @@ interface ManagerReservedEvents {
 export class Manager<
   ListenEvents extends EventsMap = DefaultEventsMap,
   EmitEvents extends EventsMap = ListenEvents
-> extends Emitter<{}, {}, ManagerReservedEvents> {
+> extends Emitter<ListenEvents, EmitEvents, ManagerReservedEvents> {
   /**
    * The Engine.IO client instance
    *
