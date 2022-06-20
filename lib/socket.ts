@@ -68,7 +68,7 @@ export class Socket<
   public receiveBuffer: Array<ReadonlyArray<any>> = [];
   public sendBuffer: Array<Packet> = [];
 
-  private readonly nsp: string;
+  public readonly nsp: string;
 
   private ids: number = 0;
   private acks: object = {};

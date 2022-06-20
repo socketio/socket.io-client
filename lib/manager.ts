@@ -468,7 +468,8 @@ export class Manager<
    * @param socket
    * @private
    */
-  _destroy(socket: Socket): void {
+  _destroy(closingSocket: Socket): void {
+    delete this.nsps[closingSocket.nsp];
     const nsps = Object.keys(this.nsps);
 
     for (const nsp of nsps) {
