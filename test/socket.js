@@ -176,4 +176,24 @@ describe('socket', function () {
       done();
     });
   });
+
+  it('should emit events in order', function (done) {
+    var socket = io('/', { autoConnect: false });
+    var i = 0;
+
+    socket.on('connect', function () {
+      socket.emit('echo', 'second', function () {
+        expect(++i).to.eql(2);
+
+        socket.disconnect();
+        done();
+      });
+    });
+
+    socket.emit('echo', 'first', function () {
+      expect(++i).to.eql(1);
+    });
+
+    socket.connect();
+  });
 });
