@@ -1,5 +1,5 @@
 /*!
- * Socket.IO v2.4.0
+ * Socket.IO v2.5.0
  * (c) 2014-2021 Guillermo Rauch
  * Released under the MIT License.
  */
@@ -6385,8 +6385,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	Socket.prototype.onconnect = function () {
 	  this.connected = true;
 	  this.disconnected = false;
-	  this.emit('connect');
 	  this.emitBuffered();
+	  this.emit('connect');
 	};
 	
 	/**

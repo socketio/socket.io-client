@@ -1,4 +1,13 @@
-# [2.4.0](https://github.com/Automattic/socket.io-client/compare/2.3.1...2.4.0) (2021-01-04)
+# [2.5.0](https://github.com/socketio/socket.io-client/compare/2.4.0...2.5.0) (2022-06-26)
+
+
+### Bug Fixes
+
+* ensure buffered events are sent in order ([991eb0b](https://github.com/Automattic/socket.io-client/commit/991eb0b0289bbbf680099e6d42b302beee7568b8))
+
+
+
+# [2.4.0](https://github.com/socketio/socket.io-client/compare/2.3.1...2.4.0) (2021-01-04)
 
 The minor bump is matching the bump of the server, but there is no new feature in this release.
 
