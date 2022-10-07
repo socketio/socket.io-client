@@ -427,7 +427,7 @@ export class Manager<
     try {
       this.decoder.add(data);
     } catch (e) {
-      this.onclose("parse error");
+      this.onclose("parse error", e as Error);
     }
   }
 
