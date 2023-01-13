@@ -1,5 +1,5 @@
 import expect from "expect.js";
-import { io } from "..";
+import { io, Socket } from "..";
 import { wrap, BASE_URL, success } from "./support/util";
 
 describe("socket", () => {
@@ -508,7 +508,10 @@ describe("socket", () => {
   describe("timeout", () => {
     it("should timeout after the given delay when socket is not connected", () => {
       return wrap((done) => {
-        const socket = io(BASE_URL + "/", {
+        const socket: Socket<
+          {},
+          { event: (cb: (response: string) => void) => void }
+        > = io(BASE_URL + "/", {
           autoConnect: false,
         });
 
@@ -523,7 +526,10 @@ describe("socket", () => {
 
     it("should timeout when the server does not acknowledge the event", () => {
       return wrap((done) => {
-        const socket = io(BASE_URL + "/");
+        const socket: Socket<
+          {},
+          { unknown: (cb: (response: string) => void) => void }
+        > = io(BASE_URL + "/");
 
         socket.timeout(50).emit("unknown", (err) => {
           expect(err).to.be.an(Error);
@@ -534,7 +540,10 @@ describe("socket", () => {
 
     it("should timeout when the server does not acknowledge the event in time", () => {
       return wrap((done) => {
-        const socket = io(BASE_URL + "/");
+        const socket: Socket<
+          {},
+          { echo: (secret: number, cb: (response: string) => void) => void }
+        > = io(BASE_URL + "/");
 
         let count = 0;
 
@@ -552,7 +561,10 @@ describe("socket", () => {
 
     it("should not timeout when the server does acknowledge the event", () => {
       return wrap((done) => {
-        const socket = io(BASE_URL + "/");
+        const socket: Socket<
+          {},
+          { echo: (secret: number, cb: (response: string) => void) => void }
+        > = io(BASE_URL + "/");
 
         socket.timeout(50).emit("echo", 42, (err, value) => {
           expect(err).to.be(null);

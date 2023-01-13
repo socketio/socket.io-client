@@ -12,6 +12,37 @@ import debugModule from "debug"; // debug()
 
 const debug = debugModule("socket.io-client:socket"); // debug()
 
+/**
+ * Utulity type to extract the last element of a tuple.
+ */
+type Last<T extends any[]> = T extends [...infer I, infer L] ? L : never;
+
+/**
+ * Utility type to extract all elements of a tuple except the last one.
+ */
+type AllButLast<T extends any[]> = T extends [...infer I, infer L] ? I : never;
+
+/**
+ * Utility type to prepend the timeout error to a parameter list.
+ */
+type PrependTimeoutError<T> = T extends (...args: infer Params) => infer Result
+  ? (timeoutErr: Error, ...args: Params) => Result
+  : T;
+
+/**
+ * Utility type to decorate callbacks of each method in an interface with a timeout error.
+ */
+type DecorateCallbacksWithTimeoutError<T> = {
+  [K in keyof T]: T[K] extends (...args: infer Params) => infer Result
+    ? (
+        ...args: [
+          ...AllButLast<Parameters<T[K]>>,
+          PrependTimeoutError<Last<Parameters<T[K]>>>
+        ]
+      ) => Result
+    : T[K];
+};
+
 export interface SocketOptions {
   /**
    * the authentication payload sent when connecting to the Namespace
@@ -677,7 +708,9 @@ export class Socket<
    *
    * @returns self
    */
-  public timeout(timeout: number): this {
+  public timeout(
+    timeout: number
+  ): Socket<ListenEvents, DecorateCallbacksWithTimeoutError<EmitEvents>> {
     this.flags.timeout = timeout;
     return this;
   }
