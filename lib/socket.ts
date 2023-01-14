@@ -1,6 +1,6 @@
 import { Packet, PacketType } from "socket.io-parser";
-import { on } from "./on.js";
-import { Manager } from "./manager.js";
+import { on } from "./on";
+import { Manager } from "./manager";
 import {
   DefaultEventsMap,
   EventNames,
@@ -15,8 +15,11 @@ const debug = debugModule("socket.io-client:socket"); // debug()
 /**
  * Utulity type to extract the last element of a tuple.
  */
-type Last<T extends any[]> = T extends [...infer I, infer L] ? L : never;
-
+type Last<T extends any[]> = T["length"] extends 1
+  ? T
+  : T extends [infer H, ...infer Rest]
+  ? Last<Rest>
+  : [];
 /**
  * Utility type to extract all elements of a tuple except the last one.
  */
@@ -25,9 +28,11 @@ type AllButLast<T extends any[]> = T extends [...infer I, infer L] ? I : never;
 /**
  * Utility type to prepend the timeout error to a parameter list.
  */
-type PrependTimeoutError<T> = T extends (...args: infer Params) => infer Result
-  ? (timeoutErr: Error, ...args: Params) => Result
-  : T;
+type PrependTimeoutError<T extends any[]> = {
+  [K in keyof T]: T[K] extends (...args: infer Params) => infer Result
+    ? (timeoutErr: Error, ...args: Params) => Result
+    : T[K];
+};
 
 /**
  * Utility type to decorate callbacks of each method in an interface with a timeout error.
@@ -36,8 +41,12 @@ type DecorateCallbacksWithTimeoutError<T> = {
   [K in keyof T]: T[K] extends (...args: infer Params) => infer Result
     ? (
         ...args: [
-          ...AllButLast<Parameters<T[K]>>,
-          PrependTimeoutError<Last<Parameters<T[K]>>>
+          ...AllButLast<Params>,
+          ...(PrependTimeoutError<
+            Last<Params>
+          > extends infer Z extends readonly unknown[]
+            ? Z
+            : never)
         ]
       ) => Result
     : T[K];

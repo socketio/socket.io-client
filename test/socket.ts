@@ -1,5 +1,5 @@
 import expect from "expect.js";
-import { io, Socket } from "..";
+import { io, Socket } from "../lib/index";
 import { wrap, BASE_URL, success } from "./support/util";
 
 describe("socket", () => {
@@ -546,7 +546,6 @@ describe("socket", () => {
         > = io(BASE_URL + "/");
 
         let count = 0;
-
         socket.timeout(0).emit("echo", 42, (err) => {
           expect(err).to.be.an(Error);
           count++;

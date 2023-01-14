@@ -4,11 +4,11 @@ import {
   installTimerFunctions,
   nextTick,
 } from "engine.io-client";
-import { Socket, SocketOptions, DisconnectDescription } from "./socket.js";
+import { Socket, SocketOptions, DisconnectDescription } from "./socket";
 import * as parser from "socket.io-parser";
 import { Decoder, Encoder, Packet } from "socket.io-parser";
-import { on } from "./on.js";
-import { Backoff } from "./contrib/backo2.js";
+import { on } from "./on";
+import { Backoff } from "./contrib/backo2";
 import {
   DefaultEventsMap,
   EventsMap,
