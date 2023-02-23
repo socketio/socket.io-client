@@ -461,6 +461,9 @@ export class Manager<
    * @public
    */
   public socket(nsp: string, opts?: Partial<SocketOptions>): Socket {
+    if (nsp[0] !== "/") {
+      nsp = "/" + nsp;
+    }
     let socket = this.nsps[nsp];
     if (!socket) {
       socket = new Socket(this, nsp, opts);
