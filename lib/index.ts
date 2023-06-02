@@ -1,7 +1,7 @@
 import { url } from "./url.js";
 import { Manager, ManagerOptions } from "./manager.js";
 import { Socket, SocketOptions } from "./socket.js";
-import debugModule from "debug"; // debug()
+import * as debugModule from "debug"; // debug()
 
 const debug = debugModule("socket.io-client"); // debug()
 
