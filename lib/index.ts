@@ -1,9 +1,9 @@
 import { url } from "./url.js";
 import { Manager, ManagerOptions } from "./manager.js";
 import { Socket, SocketOptions } from "./socket.js";
-import debugPkg from "debug"; // debug()
+import debugModule from "debug"; // debug()
 
-const debug = (debugPkg.default || debugPkg)("socket.io-client"); // debug()
+const debug = debugModule("socket.io-client"); // debug()
 
 /**
  * Managers cache.
