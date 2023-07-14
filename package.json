@@ -24,6 +24,7 @@
     ".": {
       "types": "./build/esm/index.d.ts",
       "import": {
+        "types": "./build/esm/index.d.ts",
         "node": "./build/esm-debug/index.js",
         "default": "./build/esm/index.js"
       },
