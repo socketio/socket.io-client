@@ -35,7 +35,7 @@
     "./debug": {
       "import": {
         "types": "./build/esm/index.d.ts",
-        "default": "./build/esm-debug/index.js",
+        "default": "./build/esm-debug/index.js"
       },
       "require": {
         "types": "./build/cjs/index.d.ts",
